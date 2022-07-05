@@ -15,5 +15,5 @@
 
 ---
 
-![이거맞나요_](https://user-images.githubusercontent.com/89121296/177240392-beb7bbd6-0e3d-49fa-bbe3-7fa640eda173.png)
+![Erd](https://user-images.githubusercontent.com/89121296/177241031-b8aafca8-c21c-406f-a83a-e9c269c0edb1.png)
 
