@@ -2,15 +2,13 @@ package com.flab.delivery.mapper;
 
 import com.flab.delivery.dto.SignUpDto;
 import com.flab.delivery.dto.TestDto;
-import com.flab.delivery.dto.UserDto;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @MybatisTest
 class UserMapperTest {
