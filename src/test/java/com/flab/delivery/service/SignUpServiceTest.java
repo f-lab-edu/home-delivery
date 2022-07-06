@@ -2,8 +2,8 @@ package com.flab.delivery.service;
 
 import com.flab.delivery.dto.SignUpDto;
 import com.flab.delivery.dto.TestDto;
-import com.flab.delivery.exception.UserException;
-import com.flab.delivery.mapper.UserMapper;
+import com.flab.delivery.exception.SignUpException;
+import com.flab.delivery.mapper.CommonMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,24 +15,24 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
-class UserServiceTest {
+class SignUpServiceTest {
 
     @InjectMocks
-    UserService userService;
+    SignUpService signUpService;
 
     @Mock
-    UserMapper userMapper;
+    CommonMapper mapper;
 
 
     @Test
     void signUp_성공() {
         // given
         SignUpDto signUpDto = TestDto.getSignUpDto();
-        given(userMapper.existUserById(eq(signUpDto.getId()))).willReturn(false);
+        given(mapper.existById(eq(signUpDto.getId()))).willReturn(false);
 
         // when
         //then
-        userService.signUp(signUpDto);
+        signUpService.signUp(mapper, signUpDto);
 
     }
 
@@ -40,10 +40,10 @@ class UserServiceTest {
     void signUp_중복된_아이디라_실패() {
         // given
         SignUpDto signUpDto = TestDto.getSignUpDto();
-        given(userMapper.existUserById(eq(signUpDto.getId()))).willReturn(true);
+        given(mapper.existById(eq(signUpDto.getId()))).willReturn(true);
 
         // when
         //then
-        assertThatThrownBy(() -> userService.signUp(signUpDto)).isInstanceOf(UserException.class);
+        assertThatThrownBy(() -> signUpService.signUp(mapper, signUpDto)).isInstanceOf(SignUpException.class);
     }
 }

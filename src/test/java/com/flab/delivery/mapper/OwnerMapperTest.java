@@ -11,10 +11,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @MybatisTest
-class UserMapperTest {
+class OwnerMapperTest {
 
     @Autowired
-    private UserMapper userMapper;
+    OwnerMapper ownerMapper;
 
     @Test
     void save_확인() {
@@ -23,10 +23,10 @@ class UserMapperTest {
         SignUpDto signUpDto = TestDto.getSignUpDto();
 
         // when
-        userMapper.save(signUpDto);
+        ownerMapper.save(signUpDto);
 
         //then
-        assertThat(userMapper.existById(signUpDto.getId())).isTrue();
+        assertThat(ownerMapper.existById(signUpDto.getId())).isTrue();
     }
 
     @Test
@@ -36,43 +36,42 @@ class UserMapperTest {
         SignUpDto signUpDto = TestDto.getSignUpDto();
 
         // when
-        userMapper.save(signUpDto);
-        assertThatThrownBy(() -> userMapper.save(signUpDto)).isInstanceOf(DataAccessException.class);
+        ownerMapper.save(signUpDto);
+        assertThatThrownBy(() -> ownerMapper.save(signUpDto)).isInstanceOf(DataAccessException.class);
 
         //then
-        assertThat(userMapper.existById(signUpDto.getId())).isTrue();
-        assertThat(userMapper.countById()).isEqualTo(1);
+        assertThat(ownerMapper.existById(signUpDto.getId())).isTrue();
+        assertThat(ownerMapper.countById()).isEqualTo(1);
     }
 
     @Test
-    void existUserById_확인() {
+    void existOwnerById_확인() {
         // given
         SignUpDto user1 = TestDto.getSignUpDto();
         SignUpDto user2 = TestDto.getSignUpDto();
         user2.setId("test2");
 
         // when
-        userMapper.save(user1);
-        userMapper.save(user2);
+        ownerMapper.save(user1);
+        ownerMapper.save(user2);
 
         //then
-        assertThat(userMapper.existById(user1.getId())).isTrue();
-        assertThat(userMapper.existById(user2.getId())).isTrue();
+        assertThat(ownerMapper.existById(user1.getId())).isTrue();
+        assertThat(ownerMapper.existById(user2.getId())).isTrue();
     }
 
     @Test
-    void countUser_확인() {
+    void countOwner_확인() {
         // given
         SignUpDto user1 = TestDto.getSignUpDto();
         SignUpDto user2 = TestDto.getSignUpDto();
         user2.setId("test2");
 
         // when
-        userMapper.save(user1);
-        userMapper.save(user2);
+        ownerMapper.save(user1);
+        ownerMapper.save(user2);
 
         //then
-        assertThat(userMapper.countById()).isEqualTo(2);
+        assertThat(ownerMapper.countById()).isEqualTo(2);
     }
-
 }

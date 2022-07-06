@@ -1,10 +1,10 @@
 package com.flab.delivery.controller;
 
-
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flab.delivery.dto.SignUpDto;
 import com.flab.delivery.dto.TestDto;
-import com.flab.delivery.mapper.UserMapper;
+import com.flab.delivery.mapper.OwnerMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -18,36 +18,35 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-class UserControllerTest {
+class OwnerControllerTest {
 
+    public static final String OWNERS = "/owners";
     @Autowired
     MockMvc mockMvc;
+
+    @Autowired
+    OwnerMapper ownerMapper;
+
     @Autowired
     ObjectMapper objectMapper;
-    @Autowired
-    UserMapper userMapper;
 
     @Test
     void signUp_성공() throws Exception {
-
         // given
         SignUpDto signUpDto = TestDto.getSignUpDto();
 
         // when
-        mockMvc.perform(post("/users")
+        mockMvc.perform(post(OWNERS)
                         .content(objectMapper.writeValueAsString(signUpDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         //then
-        assertThat(userMapper.existById(signUpDto.getId())).isTrue();
-
+        assertThat(ownerMapper.existById(signUpDto.getId())).isTrue();
     }
-
 
     @Test
     void signUp_파라미터_검증에_잡혀_실패() throws Exception {
@@ -57,17 +56,16 @@ class UserControllerTest {
         signUpDto.setPassword("asd1");
 
         // when
-        mockMvc.perform(post("/users")
+        mockMvc.perform(post(OWNERS)
                         .content(objectMapper.writeValueAsString(signUpDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andDo(print());
 
         //then
-        assertThat(userMapper.existById(signUpDto.getId())).isFalse();
+        assertThat(ownerMapper.existById(signUpDto.getId())).isFalse();
 
     }
-
 
 
     @Test
@@ -75,18 +73,18 @@ class UserControllerTest {
 
         // given
         SignUpDto signUpDto = TestDto.getSignUpDto();
-        userMapper.save(signUpDto);
+        ownerMapper.save(signUpDto);
 
         // when
-        mockMvc.perform(post("/users")
+        mockMvc.perform(post(OWNERS)
                         .content(objectMapper.writeValueAsString(signUpDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andDo(print());
 
         //then
-        assertThat(userMapper.existById(signUpDto.getId())).isTrue();
-        assertThat(userMapper.countById()).isEqualTo(1);
+        assertThat(ownerMapper.existById(signUpDto.getId())).isTrue();
+        assertThat(ownerMapper.countById()).isEqualTo(1);
 
     }
 

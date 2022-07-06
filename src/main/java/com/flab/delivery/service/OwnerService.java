@@ -1,19 +1,19 @@
 package com.flab.delivery.service;
 
 import com.flab.delivery.dto.SignUpDto;
-import com.flab.delivery.mapper.UserMapper;
+import com.flab.delivery.mapper.OwnerMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class OwnerService {
 
-    private final UserMapper userMapper;
+    private final OwnerMapper ownerMapper;
     private final SignUpService signUpService;
 
     public void signUp(SignUpDto signUpDto) {
-        signUpService.signUp(userMapper, signUpDto);
+        signUpService.signUp(ownerMapper, signUpDto);
     }
 }
-

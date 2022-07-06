@@ -1,12 +1,11 @@
 package com.flab.delivery.error;
 
-import com.flab.delivery.exception.UserException;
+import com.flab.delivery.exception.SignUpException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,8 +20,8 @@ public class ExceptionAdvice {
         return getBadResponse(e.getMessage());
     }
 
-    @ExceptionHandler(UserException.class)
-    public ResponseEntity userExceptionHandler(HttpServletRequest request, UserException e) {
+    @ExceptionHandler(SignUpException.class)
+    public ResponseEntity userExceptionHandler(HttpServletRequest request, SignUpException e) {
         log.error("requestUrl : {} , errorCode : {}", request.getRequestURI(), e);
         return getBadResponse(e.getMessage());
     }
