@@ -1,5 +1,6 @@
 package com.flab.delivery.dto;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,6 +10,7 @@ import javax.validation.constraints.Pattern;
 
 @Getter
 @Setter
+@Builder
 public class SignUpDto {
 
     @NotNull
@@ -28,14 +30,4 @@ public class SignUpDto {
 
     @NotNull
     private String phoneNumber;
-
-    public UserDto toUserDto() {
-        return UserDto.builder()
-                .id(id)
-                .email(email)
-                .password(password)
-                .phoneNumber(phoneNumber)
-                .name(name)
-                .build();
-    }
 }
