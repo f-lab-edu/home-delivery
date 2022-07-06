@@ -1,9 +1,9 @@
 CREATE TABLE USER(
                      id VARCHAR(50) NOT NULL,
                      email VARCHAR(50) NOT NULL,
-                     password VARCHAR(50) NOT NULL,
-                     name VARCHAR(10) NOT NULL,
-                     phone_number VARCHAR(20) NOT NULL,
+                     password VARCHAR(255) NOT NULL,
+                     name VARCHAR(30) NOT NULL,
+                     phone_number VARCHAR(30) NOT NULL,
                      created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                      modified_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                      PRIMARY KEY (id)
@@ -12,9 +12,9 @@ CREATE TABLE USER(
 CREATE TABLE RIDER(
                       id VARCHAR(50),
                       email VARCHAR(50) NOT NULL,
-                      password VARCHAR(50) NOT NULL,
-                      name VARCHAR(10) NOT NULL,
-                      phone_number VARCHAR(20) NOT NULL,
+                      password VARCHAR(255) NOT NULL,
+                      name VARCHAR(30) NOT NULL,
+                      phone_number VARCHAR(30) NOT NULL,
                       created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                       modified_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                       PRIMARY KEY (id)
@@ -23,9 +23,9 @@ CREATE TABLE RIDER(
 CREATE TABLE OWNER(
                       id VARCHAR(50),
                       email VARCHAR(50) NOT NULL,
-                      password VARCHAR(50) NOT NULL,
-                      name VARCHAR(10) NOT NULL,
-                      phone_number VARCHAR(20) NOT NULL,
+                      password VARCHAR(255) NOT NULL,
+                      name VARCHAR(30) NOT NULL,
+                      phone_number VARCHAR(30) NOT NULL,
                       created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                       modified_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                       PRIMARY KEY (id)
@@ -33,13 +33,13 @@ CREATE TABLE OWNER(
 
 CREATE TABLE CATEGORY(
                          id BIGINT NOT NULL AUTO_INCREMENT,
-                         name VARCHAR(20) NOT NULL UNIQUE,
+                         name VARCHAR(50) NOT NULL UNIQUE,
                          PRIMARY KEY(id)
 );
 
 CREATE TABLE ADDRESS(
                         id bigint AUTO_INCREMENT,
-                        town_name varchar(20) not null unique,
+                        town_name varchar(50) not null unique,
                         PRIMARY KEY (id)
 );
 
@@ -48,7 +48,7 @@ CREATE TABLE RIDER_ADDRESS(
                               rider_id VARCHAR(50) NOT NULL,
                               address_id BIGINT NOT NULL,
                               detail_address VARCHAR(50) NOT NULL,
-                              alias VARCHAR(20) NOT NULL, -- UNIQUE 넣으면안됨 다른사람들도 사용하니까
+                              alias VARCHAR(50) NOT NULL, -- UNIQUE 넣으면안됨 다른사람들도 사용하니까
                               created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                               modified_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                               PRIMARY KEY(id),
@@ -61,7 +61,7 @@ CREATE TABLE USER_ADDRESS(
                              user_id VARCHAR(50) NOT NULL,
                              address_id BIGINT NOT NULL,
                              detail_address VARCHAR(50) NOT NULL,
-                             alias VARCHAR(20) NOT NULL, -- UNIQUE 옵션넣을지
+                             alias VARCHAR(50) NOT NULL, -- UNIQUE 옵션넣을지
                              created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                              modified_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                              PRIMARY KEY(id),
@@ -75,8 +75,8 @@ CREATE TABLE STORE(
                       owner_id VARCHAR(50) NOT NULL,
                       category_id BIGINT NOT NULL,
                       detail_address VARCHAR(50) NOT NULL,
-                      name VARCHAR(30) NOT NULL,
-                      phone_number VARCHAR(20) NOT NULL,
+                      name VARCHAR(50) NOT NULL,
+                      phone_number VARCHAR(50) NOT NULL,
                       info varchar(255) NOT NULL,
                       status int not null default 1,   -- 상태 기본상태가 무엇인지 DEFAULT 냅둬야할듯
                       open_time VARCHAR(50) NOT NULL, --  오픈시간도 처음에 등록시 DEFAULT넣거나 고민 설정해야할듯
