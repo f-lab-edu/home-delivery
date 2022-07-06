@@ -13,7 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -47,7 +47,7 @@ public abstract class AbstractSignUpTest {
         mockMvc.perform(post(uri)
                         .content(objectMapper.writeValueAsString(signUpDto))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
 
         //then
         assertThat(mapper.existById(signUpDto.getId())).isTrue();
@@ -72,24 +72,38 @@ public abstract class AbstractSignUpTest {
 
     }
 
+    @Test
+    void existById_중복되는_아이디_없어서_성공() throws Exception {
+
+        // given
+        SignUpDto signUpDto = TestDto.getSignUpDto();
+
+        // when
+        // then
+        mockMvc.perform(get(getExistsUri(signUpDto)))
+                .andExpect(status().isOk())
+                .andDo(print());
+
+
+    }
 
     @Test
-    void signUp_이미_존재하는_아이디로_실패() throws Exception {
+    void existById_이미_존재하는_아이디로_실패() throws Exception {
 
         // given
         SignUpDto signUpDto = TestDto.getSignUpDto();
         mapper.save(signUpDto);
 
         // when
-        mockMvc.perform(post(uri)
-                        .content(objectMapper.writeValueAsString(signUpDto))
-                        .contentType(MediaType.APPLICATION_JSON))
+        // then
+        mockMvc.perform(get(getExistsUri(signUpDto)))
                 .andExpect(status().isBadRequest())
                 .andDo(print());
 
-        //then
-        assertThat(mapper.existById(signUpDto.getId())).isTrue();
-        assertThat(mapper.countById()).isEqualTo(1);
 
+    }
+
+    private String getExistsUri(SignUpDto signUpDto) {
+        return uri + "/" + signUpDto.getId() + "/exists";
     }
 }

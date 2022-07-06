@@ -15,5 +15,9 @@ public class UserService {
     public void signUp(SignUpDto signUpDto) {
         signUpService.signUp(userMapper, signUpDto);
     }
+
+    public void checkIdDuplicated(String id) {
+        signUpService.checkIdDuplicated(userMapper, id);
+    }
 }
 

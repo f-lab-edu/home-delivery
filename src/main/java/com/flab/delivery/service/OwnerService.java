@@ -15,4 +15,8 @@ public class OwnerService {
     public void signUp(SignUpDto signUpDto) {
         signUpService.signUp(ownerMapper, signUpDto);
     }
+
+    public void checkIdDuplicated(String id) {
+        signUpService.checkIdDuplicated(ownerMapper, id);
+    }
 }

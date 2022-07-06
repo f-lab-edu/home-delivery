@@ -5,13 +5,11 @@ import com.flab.delivery.service.OwnerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import static com.flab.delivery.controller.response.HttpStatusResponse.STATUS_CREATED;
 import static com.flab.delivery.controller.response.HttpStatusResponse.STATUS_OK;
 
 @RestController
@@ -25,6 +23,14 @@ public class OwnerController {
     public ResponseEntity<HttpStatus> signUp(@RequestBody @Valid SignUpDto signUpDto) {
 
         ownerService.signUp(signUpDto);
+
+        return STATUS_CREATED;
+    }
+
+    @GetMapping("/{id}/exists")
+    public ResponseEntity<HttpStatus> existById(@PathVariable String id) {
+
+        ownerService.checkIdDuplicated(id);
 
         return STATUS_OK;
     }

@@ -33,31 +33,40 @@ class SignUpServiceTest {
     void signUp_성공() {
         // given
         SignUpDto signUpDto = TestDto.getSignUpDto();
-        given(mapper.existById(eq(signUpDto.getId()))).willReturn(false);
         given(passwordEncoder.encoder(eq(signUpDto.getPassword()))).willReturn(any());
 
         // when
         signUpService.signUp(mapper, signUpDto);
 
         //then
-        verify(mapper).existById(eq(signUpDto.getId()));
         verify(mapper).save(any());
         verify(passwordEncoder).encoder(any());
 
     }
 
     @Test
-    void signUp_중복된_아이디_때문에_실패() {
+    void checkIdDuplicated_중복된_아이디_없어서_성공() {
+        // given
+        SignUpDto signUpDto = TestDto.getSignUpDto();
+        given(mapper.existById(eq(signUpDto.getId()))).willReturn(false);
+
+        // when
+        signUpService.checkIdDuplicated(mapper, signUpDto.getId());
+
+        //then
+        verify(mapper).existById(eq(signUpDto.getId()));
+    }
+
+    @Test
+    void checkIdDuplicated_중복된_아이디_때문에_실패() {
         // given
         SignUpDto signUpDto = TestDto.getSignUpDto();
         given(mapper.existById(eq(signUpDto.getId()))).willReturn(true);
 
         // when
-        assertThatThrownBy(() -> signUpService.signUp(mapper, signUpDto)).isInstanceOf(SignUpException.class);
+        assertThatThrownBy(() -> signUpService.checkIdDuplicated(mapper, signUpDto.getId())).isInstanceOf(SignUpException.class);
 
         //then
         verify(mapper).existById(eq(signUpDto.getId()));
-        verify(mapper, never()).save(any());
-        verify(passwordEncoder, never()).encoder(any());
     }
 }

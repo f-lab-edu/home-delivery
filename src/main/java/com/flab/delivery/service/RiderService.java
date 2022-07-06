@@ -15,4 +15,8 @@ public class RiderService {
     public void signUp(SignUpDto signUpDto) {
         signUpService.signUp(riderMapper, signUpDto);
     }
+
+    public void checkIdDuplicated(String id) {
+        signUpService.checkIdDuplicated(riderMapper, id);
+    }
 }

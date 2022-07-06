@@ -17,12 +17,15 @@ public class SignUpService {
 
     public void signUp(CommonMapper mapper, SignUpDto signUpDto) {
 
-        if (mapper.existById(signUpDto.getId())) {
-            log.error("유저 회원가입 이미 존재하는 아이디 =  {} ", signUpDto.getId());
-            throw new SignUpException("이미 존재하는 아이디 입니다.");
-        }
         signUpDto.setPassword(passwordEncoder.encoder(signUpDto.getPassword()));
 
         mapper.save(signUpDto);
+    }
+
+    public void checkIdDuplicated(CommonMapper mapper, String id) {
+        if (mapper.existById(id)) {
+            log.error("유저 회원가입 이미 존재하는 아이디 =  {} ", id);
+            throw new SignUpException("이미 존재하는 아이디 입니다.");
+        }
     }
 }
