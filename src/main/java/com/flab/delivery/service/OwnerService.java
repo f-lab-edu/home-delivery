@@ -3,7 +3,6 @@ package com.flab.delivery.service;
 import com.flab.delivery.dto.SignUpDto;
 import com.flab.delivery.mapper.OwnerMapper;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service

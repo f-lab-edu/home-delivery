@@ -1,78 +1,18 @@
 package com.flab.delivery.mapper;
 
-import com.flab.delivery.dto.SignUpDto;
-import com.flab.delivery.dto.TestDto;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @MybatisTest
-class UserMapperTest {
+class UserMapperTest extends AbstractSignUpTest {
 
     @Autowired
     private UserMapper userMapper;
 
-    @Test
-    void save_확인() {
-
-        // given
-        SignUpDto signUpDto = TestDto.getSignUpDto();
-
-        // when
-        userMapper.save(signUpDto);
-
-        //then
-        assertThat(userMapper.existById(signUpDto.getId())).isTrue();
-    }
-
-    @Test
-    void save_이미_존재하는_PK로_인한_실패() {
-
-        // given
-        SignUpDto signUpDto = TestDto.getSignUpDto();
-
-        // when
-        userMapper.save(signUpDto);
-        assertThatThrownBy(() -> userMapper.save(signUpDto)).isInstanceOf(DataAccessException.class);
-
-        //then
-        assertThat(userMapper.existById(signUpDto.getId())).isTrue();
-        assertThat(userMapper.countById()).isEqualTo(1);
-    }
-
-    @Test
-    void existUserById_확인() {
-        // given
-        SignUpDto user1 = TestDto.getSignUpDto();
-        SignUpDto user2 = TestDto.getSignUpDto();
-        user2.setId("test2");
-
-        // when
-        userMapper.save(user1);
-        userMapper.save(user2);
-
-        //then
-        assertThat(userMapper.existById(user1.getId())).isTrue();
-        assertThat(userMapper.existById(user2.getId())).isTrue();
-    }
-
-    @Test
-    void countUser_확인() {
-        // given
-        SignUpDto user1 = TestDto.getSignUpDto();
-        SignUpDto user2 = TestDto.getSignUpDto();
-        user2.setId("test2");
-
-        // when
-        userMapper.save(user1);
-        userMapper.save(user2);
-
-        //then
-        assertThat(userMapper.countById()).isEqualTo(2);
+    @BeforeEach
+    void before() {
+        setMapper(userMapper);
     }
 
 }
