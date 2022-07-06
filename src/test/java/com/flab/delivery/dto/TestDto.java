@@ -17,7 +17,7 @@ public class TestDto {
                 .id("test")
                 .name("테스트")
                 .phoneNumber("01011111111")
-                .password("#@$ASD1`23")
+                .password("!Asdasd1234v")
                 .email("test@mail.com")
                 .build();
     }
