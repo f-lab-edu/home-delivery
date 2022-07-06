@@ -21,7 +21,7 @@ public class ExceptionAdvice {
     }
 
     @ExceptionHandler(SignUpException.class)
-    public ResponseEntity userExceptionHandler(HttpServletRequest request, SignUpException e) {
+    public ResponseEntity<String> userExceptionHandler(HttpServletRequest request, SignUpException e) {
         log.error("requestUrl : {} , errorCode : {}", request.getRequestURI(), e);
         return getBadResponse(e.getMessage());
     }

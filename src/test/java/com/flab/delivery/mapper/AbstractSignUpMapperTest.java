@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @MybatisTest
-public abstract class AbstractSignUpTest {
+public abstract class AbstractSignUpMapperTest {
     CommonMapper mapper;
 
     public void setMapper(CommonMapper mapper) {
@@ -27,7 +27,7 @@ public abstract class AbstractSignUpTest {
         mapper.save(signUpDto);
 
         //then
-        assertThat(mapper.existById(signUpDto.getId())).isTrue();
+        assertThat(mapper.existsById(signUpDto.getId())).isTrue();
     }
 
     @Test
@@ -41,12 +41,12 @@ public abstract class AbstractSignUpTest {
         assertThatThrownBy(() -> mapper.save(signUpDto)).isInstanceOf(DataAccessException.class);
 
         //then
-        assertThat(mapper.existById(signUpDto.getId())).isTrue();
-        assertThat(mapper.countById()).isEqualTo(1);
+        assertThat(mapper.existsById(signUpDto.getId())).isTrue();
+        assertThat(mapper.getCountById()).isEqualTo(1);
     }
 
     @Test
-    void existUserById_확인() {
+    void existsById_확인() {
         // given
         SignUpDto user1 = TestDto.getSignUpDto();
         SignUpDto user2 = TestDto.getSignUpDto();
@@ -57,12 +57,12 @@ public abstract class AbstractSignUpTest {
         mapper.save(user2);
 
         //then
-        assertThat(mapper.existById(user1.getId())).isTrue();
-        assertThat(mapper.existById(user2.getId())).isTrue();
+        assertThat(mapper.existsById(user1.getId())).isTrue();
+        assertThat(mapper.existsById(user2.getId())).isTrue();
     }
 
     @Test
-    void countUser_확인() {
+    void getCountById_확인() {
         // given
         SignUpDto user1 = TestDto.getSignUpDto();
         SignUpDto user2 = TestDto.getSignUpDto();
@@ -73,6 +73,6 @@ public abstract class AbstractSignUpTest {
         mapper.save(user2);
 
         //then
-        assertThat(mapper.countById()).isEqualTo(2);
+        assertThat(mapper.getCountById()).isEqualTo(2);
     }
 }

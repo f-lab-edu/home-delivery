@@ -48,25 +48,25 @@ class SignUpServiceTest {
     void checkIdDuplicated_중복된_아이디_없어서_성공() {
         // given
         SignUpDto signUpDto = TestDto.getSignUpDto();
-        given(mapper.existById(eq(signUpDto.getId()))).willReturn(false);
+        given(mapper.existsById(eq(signUpDto.getId()))).willReturn(false);
 
         // when
         signUpService.checkIdDuplicated(mapper, signUpDto.getId());
 
         //then
-        verify(mapper).existById(eq(signUpDto.getId()));
+        verify(mapper).existsById(eq(signUpDto.getId()));
     }
 
     @Test
     void checkIdDuplicated_중복된_아이디_때문에_실패() {
         // given
         SignUpDto signUpDto = TestDto.getSignUpDto();
-        given(mapper.existById(eq(signUpDto.getId()))).willReturn(true);
+        given(mapper.existsById(eq(signUpDto.getId()))).willReturn(true);
 
         // when
         assertThatThrownBy(() -> signUpService.checkIdDuplicated(mapper, signUpDto.getId())).isInstanceOf(SignUpException.class);
 
         //then
-        verify(mapper).existById(eq(signUpDto.getId()));
+        verify(mapper).existsById(eq(signUpDto.getId()));
     }
 }

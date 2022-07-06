@@ -9,11 +9,11 @@
         values (#{id}, #{email}, #{password}, #{name}, #{phoneNumber});
     </insert>
 
-    <select id="existById" resultType="boolean">
+    <select id="existsById" resultType="boolean">
         select exists(select id from owner where id = #{id});
     </select>
 
-    <select id="countById" resultType="long">
+    <select id="getCountById" resultType="long">
         select count(id)
         from owner;
     </select>

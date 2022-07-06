@@ -3,13 +3,14 @@ package com.flab.delivery.mapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 
-class OwnerMapperTest extends AbstractSignUpTest {
+class UserMapperMapperTest extends AbstractSignUpMapperTest {
 
     @Autowired
-    OwnerMapper ownerMapper;
+    private UserMapper userMapper;
 
     @BeforeEach
     void before() {
-        setMapper(ownerMapper);
+        setMapper(userMapper);
     }
+
 }

@@ -50,7 +50,7 @@ public abstract class AbstractSignUpTest {
                 .andExpect(status().isCreated());
 
         //then
-        assertThat(mapper.existById(signUpDto.getId())).isTrue();
+        assertThat(mapper.existsById(signUpDto.getId())).isTrue();
     }
 
     @Test
@@ -68,7 +68,7 @@ public abstract class AbstractSignUpTest {
                 .andDo(print());
 
         //then
-        assertThat(mapper.existById(signUpDto.getId())).isFalse();
+        assertThat(mapper.existsById(signUpDto.getId())).isFalse();
 
     }
 

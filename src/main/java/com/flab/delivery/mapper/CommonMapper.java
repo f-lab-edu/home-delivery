@@ -6,7 +6,7 @@ public interface CommonMapper {
 
     void save(SignUpDto signUpDto);
 
-    boolean existById(String id);
+    boolean existsById(String id);
 
-    long countById();
+    long getCountById();
 }

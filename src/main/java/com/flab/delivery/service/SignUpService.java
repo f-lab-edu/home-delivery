@@ -23,7 +23,7 @@ public class SignUpService {
     }
 
     public void checkIdDuplicated(CommonMapper mapper, String id) {
-        if (mapper.existById(id)) {
+        if (mapper.existsById(id)) {
             log.error("유저 회원가입 이미 존재하는 아이디 =  {} ", id);
             throw new SignUpException("이미 존재하는 아이디 입니다.");
         }

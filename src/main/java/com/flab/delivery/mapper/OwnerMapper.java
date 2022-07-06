@@ -10,8 +10,8 @@ public interface OwnerMapper extends CommonMapper {
     void save(SignUpDto signUpDto);
 
     @Override
-    boolean existById(String id);
+    boolean existsById(String id);
 
     @Override
-    long countById();
+    long getCountById();
 }
