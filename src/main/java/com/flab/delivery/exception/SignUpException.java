@@ -6,7 +6,4 @@ public class SignUpException extends RuntimeException {
         super(message);
     }
 
-    public SignUpException(String message, Throwable cause) {
-        super(message, cause);
-    }
 }

@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+import static com.flab.delivery.controller.response.HttpStatusResponse.STATUS_OK;
+
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
@@ -20,10 +22,10 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<Void> signUp(@RequestBody @Valid SignUpDto signUpDto) {
+    public ResponseEntity<HttpStatus> signUp(@RequestBody @Valid SignUpDto signUpDto) {
 
         userService.signUp(signUpDto);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return STATUS_OK;
     }
 }

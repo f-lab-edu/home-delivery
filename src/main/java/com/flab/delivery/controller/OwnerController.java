@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+import static com.flab.delivery.controller.response.HttpStatusResponse.STATUS_OK;
+
 @RestController
 @RequestMapping("/owners")
 @RequiredArgsConstructor
@@ -20,11 +22,11 @@ public class OwnerController {
     private final OwnerService ownerService;
 
     @PostMapping
-    public ResponseEntity<Void> signUp(@RequestBody @Valid SignUpDto signUpDto) {
+    public ResponseEntity<HttpStatus> signUp(@RequestBody @Valid SignUpDto signUpDto) {
 
         ownerService.signUp(signUpDto);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return STATUS_OK;
     }
 
 }
