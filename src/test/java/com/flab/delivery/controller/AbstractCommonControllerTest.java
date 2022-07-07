@@ -1,9 +1,12 @@
 package com.flab.delivery.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.flab.delivery.dto.LoginDto;
 import com.flab.delivery.dto.SignUpDto;
 import com.flab.delivery.dto.TestDto;
 import com.flab.delivery.mapper.CommonMapper;
+import com.flab.delivery.service.CommonService;
+import com.flab.delivery.service.LoginService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -20,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-public abstract class AbstractSignUpTest {
+public abstract class AbstractCommonControllerTest {
 
     @Autowired
     MockMvc mockMvc;
@@ -28,6 +31,12 @@ public abstract class AbstractSignUpTest {
     @Autowired
     ObjectMapper objectMapper;
     CommonMapper mapper;
+    @Autowired
+    CommonService commonService;
+
+    @Autowired
+    LoginService loginService;
+
     String uri;
 
     public void setMapper(CommonMapper mapper) {
@@ -105,5 +114,49 @@ public abstract class AbstractSignUpTest {
 
     private String getExistsUri(SignUpDto signUpDto) {
         return uri + "/" + signUpDto.getId() + "/exists";
+    }
+
+    @Test
+    void login_성공() throws Exception {
+        // given
+        LoginDto loginDto = TestDto.getLoginDto();
+        commonService.signUp(mapper, TestDto.getSignUpDto());
+
+        // when
+        // then
+        mockMvc.perform(post(uri + "/login")
+                        .content(objectMapper.writeValueAsString(loginDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+    @Test
+    void login_존재하지_않는_아이디_실패() throws Exception {
+        // given
+        LoginDto loginDto = TestDto.getLoginDto();
+
+        // when
+        // then
+        mockMvc.perform(post(uri + "/login")
+                        .content(objectMapper.writeValueAsString(loginDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
+
+    @Test
+    void login_비밀번호가_틀려서_실패() throws Exception {
+        // given
+        LoginDto loginDto = TestDto.getLoginDto();
+        commonService.signUp(mapper, TestDto.getSignUpDto());
+        loginDto.setPassword("WrongPassword");
+
+        // when
+        // then
+        mockMvc.perform(post(uri + "/login")
+                        .content(objectMapper.writeValueAsString(loginDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized())
+                .andDo(print());
     }
 }

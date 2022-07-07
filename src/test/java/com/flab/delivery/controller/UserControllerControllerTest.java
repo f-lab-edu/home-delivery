@@ -6,7 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
-class UserControllerTest extends AbstractSignUpTest {
+class UserControllerControllerTest extends AbstractCommonControllerTest {
 
     public static final String USERS = "/users";
 

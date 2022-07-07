@@ -10,13 +10,13 @@ import org.springframework.stereotype.Service;
 public class OwnerService {
 
     private final OwnerMapper ownerMapper;
-    private final SignUpService signUpService;
+    private final CommonService commonService;
 
     public void signUp(SignUpDto signUpDto) {
-        signUpService.signUp(ownerMapper, signUpDto);
+        commonService.signUp(ownerMapper, signUpDto);
     }
 
     public void checkIdDuplicated(String id) {
-        signUpService.checkIdDuplicated(ownerMapper, id);
+        commonService.checkIdDuplicated(ownerMapper, id);
     }
 }

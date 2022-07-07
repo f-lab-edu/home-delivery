@@ -3,7 +3,7 @@ package com.flab.delivery.mapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 
-class RiderMapperMapperTest extends AbstractSignUpMapperTest {
+class RiderMapperMapperTest extends AbstractCommonMapperTest {
 
     @Autowired
     RiderMapper riderMapper;

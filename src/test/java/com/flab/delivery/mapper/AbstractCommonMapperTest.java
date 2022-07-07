@@ -1,16 +1,20 @@
 package com.flab.delivery.mapper;
 
+import com.flab.delivery.dto.MemberDto;
 import com.flab.delivery.dto.SignUpDto;
 import com.flab.delivery.dto.TestDto;
+import org.assertj.core.api.ObjectAssert;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.dao.DataAccessException;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @MybatisTest
-public abstract class AbstractSignUpMapperTest {
+public abstract class AbstractCommonMapperTest {
     CommonMapper mapper;
 
     public void setMapper(CommonMapper mapper) {
@@ -74,5 +78,36 @@ public abstract class AbstractSignUpMapperTest {
 
         //then
         assertThat(mapper.getCountById()).isEqualTo(2);
+    }
+
+    @Test
+    void findMemberById_존재() {
+        // given
+        SignUpDto user1 = TestDto.getSignUpDto();
+        mapper.save(user1);
+
+        // when
+        MemberDto memberDto = mapper.findMemberById(user1.getId()).get();
+
+        //then
+        assertEqual(memberDto.getId(), user1.getId());
+        assertEqual(memberDto.getName(), user1.getName());
+        assertEqual(memberDto.getPassword(), user1.getPassword());
+        assertEqual(memberDto.getPhoneNumber(), user1.getPhoneNumber());
+        assertEqual(memberDto.getEmail(), user1.getEmail());
+    }
+
+    @Test
+    void findMemberById_존재하지_않음() {
+        // given
+        // when
+        Optional<MemberDto> member = mapper.findMemberById("noId");
+
+        //then
+        assertEqual(member, Optional.empty());
+    }
+
+    private ObjectAssert<Object> assertEqual(Object arg1, Object arg2) {
+        return assertThat(arg1).isEqualTo(arg2);
     }
 }

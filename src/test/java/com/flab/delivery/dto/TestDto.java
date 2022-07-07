@@ -12,4 +12,18 @@ public class TestDto {
                 .email("test@mail.com")
                 .build();
     }
+
+    public static MemberDto getMemberDto() {
+        return MemberDto.builder()
+                .id("test")
+                .name("테스트")
+                .password("$#$FDFSASD!")
+                .email("test@mail.com")
+                .phoneNumber("01011111111")
+                .build();
+    }
+
+    public static LoginDto getLoginDto() {
+        return new LoginDto("test", "!Asdasd1234v");
+    }
 }

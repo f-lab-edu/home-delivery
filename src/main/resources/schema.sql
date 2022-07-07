@@ -126,7 +126,7 @@ CREATE TABLE orders(
                        delivery_price int NOT NULL,
                        pay_status int not null default 1,
                        status int NOT NULL default 1,
-                       satrt_time TIMESTAMP, -- 출발 시간은 라이더가 픽업 해야 바뀜
+                       start_time TIMESTAMP, -- 출발 시간은 라이더가 픽업 해야 바뀜
                        end_time TIMESTAMP, -- 도착 시간은 라이더가 배달 완료 눌러야 바뀜
                        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                        modified_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

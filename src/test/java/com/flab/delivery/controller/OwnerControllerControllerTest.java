@@ -4,7 +4,7 @@ import com.flab.delivery.mapper.OwnerMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 
-class OwnerControllerTest extends AbstractSignUpTest {
+class OwnerControllerControllerTest extends AbstractCommonControllerTest {
 
     public static final String OWNERS = "/owners";
 

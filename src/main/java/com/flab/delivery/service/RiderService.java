@@ -10,13 +10,13 @@ import org.springframework.stereotype.Service;
 public class RiderService {
 
     private final RiderMapper riderMapper;
-    private final SignUpService signUpService;
+    private final CommonService commonService;
 
     public void signUp(SignUpDto signUpDto) {
-        signUpService.signUp(riderMapper, signUpDto);
+        commonService.signUp(riderMapper, signUpDto);
     }
 
     public void checkIdDuplicated(String id) {
-        signUpService.checkIdDuplicated(riderMapper, id);
+        commonService.checkIdDuplicated(riderMapper, id);
     }
 }

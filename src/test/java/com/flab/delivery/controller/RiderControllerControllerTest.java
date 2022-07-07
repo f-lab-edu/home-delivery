@@ -1,11 +1,10 @@
 package com.flab.delivery.controller;
 
-import com.flab.delivery.mapper.OwnerMapper;
 import com.flab.delivery.mapper.RiderMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 
-class RiderControllerTest extends AbstractSignUpTest {
+class RiderControllerControllerTest extends AbstractCommonControllerTest {
 
     public static final String RIDER = "/riders";
 

@@ -17,4 +17,10 @@
         select count(id)
         from user;
     </select>
+
+    <select id="findMemberById" resultType="MemberDto">
+        select id, password, name, email, phone_number
+        from user
+        where id = #{id};
+    </select>
 </mapper>
