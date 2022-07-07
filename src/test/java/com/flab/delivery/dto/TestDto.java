@@ -10,6 +10,7 @@ public class TestDto {
                 .phoneNumber("01011111111")
                 .password("!Asdasd1234v")
                 .email("test@mail.com")
+                .level("user")
                 .build();
     }
 
@@ -20,6 +21,7 @@ public class TestDto {
                 .password("$#$FDFSASD!")
                 .email("test@mail.com")
                 .phoneNumber("01011111111")
+                .level("user")
                 .build();
     }
 

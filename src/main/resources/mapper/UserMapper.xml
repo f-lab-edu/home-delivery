@@ -4,8 +4,8 @@
 <mapper namespace="com.flab.delivery.mapper.UserMapper">
 
     <insert id="save">
-        insert into user(id, email, password, name, phone_number)
-        values (#{id}, #{email}, #{password}, #{name}, #{phoneNumber});
+        insert into user(id, email, password, name, phone_number, level)
+        values (#{id}, #{email}, #{password}, #{name}, #{phoneNumber}, #{level});
     </insert>
 
     <select id="existsUserById" resultType="boolean">

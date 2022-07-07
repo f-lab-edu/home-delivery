@@ -9,6 +9,8 @@ import javax.validation.constraints.Pattern;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
+@AllArgsConstructor
 public class SignUpDto {
 
     @NotBlank
@@ -30,12 +32,6 @@ public class SignUpDto {
     @NotBlank
     private String phoneNumber;
 
-    @Builder
-    public SignUpDto(String id, String password, String email, String name, String phoneNumber) {
-        this.id = id;
-        this.password = password;
-        this.email = email;
-        this.name = name;
-        this.phoneNumber = phoneNumber;
-    }
+    @NonNull
+    private String level;
 }
