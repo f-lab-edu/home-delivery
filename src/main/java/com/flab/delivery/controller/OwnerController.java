@@ -1,5 +1,6 @@
 package com.flab.delivery.controller;
 
+import com.flab.delivery.dto.LoginDto;
 import com.flab.delivery.dto.SignUpDto;
 import com.flab.delivery.service.OwnerService;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,14 @@ public class OwnerController {
     public ResponseEntity<HttpStatus> existById(@PathVariable String id) {
 
         ownerService.checkIdDuplicated(id);
+
+        return STATUS_OK;
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<HttpStatus> login(@RequestBody @Valid LoginDto loginDto) {
+
+        ownerService.login(loginDto);
 
         return STATUS_OK;
     }

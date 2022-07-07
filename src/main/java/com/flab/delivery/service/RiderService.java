@@ -1,5 +1,6 @@
 package com.flab.delivery.service;
 
+import com.flab.delivery.dto.LoginDto;
 import com.flab.delivery.dto.SignUpDto;
 import com.flab.delivery.mapper.RiderMapper;
 import lombok.RequiredArgsConstructor;
@@ -18,5 +19,9 @@ public class RiderService {
 
     public void checkIdDuplicated(String id) {
         commonService.checkIdDuplicated(riderMapper, id);
+    }
+
+    public void login(LoginDto loginDto) {
+        commonService.login(riderMapper, loginDto);
     }
 }

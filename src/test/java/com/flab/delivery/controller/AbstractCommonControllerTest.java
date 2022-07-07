@@ -127,9 +127,9 @@ public abstract class AbstractCommonControllerTest {
         mockMvc.perform(post(uri + "/login")
                         .content(objectMapper.writeValueAsString(loginDto))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andDo(print());
+                .andExpect(status().isOk());
     }
+
     @Test
     void login_존재하지_않는_아이디_실패() throws Exception {
         // given
@@ -140,8 +140,7 @@ public abstract class AbstractCommonControllerTest {
         mockMvc.perform(post(uri + "/login")
                         .content(objectMapper.writeValueAsString(loginDto))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andDo(print());
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -156,7 +155,6 @@ public abstract class AbstractCommonControllerTest {
         mockMvc.perform(post(uri + "/login")
                         .content(objectMapper.writeValueAsString(loginDto))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnauthorized())
-                .andDo(print());
+                .andExpect(status().isUnauthorized());
     }
 }

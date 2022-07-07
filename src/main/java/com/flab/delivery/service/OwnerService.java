@@ -1,5 +1,6 @@
 package com.flab.delivery.service;
 
+import com.flab.delivery.dto.LoginDto;
 import com.flab.delivery.dto.SignUpDto;
 import com.flab.delivery.mapper.OwnerMapper;
 import lombok.RequiredArgsConstructor;
@@ -18,5 +19,9 @@ public class OwnerService {
 
     public void checkIdDuplicated(String id) {
         commonService.checkIdDuplicated(ownerMapper, id);
+    }
+
+    public void login(LoginDto loginDto) {
+        commonService.login(ownerMapper, loginDto);
     }
 }
