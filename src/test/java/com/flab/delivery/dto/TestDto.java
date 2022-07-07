@@ -13,8 +13,8 @@ public class TestDto {
                 .build();
     }
 
-    public static MemberDto getMemberDto() {
-        return MemberDto.builder()
+    public static UserDto getMemberDto() {
+        return UserDto.builder()
                 .id("test")
                 .name("테스트")
                 .password("$#$FDFSASD!")

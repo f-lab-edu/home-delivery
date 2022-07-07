@@ -4,7 +4,7 @@ import lombok.*;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class MemberDto {
+public class UserDto {
 
     @NonNull
     private String id;
@@ -22,7 +22,7 @@ public class MemberDto {
     private String phoneNumber;
 
     @Builder
-    public MemberDto(@NonNull String id, @NonNull String password, @NonNull String name, @NonNull String email, @NonNull String phoneNumber) {
+    public UserDto(@NonNull String id, @NonNull String password, @NonNull String name, @NonNull String email, @NonNull String phoneNumber) {
         this.id = id;
         this.password = password;
         this.name = name;

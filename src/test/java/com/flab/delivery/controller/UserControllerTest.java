@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flab.delivery.dto.LoginDto;
 import com.flab.delivery.dto.SignUpDto;
 import com.flab.delivery.dto.TestDto;
-import com.flab.delivery.mapper.CommonMapper;
-import com.flab.delivery.service.CommonService;
+import com.flab.delivery.mapper.UserMapper;
 import com.flab.delivery.service.LoginService;
+import com.flab.delivery.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -24,30 +24,23 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-public abstract class AbstractCommonControllerTest {
+public class UserControllerTest {
 
     @Autowired
     MockMvc mockMvc;
 
     @Autowired
     ObjectMapper objectMapper;
-    CommonMapper mapper;
     @Autowired
-    CommonService commonService;
+    UserMapper mapper;
+    @Autowired
+    UserService userService;
 
     @Autowired
     LoginService loginService;
 
     MockHttpSession mockHttpSession = new MockHttpSession();
-    String uri;
-
-    public void setMapper(CommonMapper mapper) {
-        this.mapper = mapper;
-    }
-
-    public void setUri(String uri) {
-        this.uri = uri;
-    }
+    private final String uri = "/users";
 
     @Test
     void signUp_성공() throws Exception {
@@ -61,7 +54,7 @@ public abstract class AbstractCommonControllerTest {
                 .andExpect(status().isCreated());
 
         //then
-        assertThat(mapper.existsById(signUpDto.getId())).isTrue();
+        assertThat(mapper.existsUserById(signUpDto.getId())).isTrue();
     }
 
     @Test
@@ -79,7 +72,7 @@ public abstract class AbstractCommonControllerTest {
                 .andDo(print());
 
         //then
-        assertThat(mapper.existsById(signUpDto.getId())).isFalse();
+        assertThat(mapper.existsUserById(signUpDto.getId())).isFalse();
 
     }
 
@@ -122,7 +115,7 @@ public abstract class AbstractCommonControllerTest {
     void login_성공() throws Exception {
         // given
         LoginDto loginDto = TestDto.getLoginDto();
-        commonService.signUp(mapper, TestDto.getSignUpDto());
+        userService.signUp(TestDto.getSignUpDto());
 
         // when
         // then
@@ -149,7 +142,7 @@ public abstract class AbstractCommonControllerTest {
     void login_비밀번호가_틀려서_실패() throws Exception {
         // given
         LoginDto loginDto = TestDto.getLoginDto();
-        commonService.signUp(mapper, TestDto.getSignUpDto());
+        userService.signUp(TestDto.getSignUpDto());
         loginDto.setPassword("WrongPassword");
 
         // when

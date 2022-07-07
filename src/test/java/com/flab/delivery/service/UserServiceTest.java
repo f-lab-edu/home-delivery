@@ -1,12 +1,12 @@
 package com.flab.delivery.service;
 
 import com.flab.delivery.dto.LoginDto;
-import com.flab.delivery.dto.MemberDto;
 import com.flab.delivery.dto.SignUpDto;
 import com.flab.delivery.dto.TestDto;
-import com.flab.delivery.exception.MemberException;
+import com.flab.delivery.dto.UserDto;
 import com.flab.delivery.exception.PasswordException;
-import com.flab.delivery.mapper.CommonMapper;
+import com.flab.delivery.exception.UserException;
+import com.flab.delivery.mapper.UserMapper;
 import com.flab.delivery.utils.PasswordEncoder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,15 +23,15 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class CommonServiceTest {
+class UserServiceTest {
 
     @InjectMocks
-    CommonService commonService;
+    UserService userService;
 
     @Mock
     PasswordEncoder passwordEncoder;
     @Mock
-    CommonMapper mapper;
+    UserMapper mapper;
 
     @Mock
     LoginService loginService;
@@ -44,7 +44,7 @@ class CommonServiceTest {
         given(passwordEncoder.encoder(eq(signUpDto.getPassword()))).willReturn(any());
 
         // when
-        commonService.signUp(mapper, signUpDto);
+        userService.signUp(signUpDto);
 
         //then
         verify(mapper).save(any());
@@ -56,39 +56,39 @@ class CommonServiceTest {
     void checkIdDuplicated_중복된_아이디_없어서_성공() {
         // given
         SignUpDto signUpDto = TestDto.getSignUpDto();
-        given(mapper.existsById(eq(signUpDto.getId()))).willReturn(false);
+        given(mapper.existsUserById(eq(signUpDto.getId()))).willReturn(false);
 
         // when
-        commonService.checkIdDuplicated(mapper, signUpDto.getId());
+        userService.checkIdDuplicated(signUpDto.getId());
 
         //then
-        verify(mapper).existsById(eq(signUpDto.getId()));
+        verify(mapper).existsUserById(eq(signUpDto.getId()));
     }
 
     @Test
     void checkIdDuplicated_중복된_아이디_때문에_실패() {
         // given
         SignUpDto signUpDto = TestDto.getSignUpDto();
-        given(mapper.existsById(eq(signUpDto.getId()))).willReturn(true);
+        given(mapper.existsUserById(eq(signUpDto.getId()))).willReturn(true);
 
         // when
-        assertThatThrownBy(() -> commonService.checkIdDuplicated(mapper, signUpDto.getId())).isInstanceOf(MemberException.class);
+        assertThatThrownBy(() -> userService.checkIdDuplicated(signUpDto.getId())).isInstanceOf(UserException.class);
 
         //then
-        verify(mapper).existsById(eq(signUpDto.getId()));
+        verify(mapper).existsUserById(eq(signUpDto.getId()));
     }
 
     @Test
     void login_존재하지_않는_회원_실패() {
         // given
         LoginDto loginDto = TestDto.getLoginDto();
-        given(mapper.findMemberById(eq(loginDto.getId()))).willReturn(Optional.empty());
+        given(mapper.findUserById(eq(loginDto.getId()))).willReturn(Optional.empty());
 
         // when
-        assertThatThrownBy(() -> commonService.login(mapper, loginDto)).isInstanceOf(MemberException.class);
+        assertThatThrownBy(() -> userService.login(loginDto)).isInstanceOf(UserException.class);
 
         //then
-        verify(mapper).findMemberById(eq(loginDto.getId()));
+        verify(mapper).findUserById(eq(loginDto.getId()));
         verify(passwordEncoder, never()).isMatch(any(), any());
     }
 
@@ -96,15 +96,15 @@ class CommonServiceTest {
     void login_비밀번호가_일치하지_않아_실패() {
         // given
         LoginDto loginDto = TestDto.getLoginDto();
-        MemberDto memberDto = TestDto.getMemberDto();
-        given(mapper.findMemberById(eq(loginDto.getId()))).willReturn(Optional.of(memberDto));
-        given(passwordEncoder.isMatch(eq(loginDto.getPassword()), eq(memberDto.getPassword()))).willReturn(false);
+        UserDto userDto = TestDto.getMemberDto();
+        given(mapper.findUserById(eq(loginDto.getId()))).willReturn(Optional.of(userDto));
+        given(passwordEncoder.isMatch(eq(loginDto.getPassword()), eq(userDto.getPassword()))).willReturn(false);
 
         // when
-        assertThatThrownBy(() -> commonService.login(mapper, loginDto)).isInstanceOf(PasswordException.class);
+        assertThatThrownBy(() -> userService.login(loginDto)).isInstanceOf(PasswordException.class);
 
         //then
-        verify(mapper).findMemberById(eq(loginDto.getId()));
+        verify(mapper).findUserById(eq(loginDto.getId()));
         verify(passwordEncoder).isMatch(any(), any());
     }
 
@@ -112,15 +112,15 @@ class CommonServiceTest {
     void login_성공() {
         // given
         LoginDto loginDto = TestDto.getLoginDto();
-        MemberDto memberDto = TestDto.getMemberDto();
-        given(mapper.findMemberById(eq(loginDto.getId()))).willReturn(Optional.of(memberDto));
-        given(passwordEncoder.isMatch(eq(loginDto.getPassword()), eq(memberDto.getPassword()))).willReturn(true);
+        UserDto userDto = TestDto.getMemberDto();
+        given(mapper.findUserById(eq(loginDto.getId()))).willReturn(Optional.of(userDto));
+        given(passwordEncoder.isMatch(eq(loginDto.getPassword()), eq(userDto.getPassword()))).willReturn(true);
 
         // when
-        commonService.login(mapper, loginDto);
+        userService.login(loginDto);
 
         //then
-        verify(mapper).findMemberById(eq(loginDto.getId()));
+        verify(mapper).findUserById(eq(loginDto.getId()));
         verify(passwordEncoder).isMatch(any(), any());
         verify(loginService).login(eq(loginDto.getId()));
 
@@ -133,7 +133,7 @@ class CommonServiceTest {
         given(loginService.getCurrentUserId()).willReturn(loginUser);
 
         // when
-        commonService.logout();
+        userService.logout();
 
         //then
         verify(loginService, times(1)).getCurrentUserId();
@@ -146,7 +146,7 @@ class CommonServiceTest {
         given(loginService.getCurrentUserId()).willReturn(null);
 
         // when
-        assertThatThrownBy(() -> commonService.logout()).isInstanceOf(MemberException.class);
+        assertThatThrownBy(() -> userService.logout()).isInstanceOf(UserException.class);
 
         //then
         verify(loginService, times(1)).getCurrentUserId();

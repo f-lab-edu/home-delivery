@@ -1,11 +1,12 @@
 package com.flab.delivery.mapper;
 
-import com.flab.delivery.dto.MemberDto;
 import com.flab.delivery.dto.SignUpDto;
 import com.flab.delivery.dto.TestDto;
+import com.flab.delivery.dto.UserDto;
 import org.assertj.core.api.ObjectAssert;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 
 import java.util.Optional;
@@ -14,12 +15,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @MybatisTest
-public abstract class AbstractCommonMapperTest {
-    CommonMapper mapper;
+public class AbstractUserMapperTest {
 
-    public void setMapper(CommonMapper mapper) {
-        this.mapper = mapper;
-    }
+    @Autowired
+    UserMapper mapper;
+
 
     @Test
     void save_확인() {
@@ -31,7 +31,7 @@ public abstract class AbstractCommonMapperTest {
         mapper.save(signUpDto);
 
         //then
-        assertThat(mapper.existsById(signUpDto.getId())).isTrue();
+        assertThat(mapper.existsUserById(signUpDto.getId())).isTrue();
     }
 
     @Test
@@ -45,7 +45,7 @@ public abstract class AbstractCommonMapperTest {
         assertThatThrownBy(() -> mapper.save(signUpDto)).isInstanceOf(DataAccessException.class);
 
         //then
-        assertThat(mapper.existsById(signUpDto.getId())).isTrue();
+        assertThat(mapper.existsUserById(signUpDto.getId())).isTrue();
         assertThat(mapper.getCountById()).isEqualTo(1);
     }
 
@@ -61,8 +61,8 @@ public abstract class AbstractCommonMapperTest {
         mapper.save(user2);
 
         //then
-        assertThat(mapper.existsById(user1.getId())).isTrue();
-        assertThat(mapper.existsById(user2.getId())).isTrue();
+        assertThat(mapper.existsUserById(user1.getId())).isTrue();
+        assertThat(mapper.existsUserById(user2.getId())).isTrue();
     }
 
     @Test
@@ -87,21 +87,21 @@ public abstract class AbstractCommonMapperTest {
         mapper.save(user1);
 
         // when
-        MemberDto memberDto = mapper.findMemberById(user1.getId()).get();
+        UserDto userDto = mapper.findUserById(user1.getId()).get();
 
         //then
-        assertEqual(memberDto.getId(), user1.getId());
-        assertEqual(memberDto.getName(), user1.getName());
-        assertEqual(memberDto.getPassword(), user1.getPassword());
-        assertEqual(memberDto.getPhoneNumber(), user1.getPhoneNumber());
-        assertEqual(memberDto.getEmail(), user1.getEmail());
+        assertEqual(userDto.getId(), user1.getId());
+        assertEqual(userDto.getName(), user1.getName());
+        assertEqual(userDto.getPassword(), user1.getPassword());
+        assertEqual(userDto.getPhoneNumber(), user1.getPhoneNumber());
+        assertEqual(userDto.getEmail(), user1.getEmail());
     }
 
     @Test
     void findMemberById_존재하지_않음() {
         // given
         // when
-        Optional<MemberDto> member = mapper.findMemberById("noId");
+        Optional<UserDto> member = mapper.findUserById("noId");
 
         //then
         assertEqual(member, Optional.empty());

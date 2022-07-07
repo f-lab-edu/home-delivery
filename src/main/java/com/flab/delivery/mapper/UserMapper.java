@@ -1,24 +1,19 @@
 package com.flab.delivery.mapper;
 
-import com.flab.delivery.dto.LoginDto;
-import com.flab.delivery.dto.MemberDto;
 import com.flab.delivery.dto.SignUpDto;
+import com.flab.delivery.dto.UserDto;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.Optional;
 
 @Mapper
-public interface UserMapper extends CommonMapper {
+public interface UserMapper {
 
-    @Override
     void save(SignUpDto signUpDto);
 
-    @Override
-    boolean existsById(String id);
+    boolean existsUserById(String id);
 
-    @Override
     long getCountById();
 
-    @Override
-    Optional<MemberDto> findMemberById(String id);
+    Optional<UserDto> findUserById(String id);
 }

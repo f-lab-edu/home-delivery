@@ -1,7 +1,7 @@
 package com.flab.delivery.error;
 
-import com.flab.delivery.exception.MemberException;
 import com.flab.delivery.exception.PasswordException;
+import com.flab.delivery.exception.UserException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +21,8 @@ public class ExceptionAdvice {
         return getBadResponse(e.getMessage());
     }
 
-    @ExceptionHandler(MemberException.class)
-    public ResponseEntity<String> userExceptionHandler(HttpServletRequest request, MemberException e) {
+    @ExceptionHandler(UserException.class)
+    public ResponseEntity<String> userExceptionHandler(HttpServletRequest request, UserException e) {
         log.error("requestUrl : {} , errorCode : {}", request.getRequestURI(), e);
         return getBadResponse(e.getMessage());
     }
