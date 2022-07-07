@@ -50,4 +50,11 @@ public class CommonService {
 
         loginService.login(findMember.getId());
     }
+
+    public void logout() {
+        if (loginService.getCurrentUserId() == null) {
+            throw new MemberException("로그인 하지 않은 사용자 입니다.");
+        }
+        loginService.logout();
+    }
 }

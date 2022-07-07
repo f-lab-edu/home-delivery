@@ -20,7 +20,7 @@ public class SessionLoginService implements LoginService {
     }
 
     @Override
-    public void logout(String id) {
+    public void logout() {
         session.removeAttribute(SESSION_ID);
     }
 

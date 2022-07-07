@@ -20,8 +20,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class CommonServiceTest {
@@ -125,5 +124,32 @@ class CommonServiceTest {
         verify(passwordEncoder).isMatch(any(), any());
         verify(loginService).login(eq(loginDto.getId()));
 
+    }
+
+    @Test
+    void logout_성공() {
+        // given
+        String loginUser = "test";
+        given(loginService.getCurrentUserId()).willReturn(loginUser);
+
+        // when
+        commonService.logout();
+
+        //then
+        verify(loginService, times(1)).getCurrentUserId();
+        verify(loginService, times(1)).logout();
+    }
+
+    @Test
+    void logout_로그인하지_않은_회원_실패() {
+        // given
+        given(loginService.getCurrentUserId()).willReturn(null);
+
+        // when
+        assertThatThrownBy(() -> commonService.logout()).isInstanceOf(MemberException.class);
+
+        //then
+        verify(loginService, times(1)).getCurrentUserId();
+        verify(loginService, never()).logout();
     }
 }

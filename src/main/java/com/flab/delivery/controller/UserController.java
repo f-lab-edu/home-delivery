@@ -43,4 +43,12 @@ public class UserController {
 
         return STATUS_OK;
     }
+
+    @DeleteMapping("/logout")
+    public ResponseEntity<HttpStatus> logout() {
+
+        userService.logout();
+
+        return STATUS_OK;
+    }
 }

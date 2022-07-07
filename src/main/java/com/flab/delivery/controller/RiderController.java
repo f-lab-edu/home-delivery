@@ -43,4 +43,12 @@ public class RiderController {
 
         return STATUS_OK;
     }
+
+    @DeleteMapping("/logout")
+    public ResponseEntity<HttpStatus> logout() {
+
+        riderService.logout();
+
+        return STATUS_OK;
+    }
 }

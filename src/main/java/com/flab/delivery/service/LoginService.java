@@ -4,7 +4,7 @@ public interface LoginService {
 
     void login(String id);
 
-    void logout(String id);
+    void logout();
 
     String getCurrentUserId();
 }

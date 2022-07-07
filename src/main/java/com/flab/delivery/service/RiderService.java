@@ -24,4 +24,8 @@ public class RiderService {
     public void login(LoginDto loginDto) {
         commonService.login(riderMapper, loginDto);
     }
+
+    public void logout() {
+        commonService.logout();
+    }
 }

@@ -24,5 +24,9 @@ public class UserService {
     public void login(LoginDto loginDto) {
         commonService.login(userMapper, loginDto);
     }
+
+    public void logout() {
+        commonService.logout();
+    }
 }
 

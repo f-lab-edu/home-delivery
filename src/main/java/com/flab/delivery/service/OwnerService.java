@@ -24,4 +24,8 @@ public class OwnerService {
     public void login(LoginDto loginDto) {
         commonService.login(ownerMapper, loginDto);
     }
+
+    public void logout() {
+        commonService.logout();
+    }
 }

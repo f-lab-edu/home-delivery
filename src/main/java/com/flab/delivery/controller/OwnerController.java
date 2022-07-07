@@ -44,4 +44,12 @@ public class OwnerController {
         return STATUS_OK;
     }
 
+    @DeleteMapping("/logout")
+    public ResponseEntity<HttpStatus> logout() {
+
+        ownerService.logout();
+
+        return STATUS_OK;
+    }
+
 }

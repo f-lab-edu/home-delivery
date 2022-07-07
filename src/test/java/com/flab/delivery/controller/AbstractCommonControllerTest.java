@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +38,7 @@ public abstract class AbstractCommonControllerTest {
     @Autowired
     LoginService loginService;
 
+    MockHttpSession mockHttpSession = new MockHttpSession();
     String uri;
 
     public void setMapper(CommonMapper mapper) {
@@ -156,5 +158,30 @@ public abstract class AbstractCommonControllerTest {
                         .content(objectMapper.writeValueAsString(loginDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void logout_성공() throws Exception {
+        // given
+        mockHttpSession.setAttribute("SESSION_ID", "testUser");
+
+        // when
+        mockMvc.perform(delete(uri + "/logout")
+                        .session(mockHttpSession))
+                .andExpect(status().isOk());
+
+        //then
+        assertThat(mockHttpSession.getAttribute("SESSION_ID")).isNull();
+    }
+
+    @Test
+    void logout_로그인하지_않은_회원_실패() throws Exception {
+        // given
+        // when
+        //then
+        mockMvc.perform(delete(uri + "/logout")
+                        .session(mockHttpSession))
+                .andExpect(status().isBadRequest());
+
     }
 }
