@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import static com.flab.delivery.annotation.hasCertify.UserLevel.*;
 import static com.flab.delivery.controller.response.HttpStatusResponse.STATUS_CREATED;
 import static com.flab.delivery.controller.response.HttpStatusResponse.STATUS_OK;
 
@@ -45,7 +46,7 @@ public class UserController {
         return STATUS_OK;
     }
 
-    @hasCertify
+    @hasCertify(level = ALL)
     @DeleteMapping("/logout")
     public ResponseEntity<HttpStatus> logout() {
 

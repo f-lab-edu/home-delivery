@@ -8,4 +8,10 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface hasCertify {
+
+    UserLevel level();
+
+    enum UserLevel {
+        ALL, USER, RIDER, OWNER
+    }
 }

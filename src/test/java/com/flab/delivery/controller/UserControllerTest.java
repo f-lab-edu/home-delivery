@@ -156,7 +156,8 @@ public class UserControllerTest {
     @Test
     void logout_성공() throws Exception {
         // given
-        mockHttpSession.setAttribute("SESSION_ID", "testUser");
+        userService.signUp(TestDto.getSignUpDto());
+        mockHttpSession.setAttribute("SESSION_ID", "test");
 
         // when
         mockMvc.perform(delete(uri + "/logout")
