@@ -1,5 +1,6 @@
 package com.flab.delivery.controller;
 
+import com.flab.delivery.annotation.hasCertify;
 import com.flab.delivery.dto.LoginDto;
 import com.flab.delivery.dto.SignUpDto;
 import com.flab.delivery.service.UserService;
@@ -44,6 +45,7 @@ public class UserController {
         return STATUS_OK;
     }
 
+    @hasCertify
     @DeleteMapping("/logout")
     public ResponseEntity<HttpStatus> logout() {
 

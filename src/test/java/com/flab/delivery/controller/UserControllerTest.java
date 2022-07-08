@@ -174,7 +174,7 @@ public class UserControllerTest {
         //then
         mockMvc.perform(delete(uri + "/logout")
                         .session(mockHttpSession))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isUnauthorized());
 
     }
 }

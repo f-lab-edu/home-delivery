@@ -4,7 +4,7 @@ import com.flab.delivery.dto.LoginDto;
 import com.flab.delivery.dto.SignUpDto;
 import com.flab.delivery.dto.TestDto;
 import com.flab.delivery.dto.UserDto;
-import com.flab.delivery.exception.PasswordException;
+import com.flab.delivery.exception.CertifyException;
 import com.flab.delivery.exception.UserException;
 import com.flab.delivery.mapper.UserMapper;
 import com.flab.delivery.utils.PasswordEncoder;
@@ -101,7 +101,7 @@ class UserServiceTest {
         given(passwordEncoder.isMatch(eq(loginDto.getPassword()), eq(userDto.getPassword()))).willReturn(false);
 
         // when
-        assertThatThrownBy(() -> userService.login(loginDto)).isInstanceOf(PasswordException.class);
+        assertThatThrownBy(() -> userService.login(loginDto)).isInstanceOf(CertifyException.class);
 
         //then
         verify(mapper).findUserById(eq(loginDto.getId()));
@@ -129,27 +129,10 @@ class UserServiceTest {
     @Test
     void logout_성공() {
         // given
-        String loginUser = "test";
-        given(loginService.getCurrentUserId()).willReturn(loginUser);
-
         // when
         userService.logout();
 
         //then
-        verify(loginService, times(1)).getCurrentUserId();
         verify(loginService, times(1)).logout();
-    }
-
-    @Test
-    void logout_로그인하지_않은_회원_실패() {
-        // given
-        given(loginService.getCurrentUserId()).willReturn(null);
-
-        // when
-        assertThatThrownBy(() -> userService.logout()).isInstanceOf(UserException.class);
-
-        //then
-        verify(loginService, times(1)).getCurrentUserId();
-        verify(loginService, never()).logout();
     }
 }
