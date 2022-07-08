@@ -9,6 +9,7 @@ import com.flab.delivery.mapper.UserMapper;
 import com.flab.delivery.utils.PasswordEncoder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -44,7 +45,7 @@ public class UserService {
                 });
 
         if (!passwordEncoder.isMatch(loginDto.getPassword(), findMember.getPassword())) {
-            throw new CertifyException("비밀번호가 일치하지 않습니다.");
+            throw new CertifyException("비밀번호가 일치하지 않습니다.", HttpStatus.UNAUTHORIZED);
         }
 
         loginService.login(findMember.getId());

@@ -9,6 +9,7 @@ import com.flab.delivery.service.LoginService;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 @Aspect
@@ -27,7 +28,7 @@ public class CertifyAspect {
 
         // 인증
         if (currentUserId == null) {
-            throw new CertifyException("로그인 되지 않은 사용자 입니다.");
+            throw new CertifyException("로그인 되지 않은 사용자 입니다.", HttpStatus.UNAUTHORIZED);
         }
 
         if (target.level() == UserLevel.ALL) {
@@ -37,7 +38,7 @@ public class CertifyAspect {
         UserDto user = userMapper.findUserById(currentUserId).get();
 
         if (UserLevel.valueOf(user.getLevel()) != target.level()) {
-            throw new CertifyException("권한이 없습니다.");
+            throw new CertifyException("권한이 없습니다.", HttpStatus.FORBIDDEN);
         }
     }
 }

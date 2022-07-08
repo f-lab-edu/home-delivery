@@ -28,8 +28,8 @@ public class ExceptionAdvice {
     }
 
     @ExceptionHandler(CertifyException.class)
-    public ResponseEntity<String> passwordExceptionHandler() {
-        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    public ResponseEntity<String> passwordExceptionHandler(CertifyException e) {
+        return new ResponseEntity<>(e.getMessage(), e.getStatus());
     }
 
     private ResponseEntity getBadResponse(String e) {
