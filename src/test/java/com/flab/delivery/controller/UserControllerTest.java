@@ -2,22 +2,21 @@ package com.flab.delivery.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.flab.delivery.dto.SignUpDto;
 import com.flab.delivery.dto.UserDto;
 import com.flab.delivery.enums.UserLevel;
-import com.flab.delivery.utils.PasswordEncoder;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
+
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.*;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -45,8 +44,8 @@ class UserControllerTest {
         private String phoneNumber = "010-1111-1111";
         private UserLevel level = UserLevel.USER;
 
-        private UserDto getUserDto(){
-            return UserDto.builder()
+        private SignUpDto getSignUpDto(){
+            return SignUpDto.builder()
                     .id(id)
                     .password(password)
                     .name(name)
@@ -63,7 +62,7 @@ class UserControllerTest {
             @Test
             @DisplayName("회원가입")
             void crateUser_success() throws Exception{
-                UserDto userDto = getUserDto();
+                SignUpDto userDto = getSignUpDto();
                 String json = objectMapper.writeValueAsString(userDto);
                 mockMvc.perform(post("/users/signup").contentType(MediaType.APPLICATION_JSON)
                                 .content(json))
@@ -85,7 +84,7 @@ class UserControllerTest {
                 @DisplayName("NULL")
                 void id_NULL() throws Exception {
                     id = null;
-                    UserDto userDto = getUserDto();
+                    SignUpDto userDto = getSignUpDto();
                     String json = objectMapper.writeValueAsString(userDto);
                     mockMvc.perform(post("/users/signup").contentType(MediaType.APPLICATION_JSON)
                             .content(json))
@@ -98,7 +97,7 @@ class UserControllerTest {
                 @DisplayName("공백")
                 void id_empty() throws Exception{
                     id = "";
-                    UserDto userDto = getUserDto();
+                    SignUpDto userDto = getSignUpDto();
                     String json = objectMapper.writeValueAsString(userDto);
                     mockMvc.perform(post("/users/signup").contentType(MediaType.APPLICATION_JSON)
                                     .content(json))
@@ -111,7 +110,7 @@ class UserControllerTest {
                 @DisplayName("중복")
                 void id_overlap() throws Exception{
                     id = "user1";
-                    UserDto userDto = getUserDto();
+                    SignUpDto userDto = getSignUpDto();
                     String json = objectMapper.writeValueAsString(userDto);
                     mockMvc.perform(post("/users/signup").contentType(MediaType.APPLICATION_JSON)
                                     .content(json))
@@ -131,7 +130,7 @@ class UserControllerTest {
                 @DisplayName("NULL")
                 void password_null() throws Exception{
                     password = null;
-                    UserDto userDto = getUserDto();
+                    SignUpDto userDto = getSignUpDto();
                     String json = objectMapper.writeValueAsString(userDto);
                     mockMvc.perform(post("/users/signup").contentType(MediaType.APPLICATION_JSON)
                                     .content(json))
@@ -144,7 +143,7 @@ class UserControllerTest {
                 @DisplayName("공백")
                 void password_empty() throws Exception{
                     password = "";
-                    UserDto userDto = getUserDto();
+                    SignUpDto userDto = getSignUpDto();
                     String json = objectMapper.writeValueAsString(userDto);
                     mockMvc.perform(post("/users/signup").contentType(MediaType.APPLICATION_JSON)
                                     .content(json))
@@ -164,7 +163,7 @@ class UserControllerTest {
                 @DisplayName("NULL")
                 void email_null() throws Exception{
                     email = null;
-                    UserDto userDto = getUserDto();
+                    SignUpDto userDto = getSignUpDto();
                     String json = objectMapper.writeValueAsString(userDto);
                     mockMvc.perform(post("/users/signup").contentType(MediaType.APPLICATION_JSON)
                                     .content(json))
@@ -177,7 +176,7 @@ class UserControllerTest {
                 @DisplayName("공백")
                 void email_empty() throws Exception{
                     email = "";
-                    UserDto userDto = getUserDto();
+                    SignUpDto userDto = getSignUpDto();
                     String json = objectMapper.writeValueAsString(userDto);
                     mockMvc.perform(post("/users/signup").contentType(MediaType.APPLICATION_JSON)
                                     .content(json))
@@ -190,7 +189,7 @@ class UserControllerTest {
                 @DisplayName("형식")
                 void email_form() throws Exception{
                     email = "user!naver.com";
-                    UserDto userDto = getUserDto();
+                    SignUpDto userDto = getSignUpDto();
                     String json = objectMapper.writeValueAsString(userDto);
                     mockMvc.perform(post("/users/signup").contentType(MediaType.APPLICATION_JSON)
                                     .content(json))
@@ -208,7 +207,7 @@ class UserControllerTest {
                 @DisplayName("NULL")
                 void name_null() throws Exception{
                     name = null;
-                    UserDto userDto = getUserDto();
+                    SignUpDto userDto = getSignUpDto();
                     String json = objectMapper.writeValueAsString(userDto);
                     mockMvc.perform(post("/users/signup").contentType(MediaType.APPLICATION_JSON)
                                     .content(json))
@@ -222,7 +221,7 @@ class UserControllerTest {
                 @DisplayName("공백")
                 void name_empty() throws Exception{
                     name = "";
-                    UserDto userDto = getUserDto();
+                    SignUpDto userDto = getSignUpDto();
                     String json = objectMapper.writeValueAsString(userDto);
                     mockMvc.perform(post("/users/signup").contentType(MediaType.APPLICATION_JSON)
                                     .content(json))
@@ -241,7 +240,7 @@ class UserControllerTest {
                 @DisplayName("NULL")
                 void phoneNumber_null() throws Exception{
                     phoneNumber = null;
-                    UserDto userDto = getUserDto();
+                    SignUpDto userDto = getSignUpDto();
                     String json = objectMapper.writeValueAsString(userDto);
                     mockMvc.perform(post("/users/signup").contentType(MediaType.APPLICATION_JSON)
                                     .content(json))
@@ -254,7 +253,7 @@ class UserControllerTest {
                 @DisplayName("공백")
                 void phoneNumber_empty() throws Exception{
                     phoneNumber = "";
-                    UserDto userDto = getUserDto();
+                    SignUpDto userDto = getSignUpDto();
                     String json = objectMapper.writeValueAsString(userDto);
                     mockMvc.perform(post("/users/signup").contentType(MediaType.APPLICATION_JSON)
                                     .content(json))
@@ -267,7 +266,7 @@ class UserControllerTest {
                 @DisplayName("형식")
                 void phoneNumber_form() throws Exception{
                     phoneNumber = "01011111111";
-                    UserDto userDto = getUserDto();
+                    SignUpDto userDto = getSignUpDto();
                     String json = objectMapper.writeValueAsString(userDto);
                     mockMvc.perform(post("/users/signup").contentType(MediaType.APPLICATION_JSON)
                                     .content(json))
@@ -286,7 +285,7 @@ class UserControllerTest {
                 @DisplayName("NULL")
                 void level_null() throws Exception{
                     level = null;
-                    UserDto userDto = getUserDto();
+                    SignUpDto userDto = getSignUpDto();
                     String json = objectMapper.writeValueAsString(userDto);
                     mockMvc.perform(post("/users/signup").contentType(MediaType.APPLICATION_JSON)
                                     .content(json))

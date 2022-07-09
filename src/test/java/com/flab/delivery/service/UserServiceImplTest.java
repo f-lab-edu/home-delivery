@@ -1,5 +1,6 @@
 package com.flab.delivery.service;
 
+import com.flab.delivery.dto.SignUpDto;
 import com.flab.delivery.dto.UserDto;
 import com.flab.delivery.enums.UserLevel;
 import com.flab.delivery.exception.SignUpException;
@@ -28,11 +29,11 @@ class UserServiceImplTest {
     @DisplayName("회원가입")
     class createUser{
 
-        private UserDto userDto;
+        private SignUpDto signUpDto;
 
         @BeforeEach
         void setUp(){
-            userDto = UserDto.builder()
+            signUpDto = SignUpDto.builder()
                     .id("user1")
                     .password(PasswordEncoder.encrypt("1111"))
                     .email("user@naver.com")
@@ -50,14 +51,19 @@ class UserServiceImplTest {
             @DisplayName("회원가입 성공")
             void createUser_success(){
                 // given
+                UserDto userDto = UserDto.builder()
+                        .id("user1")
+                        .build();
+
                 when(userMapper.isExistsId("user1")).thenReturn(false);
                 when(userMapper.findById("user1")).thenReturn(userDto);
                 // when
-                userService.createUser(userDto);
+                userService.createUser(signUpDto);
                 UserDto findUser = userMapper.findById("user1");
                 // then
-                Assertions.assertEquals("user1", findUser.getId());
+                Assertions.assertEquals(signUpDto.getId(), findUser.getId());
             }
+
         }
 
         @Nested
@@ -70,7 +76,7 @@ class UserServiceImplTest {
                 when(userMapper.isExistsId("user1")).thenReturn(true);
                 // when
                 SignUpException e = Assertions.assertThrows(SignUpException.class, () -> {
-                    userService.createUser(userDto);
+                    userService.createUser(signUpDto);
                 });
                 // then
                 Assertions.assertEquals(e.getMessage(), "이미 존재하는 아이디입니다");

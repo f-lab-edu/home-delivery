@@ -9,7 +9,7 @@
     </select>
 
 
-    <insert id="insertUser" parameterType="com.flab.delivery.dto.UserDto">
+    <insert id="insertUser" parameterType="com.flab.delivery.dto.SignUpDto">
         INSERT INTO USER(id, email, password, name, phone_number, level)
         VALUES(#{id}, #{email}, #{password}, #{name}, #{phoneNumber}, #{level})
     </insert>

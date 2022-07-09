@@ -1,5 +1,6 @@
 package com.flab.delivery.controller;
 
+import com.flab.delivery.dto.SignUpDto;
 import com.flab.delivery.dto.UserDto;
 import com.flab.delivery.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +22,8 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/signup")
-    public ResponseEntity<Void> createUser(@RequestBody @Valid UserDto userDto){
-        userService.createUser(userDto);
+    public ResponseEntity<Void> createUser(@RequestBody @Valid SignUpDto signUpDto){
+        userService.createUser(signUpDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
