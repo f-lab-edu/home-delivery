@@ -1,4 +1,4 @@
-package com.flab.delivery.annotation;
+package com.flab.delivery.security.session.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

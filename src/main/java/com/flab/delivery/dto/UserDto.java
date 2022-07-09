@@ -33,4 +33,17 @@ public class UserDto {
         this.phoneNumber = phoneNumber;
         this.level = level;
     }
+
+    @Getter
+    @Builder
+    public static class LoginUserDto {
+        @NonNull
+        private String id;
+
+        @NonNull
+        private String password;
+
+        @NonNull
+        private String level;
+    }
 }

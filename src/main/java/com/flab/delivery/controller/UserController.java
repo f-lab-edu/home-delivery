@@ -1,6 +1,6 @@
 package com.flab.delivery.controller;
 
-import com.flab.delivery.annotation.hasCertify;
+import com.flab.delivery.security.session.annotation.hasCertify;
 import com.flab.delivery.dto.LoginDto;
 import com.flab.delivery.dto.SignUpDto;
 import com.flab.delivery.service.UserService;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-import static com.flab.delivery.annotation.hasCertify.UserLevel.*;
+import static com.flab.delivery.security.session.annotation.hasCertify.UserLevel.*;
 import static com.flab.delivery.controller.response.HttpStatusResponse.STATUS_CREATED;
 import static com.flab.delivery.controller.response.HttpStatusResponse.STATUS_OK;
 

@@ -1,7 +1,6 @@
-package com.flab.delivery.aop;
+package com.flab.delivery.security.session.aop;
 
-import com.flab.delivery.annotation.hasCertify;
-import com.flab.delivery.annotation.hasCertify.UserLevel;
+import com.flab.delivery.security.session.annotation.hasCertify;
 import com.flab.delivery.dto.UserDto;
 import com.flab.delivery.exception.CertifyException;
 import com.flab.delivery.mapper.UserMapper;
@@ -31,13 +30,13 @@ public class CertifyAspect {
             throw new CertifyException("로그인 되지 않은 사용자 입니다.", HttpStatus.UNAUTHORIZED);
         }
 
-        if (target.level() == UserLevel.ALL) {
+        if (target.level() == hasCertify.UserLevel.ALL) {
             return;
         }
 
         UserDto user = userMapper.findUserById(currentUserId).get();
 
-        if (UserLevel.valueOf(user.getLevel()) != target.level()) {
+        if (hasCertify.UserLevel.valueOf(user.getLevel()) != target.level()) {
             throw new CertifyException("권한이 없습니다.", HttpStatus.FORBIDDEN);
         }
     }
