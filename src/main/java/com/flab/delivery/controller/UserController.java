@@ -16,16 +16,13 @@ import javax.validation.Valid;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
-@Slf4j
 public class UserController {
 
     private final UserService userService;
 
     @PostMapping("/signup")
     public ResponseEntity<Void> createUser(@RequestBody @Valid UserDto userDto){
-        log.info("createUser Start");
         userService.createUser(userDto);
-        log.info("createUser End");
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

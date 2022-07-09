@@ -18,7 +18,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public void createUser(UserDto userDto) {
-        if(!userMapper.isExistsId(userDto.getId())){
+        if(userMapper.isExistsId(userDto.getId())){
             throw new SignUpException("이미 존재하는 아이디입니다");
         }
         UserDto insertUser = UserDto.builder()

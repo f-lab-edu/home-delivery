@@ -6,11 +6,14 @@ import com.flab.delivery.exception.SignUpException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
 
 
 @RestControllerAdvice(assignableTypes = {UserController.class})
@@ -18,16 +21,17 @@ import javax.servlet.http.HttpServletRequest;
 public class UserExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<String> handleMethodArgumentNotValidException(MethodArgumentNotValidException e, HttpServletRequest request){
-        log.info("Http Method : {}  URI : {}",request.getMethod(),request.getRequestURI());
-        return getBadResponse("정보가 올바르지 않습니다");
+    public ResponseEntity<String> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex, HttpServletRequest request){
+        String msg = ex.getBindingResult().getAllErrors().get(0).getDefaultMessage();
+        log.info("Http Method : {}, URI : {}, msg : {}",request.getMethod(),request.getRequestURI(), msg);
+        return getBadResponse(msg);
     }
 
 
     @ExceptionHandler(SignUpException.class)
-    public ResponseEntity<String> handleSignUpException(SignUpException e, HttpServletRequest request){
-        log.info("Http Method : {}  URI : {}",request.getMethod(),request.getRequestURI());
-        return getBadResponse(e.getMessage());
+    public ResponseEntity<String> handleSignUpException(SignUpException ex, HttpServletRequest request){
+        log.info("Http Method : {}  URI : {}, msg : {}",request.getMethod(),request.getRequestURI(), ex.getMessage());
+        return getBadResponse(ex.getMessage());
     }
 
     private ResponseEntity<String> getBadResponse(String msg){

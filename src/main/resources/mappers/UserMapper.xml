@@ -9,9 +9,9 @@
     </select>
 
 
-    <insert id="save" parameterType="com.flab.delivery.dto.SignUpDto">
-        INSERT INTO USER(id, email, password, name, phone_number)
-        VALUES(#{id}, #{email}, #{password}, #{name}, #{phoneNumber})
+    <insert id="insertUser" parameterType="com.flab.delivery.dto.UserDto">
+        INSERT INTO USER(id, email, password, name, phone_number, level)
+        VALUES(#{id}, #{email}, #{password}, #{name}, #{phoneNumber}, #{level})
     </insert>
 
     <select id="findById" resultType="com.flab.delivery.dto.UserDto">
