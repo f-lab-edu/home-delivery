@@ -41,9 +41,6 @@ public class UserDto {
         private String id;
 
         @NonNull
-        private String password;
-
-        @NonNull
         private String level;
     }
 }

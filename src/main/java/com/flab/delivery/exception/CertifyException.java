@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 public class CertifyException extends RuntimeException {
 
     HttpStatus status;
+
     public CertifyException(String message, HttpStatus status) {
         super(message);
         this.status = status;

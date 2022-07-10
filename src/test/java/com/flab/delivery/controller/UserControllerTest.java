@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flab.delivery.dto.LoginDto;
 import com.flab.delivery.dto.SignUpDto;
 import com.flab.delivery.dto.TestDto;
+import com.flab.delivery.dto.UserDto;
+import com.flab.delivery.dto.UserDto.LoginUserDto;
 import com.flab.delivery.mapper.UserMapper;
 import com.flab.delivery.service.LoginService;
 import com.flab.delivery.service.UserService;
@@ -157,7 +159,8 @@ public class UserControllerTest {
     void logout_성공() throws Exception {
         // given
         userService.signUp(TestDto.getSignUpDto());
-        mockHttpSession.setAttribute("SESSION_ID", "test");
+        LoginUserDto loginUserDto = LoginUserDto.builder().id("test").level("USER").build();
+        mockHttpSession.setAttribute("SESSION_ID", loginUserDto);
 
         // when
         mockMvc.perform(delete(uri + "/logout")

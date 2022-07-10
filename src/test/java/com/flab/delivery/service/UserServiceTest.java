@@ -122,7 +122,7 @@ class UserServiceTest {
         //then
         verify(mapper).findUserById(eq(loginDto.getId()));
         verify(passwordEncoder).isMatch(any(), any());
-        verify(loginService).login(eq(loginDto.getId()));
+        verify(loginService).login(any());
 
     }
 

@@ -1,5 +1,7 @@
 package com.flab.delivery.service;
 
+import com.flab.delivery.dto.UserDto;
+import com.flab.delivery.dto.UserDto.LoginUserDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -15,8 +17,13 @@ public class SessionLoginService implements LoginService {
     private final HttpSession session;
 
     @Override
-    public void login(String id) {
-        session.setAttribute(SESSION_ID, id);
+    public void login(UserDto userDto) {
+        LoginUserDto loginUserDto = LoginUserDto
+                .builder()
+                .id(userDto.getId())
+                .level(userDto.getLevel())
+                .build();
+        session.setAttribute(SESSION_ID, loginUserDto);
     }
 
     @Override
@@ -25,7 +32,7 @@ public class SessionLoginService implements LoginService {
     }
 
     @Override
-    public String getCurrentUserId() {
-        return (String) session.getAttribute(SESSION_ID);
+    public LoginUserDto getCurrentUser() {
+        return (LoginUserDto) session.getAttribute(SESSION_ID);
     }
 }

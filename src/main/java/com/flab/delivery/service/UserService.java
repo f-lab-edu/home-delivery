@@ -48,7 +48,7 @@ public class UserService {
             throw new CertifyException("비밀번호가 일치하지 않습니다.", HttpStatus.UNAUTHORIZED);
         }
 
-        loginService.login(findMember.getId());
+        loginService.login(findMember);
     }
 
     public void logout() {

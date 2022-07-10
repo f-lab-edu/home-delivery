@@ -1,13 +1,11 @@
 package com.flab.delivery.security.jwt;
 
+import com.flab.delivery.dto.TokenDto;
 import com.flab.delivery.dto.UserDto;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -28,14 +26,11 @@ public class JwtProvider {
     @Value("${jwt.secret}")
     private String secretKey;
 
-    // 토큰 유효시간 30분
+    @Value("${jwt.accessTokenValidTime}")
+    private int accessTokenValidTime;
 
-    @Value("{jwt.accessTokenValidTime}")
-    private final Long accessTokenValidTime;
-
-    @Value("{jwt.refreshTokenValidTime}")
-    private final Long refreshTokenValidTime;
-
+    @Value("${jwt.refreshTokenValidTime}")
+    private int refreshTokenValidTime;
 
     @PostConstruct
     protected void init() {
@@ -56,7 +51,7 @@ public class JwtProvider {
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
                 .setClaims(claims) // 정보 저장
                 .setIssuedAt(now) // 토큰 발행 시간 정보
-                .setExpiration(new Date(now.getTime() + accessTokenValidTime))
+                .setExpiration(new Date(now.getTime() + (accessTokenValidTime * 1000)))
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
 
@@ -64,7 +59,7 @@ public class JwtProvider {
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
                 .setClaims(claims) // 정보 저장
                 .setIssuedAt(now) // 토큰 발행 시간 정보
-                .setExpiration(new Date(now.getTime() + refreshTokenValidTime))
+                .setExpiration(new Date(now.getTime() + (refreshTokenValidTime * 1000)))
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
 
@@ -74,10 +69,6 @@ public class JwtProvider {
                 .build();
     }
 
-    public Authentication getAuthentication(String token) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(parseClaims(token).getSubject());
-        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
-    }
 
     /**
      * jwt 에서 회원 구분 PK 추출
