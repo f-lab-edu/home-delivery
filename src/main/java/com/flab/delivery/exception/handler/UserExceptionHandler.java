@@ -2,6 +2,7 @@ package com.flab.delivery.exception.handler;
 
 
 import com.flab.delivery.controller.UserController;
+import com.flab.delivery.exception.LoginException;
 import com.flab.delivery.exception.SignUpException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -21,7 +22,7 @@ import java.util.Map;
 public class UserExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<String> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex, HttpServletRequest request){
+    public ResponseEntity handleMethodArgumentNotValidException(MethodArgumentNotValidException ex, HttpServletRequest request){
         String msg = ex.getBindingResult().getAllErrors().get(0).getDefaultMessage();
         log.info("Http Method : {}, URI : {}, msg : {}",request.getMethod(),request.getRequestURI(), msg);
         return getBadResponse(msg);
@@ -29,7 +30,13 @@ public class UserExceptionHandler {
 
 
     @ExceptionHandler(SignUpException.class)
-    public ResponseEntity<String> handleSignUpException(SignUpException ex, HttpServletRequest request){
+    public ResponseEntity handleSignUpException(SignUpException ex, HttpServletRequest request){
+        log.info("Http Method : {}  URI : {}, msg : {}",request.getMethod(),request.getRequestURI(), ex.getMessage());
+        return getBadResponse(ex.getMessage());
+    }
+
+    @ExceptionHandler(LoginException.class)
+    public ResponseEntity handleLoginException(LoginException ex, HttpServletRequest request){
         log.info("Http Method : {}  URI : {}, msg : {}",request.getMethod(),request.getRequestURI(), ex.getMessage());
         return getBadResponse(ex.getMessage());
     }

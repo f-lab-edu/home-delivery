@@ -7,4 +7,7 @@ public interface UserService {
 
     void createUser(SignUpDto signUpDto);
 
+    void loginUser(UserDto userDto);
+
+
 }

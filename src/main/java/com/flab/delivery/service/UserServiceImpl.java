@@ -2,12 +2,15 @@ package com.flab.delivery.service;
 
 import com.flab.delivery.dto.SignUpDto;
 import com.flab.delivery.dto.UserDto;
+import com.flab.delivery.exception.LoginException;
 import com.flab.delivery.exception.SignUpException;
 import com.flab.delivery.mapper.UserMapper;
 import com.flab.delivery.utils.PasswordEncoder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpSession;
 
 
 @Service
@@ -16,6 +19,8 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService{
 
     private final UserMapper userMapper;
+    private final HttpSession httpSession;
+    private final String SESSION_ID = "SESSION_ID";
 
     @Override
     public void createUser(SignUpDto signUpDto) {
@@ -31,5 +36,23 @@ public class UserServiceImpl implements UserService{
                 .level(signUpDto.getLevel())
                 .build();
         userMapper.insertUser(insertUser);
+    }
+
+
+    // 인증 과정
+    // 아이디가 존재하는지 찾는다
+    // 비밀번호가 맞는지 찾는다(아이디랑 비밀번호를 확인해주세요)
+    // "예외 메시지를 던진다" 예외를 전역 처리한다
+    @Override
+    public void loginUser(UserDto userDto) {
+        if(!userMapper.isExistsId(userDto.getId())){
+            throw new LoginException("존재하지 않는 아이디입니다");
+        }
+
+        UserDto findUser = userMapper.findById(userDto.getId());
+        if(!PasswordEncoder.isMatch(userDto.getPassword(), findUser.getPassword())){
+            throw new LoginException("아이디랑 비밀번호를 확인해주세요");
+        }
+        httpSession.setAttribute(SESSION_ID, userDto.getId());
     }
 }
