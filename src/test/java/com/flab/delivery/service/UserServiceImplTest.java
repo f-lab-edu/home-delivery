@@ -30,6 +30,9 @@ class UserServiceImplTest {
     @Mock
     HttpSession httpSession;
 
+    @Mock
+    SessionLoginServiceImpl loginService;
+
 
     @Nested
     @DisplayName("회원가입")
@@ -115,10 +118,12 @@ class UserServiceImplTest {
                                 .id(userDto.getId())
                                 .password(PasswordEncoder.encrypt(userDto.getPassword()))
                         .build());
-                when(httpSession.getAttribute("SESSION_ID")).thenReturn("user1");
+
+                // refactoring -> when(httpSession.getAttribute("SESSION_ID")).thenReturn("user1");
+                when(loginService.getCurrentUserId()).thenReturn("user1");
                 // when
                 userService.loginUser(userDto);
-                String getSessionID = (String)httpSession.getAttribute("SESSION_ID");
+                String getSessionID = loginService.getCurrentUserId();
                 // then
                 Assertions.assertEquals(getSessionID, "user1");
             }

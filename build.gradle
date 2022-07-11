@@ -32,6 +32,8 @@ dependencies {
 
     // https://mvnrepository.com/artifact/org.mindrot.bcrypt/bcrypt
     implementation group: 'org.mindrot', name: 'jbcrypt', version: '0.3m'
+    // spring aop
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
 }
 
 tasks.named('test') {

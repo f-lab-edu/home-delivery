@@ -19,8 +19,8 @@ import javax.servlet.http.HttpSession;
 public class UserServiceImpl implements UserService{
 
     private final UserMapper userMapper;
-    private final HttpSession httpSession;
-    private final String SESSION_ID = "SESSION_ID";
+    private final LoginService loginService;
+
 
     @Override
     public void createUser(SignUpDto signUpDto) {
@@ -53,6 +53,6 @@ public class UserServiceImpl implements UserService{
         if(!PasswordEncoder.isMatch(userDto.getPassword(), findUser.getPassword())){
             throw new LoginException("아이디랑 비밀번호를 확인해주세요");
         }
-        httpSession.setAttribute(SESSION_ID, userDto.getId());
+        loginService.loginUser(userDto.getId());
     }
 }
