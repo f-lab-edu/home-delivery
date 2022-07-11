@@ -62,13 +62,11 @@ public class UserController {
         return STATUS_OK;
     }
 
-
     @PostMapping("/reissue")
-    public ResponseEntity<TokenDto> reissue(@RequestHeader("Authorization") String accessToken,
-                                            String refreshToken) {
+    public ResponseEntity<TokenDto> reissue(@RequestBody TokenDto tokenDto) {
 
-        TokenDto tokenDto = userService.reissue(accessToken, refreshToken);
+        TokenDto newTokenDto = userService.reissue(tokenDto.getAccessToken(), tokenDto.getRefreshToken());
 
-        return new ResponseEntity<>(tokenDto, HttpStatus.OK);
+        return new ResponseEntity<>(newTokenDto, HttpStatus.OK);
     }
 }

@@ -25,6 +25,6 @@ public class ConcurrentHashMapTokenDao implements TokenDao {
 
     @Override
     public Optional<TokenDto> getTokenByUserId(String id) {
-        return Optional.of(tokenMap.get(id));
+        return Optional.ofNullable(tokenMap.get(id));
     }
 }

@@ -24,12 +24,10 @@ import java.util.Date;
  */
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class JwtProvider {
 
     @Value("${jwt.secret}")
     private String secretKey;
-
 
     @Value("${jwt.accessTokenValidTime}")
     private int accessTokenValidTime;
@@ -56,26 +54,23 @@ public class JwtProvider {
 
         Date now = new Date();
 
-        String accessToken = Jwts.builder()
+        String accessToken = getToken(claims, now, accessTokenValidTime);
+        String refreshToken = getToken(claims, now, refreshTokenValidTime);
+
+        return TokenDto.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
+    }
+
+    private String getToken(Claims claims, Date now, int accessTokenValidTime) {
+        return Jwts.builder()
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
                 .setClaims(claims) // 정보 저장
                 .setIssuedAt(now) // 토큰 발행 시간 정보
                 .setExpiration(new Date(now.getTime() + (accessTokenValidTime * 1000)))
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
-
-        String refreshToken = Jwts.builder()
-                .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
-                .setClaims(claims) // 정보 저장
-                .setIssuedAt(now) // 토큰 발행 시간 정보
-                .setExpiration(new Date(now.getTime() + (refreshTokenValidTime * 1000)))
-                .signWith(SignatureAlgorithm.HS256, secretKey)
-                .compact();
-
-        return TokenDto.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .build();
     }
 
 

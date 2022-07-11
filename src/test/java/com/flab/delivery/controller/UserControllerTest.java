@@ -2,7 +2,10 @@ package com.flab.delivery.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flab.delivery.dao.TokenDao;
-import com.flab.delivery.dto.*;
+import com.flab.delivery.dto.LoginDto;
+import com.flab.delivery.dto.SignUpDto;
+import com.flab.delivery.dto.TestDto;
+import com.flab.delivery.dto.TokenDto;
 import com.flab.delivery.mapper.UserMapper;
 import com.flab.delivery.service.UserService;
 import org.junit.jupiter.api.Test;
@@ -12,6 +15,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -168,7 +173,7 @@ public class UserControllerTest {
                         .header("Authorization", tokenDto.getAccessToken()))
                 .andExpect(status().isOk());
 
-        assertThat(tokenDao.getTokenByUserId(loginDto.getId())).isNull();
+        assertThat(tokenDao.getTokenByUserId(loginDto.getId())).isEmpty();
 
     }
 
@@ -180,5 +185,26 @@ public class UserControllerTest {
         mockMvc.perform(delete(uri + "/logout"))
                 .andExpect(status().isUnauthorized());
 
+    }
+
+    @Test
+    void reissue_확인() throws Exception {
+        // given
+        userService.signUp(TestDto.getSignUpDto());
+        LoginDto loginDto = TestDto.getLoginDto();
+        TokenDto tokenDto = userService.login(loginDto);
+
+
+        // when
+        mockMvc.perform(post(uri + "/reissue")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(tokenDto)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.accessToken").exists())
+                .andExpect(jsonPath("$.refreshToken").exists());
+
+        //then
+        TokenDto newToken = tokenDao.getTokenByUserId(loginDto.getId()).get();
+        assertThat(tokenDto).isNotEqualTo(newToken);
     }
 }
