@@ -1,13 +1,12 @@
 package com.flab.delivery.service;
 
+import com.flab.delivery.dto.TokenDto;
 import com.flab.delivery.dto.UserDto;
-import com.flab.delivery.dto.UserDto.LoginUserDto;
 
 public interface LoginService {
 
-    void login(UserDto userDto);
+    TokenDto login(UserDto userDto);
 
-    void logout();
+    void logout(String id);
 
-    LoginUserDto getCurrentUser();
 }

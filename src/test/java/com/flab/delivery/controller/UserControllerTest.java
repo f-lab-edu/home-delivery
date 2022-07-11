@@ -1,10 +1,8 @@
 package com.flab.delivery.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.flab.delivery.dto.LoginDto;
-import com.flab.delivery.dto.SignUpDto;
-import com.flab.delivery.dto.TestDto;
-import com.flab.delivery.dto.UserDto;
+import com.flab.delivery.dao.TokenDao;
+import com.flab.delivery.dto.*;
 import com.flab.delivery.dto.UserDto.LoginUserDto;
 import com.flab.delivery.mapper.UserMapper;
 import com.flab.delivery.service.LoginService;
@@ -21,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -30,7 +29,6 @@ public class UserControllerTest {
 
     @Autowired
     MockMvc mockMvc;
-
     @Autowired
     ObjectMapper objectMapper;
     @Autowired
@@ -39,9 +37,8 @@ public class UserControllerTest {
     UserService userService;
 
     @Autowired
-    LoginService loginService;
+    TokenDao tokenDao;
 
-    MockHttpSession mockHttpSession = new MockHttpSession();
     private final String uri = "/users";
 
     @Test
@@ -124,7 +121,11 @@ public class UserControllerTest {
         mockMvc.perform(post(uri + "/login")
                         .content(objectMapper.writeValueAsString(loginDto))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.accessToken").exists())
+                .andExpect(jsonPath("$.refreshToken").exists())
+                .andDo(print());
+
     }
 
     @Test
@@ -159,16 +160,19 @@ public class UserControllerTest {
     void logout_성공() throws Exception {
         // given
         userService.signUp(TestDto.getSignUpDto());
-        LoginUserDto loginUserDto = LoginUserDto.builder().id("test").level("USER").build();
-        mockHttpSession.setAttribute("SESSION_ID", loginUserDto);
+        LoginDto loginDto = TestDto.getLoginDto();
+        TokenDto tokenDto = userService.login(loginDto);
+
+        assertThat(tokenDao.getTokenByUserId(loginDto.getId())).isNotNull();
 
         // when
+        //then
         mockMvc.perform(delete(uri + "/logout")
-                        .session(mockHttpSession))
+                        .header("Authorization", tokenDto.getAccessToken()))
                 .andExpect(status().isOk());
 
-        //then
-        assertThat(mockHttpSession.getAttribute("SESSION_ID")).isNull();
+        assertThat(tokenDao.getTokenByUserId(loginDto.getId())).isNull();
+
     }
 
     @Test
@@ -176,8 +180,7 @@ public class UserControllerTest {
         // given
         // when
         //then
-        mockMvc.perform(delete(uri + "/logout")
-                        .session(mockHttpSession))
+        mockMvc.perform(delete(uri + "/logout"))
                 .andExpect(status().isUnauthorized());
 
     }

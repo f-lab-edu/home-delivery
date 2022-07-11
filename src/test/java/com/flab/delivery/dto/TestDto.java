@@ -14,7 +14,7 @@ public class TestDto {
                 .build();
     }
 
-    public static UserDto getMemberDto() {
+    public static UserDto getUserDto() {
         return UserDto.builder()
                 .id("test")
                 .name("테스트")
@@ -27,5 +27,12 @@ public class TestDto {
 
     public static LoginDto getLoginDto() {
         return new LoginDto("test", "!Asdasd1234v");
+    }
+
+    public static TokenDto getTokenDto() {
+        return TokenDto.builder()
+                .accessToken("accessToken")
+                .refreshToken("refreshToken")
+                .build();
     }
 }

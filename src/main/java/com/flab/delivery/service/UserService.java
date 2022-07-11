@@ -2,6 +2,7 @@ package com.flab.delivery.service;
 
 import com.flab.delivery.dto.LoginDto;
 import com.flab.delivery.dto.SignUpDto;
+import com.flab.delivery.dto.TokenDto;
 import com.flab.delivery.dto.UserDto;
 import com.flab.delivery.exception.CertifyException;
 import com.flab.delivery.exception.UserException;
@@ -19,6 +20,7 @@ public class UserService {
 
     private final UserMapper mapper;
     private final PasswordEncoder passwordEncoder;
+
     private final LoginService loginService;
 
     public void signUp(SignUpDto signUpDto) {
@@ -35,7 +37,7 @@ public class UserService {
         }
     }
 
-    public void login(LoginDto loginDto) {
+    public TokenDto login(LoginDto loginDto) {
 
         UserDto findMember = mapper
                 .findUserById(loginDto.getId())
@@ -48,10 +50,10 @@ public class UserService {
             throw new CertifyException("비밀번호가 일치하지 않습니다.", HttpStatus.UNAUTHORIZED);
         }
 
-        loginService.login(findMember);
+        return loginService.login(findMember);
     }
 
-    public void logout() {
-        loginService.logout();
+    public void logout(String id) {
+        loginService.logout(id);
     }
 }

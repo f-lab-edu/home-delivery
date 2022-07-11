@@ -96,7 +96,7 @@ class UserServiceTest {
     void login_비밀번호가_일치하지_않아_실패() {
         // given
         LoginDto loginDto = TestDto.getLoginDto();
-        UserDto userDto = TestDto.getMemberDto();
+        UserDto userDto = TestDto.getUserDto();
         given(mapper.findUserById(eq(loginDto.getId()))).willReturn(Optional.of(userDto));
         given(passwordEncoder.isMatch(eq(loginDto.getPassword()), eq(userDto.getPassword()))).willReturn(false);
 
@@ -112,7 +112,7 @@ class UserServiceTest {
     void login_성공() {
         // given
         LoginDto loginDto = TestDto.getLoginDto();
-        UserDto userDto = TestDto.getMemberDto();
+        UserDto userDto = TestDto.getUserDto();
         given(mapper.findUserById(eq(loginDto.getId()))).willReturn(Optional.of(userDto));
         given(passwordEncoder.isMatch(eq(loginDto.getPassword()), eq(userDto.getPassword()))).willReturn(true);
 
@@ -130,9 +130,9 @@ class UserServiceTest {
     void logout_성공() {
         // given
         // when
-        userService.logout();
+        userService.logout(any());
 
         //then
-        verify(loginService, times(1)).logout();
+        verify(loginService, times(1)).logout(any());
     }
 }

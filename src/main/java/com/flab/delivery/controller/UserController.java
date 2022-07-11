@@ -2,18 +2,21 @@ package com.flab.delivery.controller;
 
 import com.flab.delivery.dto.LoginDto;
 import com.flab.delivery.dto.SignUpDto;
-import com.flab.delivery.security.session.HasCertify;
+import com.flab.delivery.dto.TokenDto;
+import com.flab.delivery.dto.UserDto.LoginUserDto;
+import com.flab.delivery.exception.CertifyException;
+import com.flab.delivery.security.jwt.CurrentUser;
 import com.flab.delivery.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
 import static com.flab.delivery.controller.response.HttpStatusResponse.STATUS_CREATED;
 import static com.flab.delivery.controller.response.HttpStatusResponse.STATUS_OK;
-import static com.flab.delivery.security.session.HasCertify.UserLevel.ALL;
 
 @RestController
 @RequestMapping("/users")
@@ -39,18 +42,22 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<HttpStatus> login(@RequestBody @Valid LoginDto loginDto) {
+    public ResponseEntity<TokenDto> login(@RequestBody @Valid LoginDto loginDto) {
 
-        userService.login(loginDto);
+        TokenDto tokenDto = userService.login(loginDto);
 
-        return STATUS_OK;
+        return new ResponseEntity<>(tokenDto, HttpStatus.OK);
     }
 
-    @HasCertify(level = ALL)
+    @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/logout")
-    public ResponseEntity<HttpStatus> logout() {
+    public ResponseEntity<HttpStatus> logout(@CurrentUser LoginUserDto loginUserDto) {
 
-        userService.logout();
+        if (loginUserDto == null) {
+            throw new CertifyException("로그인 되지 않은 사용자 입니다.", HttpStatus.UNAUTHORIZED);
+        }
+
+        userService.logout(loginUserDto.getId());
 
         return STATUS_OK;
     }

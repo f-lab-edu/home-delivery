@@ -26,6 +26,7 @@ public class JwtProvider {
     @Value("${jwt.secret}")
     private String secretKey;
 
+
     @Value("${jwt.accessTokenValidTime}")
     private int accessTokenValidTime;
 
@@ -87,9 +88,6 @@ public class JwtProvider {
 
     /**
      * Header 에 있는 Authorization 의 토큰 값을 가져옴
-     *
-     * @param request
-     * @return
      */
     public String resolveToken(HttpServletRequest request) {
         return request.getHeader("Authorization");

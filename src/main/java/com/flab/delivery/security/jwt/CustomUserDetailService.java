@@ -30,13 +30,13 @@ public class CustomUserDetailService implements UserDetailsService {
         return new CustomUser(
                 LoginUserDto
                         .builder()
-                        .id((String) claims.get("id"))
+                        .id((String) claims.get("sub"))
                         .level((String) claims.get("level"))
                         .build());
     }
 
     public Authentication getAuthentication(String token) {
-        UserDetails userDetails = loadUserByUsername(jwtProvider.parseClaims(token).getSubject());
+        UserDetails userDetails = loadUserByUsername(token);
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 }
