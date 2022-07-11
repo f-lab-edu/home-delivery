@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService{
     // 인증 과정
     // 아이디가 존재하는지 찾는다
     // 비밀번호가 맞는지 찾는다(아이디랑 비밀번호를 확인해주세요)
-    // "예외 메시지를 던진다" 예외를 전역 처리한다
+    // "예외 메시지를 던진다" 예외를 처리 한다
     @Override
     public void loginUser(UserDto userDto) {
         if(!userMapper.isExistsId(userDto.getId())){

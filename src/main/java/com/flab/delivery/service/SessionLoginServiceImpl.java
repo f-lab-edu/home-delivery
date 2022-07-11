@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpSession;
 
 
-// 세션을 가지고 로그인 했을 경우
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -25,7 +24,7 @@ public class SessionLoginServiceImpl implements LoginService{
     }
 
     @Override
-    public String getCurrentUserId() {
+    public String getSessionUserId() {
         return (String)httpSession.getAttribute(SESSION_ID);
     }
 

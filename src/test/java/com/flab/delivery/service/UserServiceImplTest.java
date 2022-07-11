@@ -120,10 +120,10 @@ class UserServiceImplTest {
                         .build());
 
                 // refactoring -> when(httpSession.getAttribute("SESSION_ID")).thenReturn("user1");
-                when(loginService.getCurrentUserId()).thenReturn("user1");
+                when(loginService.getSessionUserId()).thenReturn("user1");
                 // when
                 userService.loginUser(userDto);
-                String getSessionID = loginService.getCurrentUserId();
+                String getSessionID = loginService.getSessionUserId();
                 // then
                 Assertions.assertEquals(getSessionID, "user1");
             }
@@ -166,6 +166,13 @@ class UserServiceImplTest {
             }
         }
 
+    }
+
+    @Test
+    @DisplayName("세션  null 테스트")
+    void session_test(){
+        httpSession.removeAttribute("SESSION_ID");
+        System.out.println();
     }
 
 

@@ -6,7 +6,7 @@ public interface LoginService {
 
     void loginUser(String id);
 
-    String getCurrentUserId();
+    String getSessionUserId();
 
     void logoutUser();
 }
