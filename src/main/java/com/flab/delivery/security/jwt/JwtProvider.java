@@ -1,11 +1,15 @@
 package com.flab.delivery.security.jwt;
 
+import com.flab.delivery.dao.TokenDao;
 import com.flab.delivery.dto.TokenDto;
 import com.flab.delivery.dto.UserDto;
+import com.flab.delivery.dto.UserDto.AuthDto;
+import com.flab.delivery.exception.CertifyException;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -42,9 +46,13 @@ public class JwtProvider {
      * JWT Token 생성
      */
     public TokenDto createToken(UserDto userDto) {
+        return createToken(userDto.getId(), userDto.getLevel());
+    }
 
-        Claims claims = Jwts.claims().setSubject(userDto.getId());
-        claims.put("level", userDto.getLevel());
+    public TokenDto createToken(String userId, String level) {
+
+        Claims claims = Jwts.claims().setSubject(userId);
+        claims.put("level", level);
 
         Date now = new Date();
 
@@ -111,4 +119,45 @@ public class JwtProvider {
         }
         return false;
     }
+
+    /**
+     * 토큰 만료시간 확인
+     */
+    public boolean isExpiredToken(String token) {
+
+        Claims claims = parseClaims(token);
+
+        return claims.getExpiration().getTime() - System.currentTimeMillis() < 0;
+    }
+
+    /**
+     * Reissue 토큰 검증
+     */
+    public void validateTokens(TokenDao tokenDao, String accessToken, String refreshToken) {
+        String userId = parseClaims(accessToken).getSubject();
+
+        if (!validationToken(refreshToken) || !validationToken(accessToken)) {
+            log.error("잘못된 토큰 갱신 요청 userId = {}", userId);
+            throw getCertifyException("토큰을 갱신할 수 없습니다");
+        }
+
+        if (!isExpiredToken(accessToken)) {
+            tokenDao.removeTokenByUserId(userId);
+            log.error("만료되지 않은 토큰 갱신 요청 userId = {}", userId);
+            throw getCertifyException("토큰을 갱신할 수 없습니다");
+        }
+    }
+
+    private CertifyException getCertifyException(String message) {
+        return new CertifyException(message, HttpStatus.CONFLICT);
+    }
+
+    public AuthDto getAuthDto(String refreshToken) {
+        Claims claims = parseClaims(refreshToken);
+        return AuthDto.builder()
+                .id(claims.getSubject())
+                .level(String.valueOf(claims.get("level")))
+                .build();
+    }
+
 }

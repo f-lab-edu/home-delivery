@@ -3,6 +3,7 @@ package com.flab.delivery.dao;
 import com.flab.delivery.dto.TokenDto;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Repository
@@ -18,12 +19,12 @@ public class ConcurrentHashMapTokenDao implements TokenDao {
     }
 
     @Override
-    public void remove(String id) {
+    public void removeTokenByUserId(String id) {
         tokenMap.remove(id);
     }
 
     @Override
-    public TokenDto getTokenByUserId(String id) {
-        return tokenMap.get(id);
+    public Optional<TokenDto> getTokenByUserId(String id) {
+        return Optional.of(tokenMap.get(id));
     }
 }

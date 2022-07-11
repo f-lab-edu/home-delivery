@@ -3,9 +3,12 @@ package com.flab.delivery.service;
 import com.flab.delivery.dao.TokenDao;
 import com.flab.delivery.dto.TokenDto;
 import com.flab.delivery.dto.UserDto;
+import com.flab.delivery.dto.UserDto.AuthDto;
+import com.flab.delivery.exception.CertifyException;
 import com.flab.delivery.security.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -24,6 +27,26 @@ public class JwtLoginService implements LoginService {
 
     @Override
     public void logout(String id) {
-        tokenDao.remove(id);
+        tokenDao.removeTokenByUserId(id);
+    }
+
+    @Override
+    public TokenDto reissue(String accessToken, String refreshToken) {
+
+        jwtProvider.validateTokens(tokenDao, accessToken, refreshToken);
+
+        AuthDto authDto = jwtProvider.getAuthDto(refreshToken);
+
+        String userId = authDto.getId();
+        String level = authDto.getLevel();
+
+        TokenDto findTokenDto = tokenDao.getTokenByUserId(userId)
+                .orElseThrow(() -> new CertifyException("토큰을 찾을 수 없습니다.", HttpStatus.CONFLICT));
+
+        if (!findTokenDto.getRefreshToken().equals(refreshToken)) {
+            throw new CertifyException("토큰 값이 옳바르지 않습니다.", HttpStatus.FORBIDDEN);
+        }
+
+        return tokenDao.save(userId, jwtProvider.createToken(userId, level));
     }
 }

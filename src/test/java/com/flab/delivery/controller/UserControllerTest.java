@@ -3,16 +3,13 @@ package com.flab.delivery.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flab.delivery.dao.TokenDao;
 import com.flab.delivery.dto.*;
-import com.flab.delivery.dto.UserDto.LoginUserDto;
 import com.flab.delivery.mapper.UserMapper;
-import com.flab.delivery.service.LoginService;
 import com.flab.delivery.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 

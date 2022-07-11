@@ -1,6 +1,6 @@
 package com.flab.delivery.security.jwt;
 
-import com.flab.delivery.dto.UserDto.LoginUserDto;
+import com.flab.delivery.dto.UserDto.AuthDto;
 import com.flab.delivery.exception.CertifyException;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ public class CustomUserDetailService implements UserDetailsService {
         }
 
         return new CustomUser(
-                LoginUserDto
+                AuthDto
                         .builder()
                         .id((String) claims.get("sub"))
                         .level((String) claims.get("level"))

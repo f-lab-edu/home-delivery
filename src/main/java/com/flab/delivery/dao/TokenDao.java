@@ -2,10 +2,12 @@ package com.flab.delivery.dao;
 
 import com.flab.delivery.dto.TokenDto;
 
+import java.util.Optional;
+
 public interface TokenDao {
     TokenDto save(String id, TokenDto token);
 
-    void remove(String id);
+    void removeTokenByUserId(String id);
 
-    TokenDto getTokenByUserId(String id);
+    Optional<TokenDto> getTokenByUserId(String id);
 }

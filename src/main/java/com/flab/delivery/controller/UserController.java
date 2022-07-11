@@ -3,7 +3,7 @@ package com.flab.delivery.controller;
 import com.flab.delivery.dto.LoginDto;
 import com.flab.delivery.dto.SignUpDto;
 import com.flab.delivery.dto.TokenDto;
-import com.flab.delivery.dto.UserDto.LoginUserDto;
+import com.flab.delivery.dto.UserDto.AuthDto;
 import com.flab.delivery.exception.CertifyException;
 import com.flab.delivery.security.jwt.CurrentUser;
 import com.flab.delivery.service.UserService;
@@ -51,14 +51,24 @@ public class UserController {
 
     @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/logout")
-    public ResponseEntity<HttpStatus> logout(@CurrentUser LoginUserDto loginUserDto) {
+    public ResponseEntity<HttpStatus> logout(@CurrentUser AuthDto authDto) {
 
-        if (loginUserDto == null) {
+        if (authDto == null) {
             throw new CertifyException("로그인 되지 않은 사용자 입니다.", HttpStatus.UNAUTHORIZED);
         }
 
-        userService.logout(loginUserDto.getId());
+        userService.logout(authDto.getId());
 
         return STATUS_OK;
+    }
+
+
+    @PostMapping("/reissue")
+    public ResponseEntity<TokenDto> reissue(@RequestHeader("Authorization") String accessToken,
+                                            String refreshToken) {
+
+        TokenDto tokenDto = userService.reissue(accessToken, refreshToken);
+
+        return new ResponseEntity<>(tokenDto, HttpStatus.OK);
     }
 }

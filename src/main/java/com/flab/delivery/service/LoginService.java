@@ -9,4 +9,5 @@ public interface LoginService {
 
     void logout(String id);
 
+    TokenDto reissue(String accessToken, String refreshToken);
 }

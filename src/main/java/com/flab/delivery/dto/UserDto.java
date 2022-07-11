@@ -36,7 +36,7 @@ public class UserDto {
 
     @Getter
     @Builder
-    public static class LoginUserDto {
+    public static class AuthDto {
         @NonNull
         private String id;
 

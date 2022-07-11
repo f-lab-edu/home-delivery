@@ -20,7 +20,6 @@ public class UserService {
 
     private final UserMapper mapper;
     private final PasswordEncoder passwordEncoder;
-
     private final LoginService loginService;
 
     public void signUp(SignUpDto signUpDto) {
@@ -55,5 +54,9 @@ public class UserService {
 
     public void logout(String id) {
         loginService.logout(id);
+    }
+
+    public TokenDto reissue(String accessToken, String refreshToken) {
+        return loginService.reissue(accessToken,refreshToken);
     }
 }
