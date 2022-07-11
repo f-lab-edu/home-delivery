@@ -300,4 +300,66 @@ class UserControllerTest {
 
     }
 
+
+    @Nested
+    @DisplayName("/users/login")
+    class loginUser{
+        private String id = "user1";
+        private String password = "1111";
+
+        private UserDto getUserDto(){
+            return UserDto.builder()
+                    .id(id)
+                    .password(password)
+                    .build();
+        }
+
+        @Nested
+        @DisplayName("성공")
+        class SuccessCase{
+
+            @Test
+            @DisplayName("로그인 성공")
+            void loginUser_success() throws Exception{
+                UserDto userDto = getUserDto();
+                String json = objectMapper.writeValueAsString(userDto);
+                mockMvc.perform(post("/users/login").contentType(MediaType.APPLICATION_JSON)
+                                .content(json))
+                        .andExpect(status().is2xxSuccessful())
+                        .andDo(print());
+            }
+
+        }
+
+        @Nested
+        @DisplayName("실패")
+        class FailCase{
+            @Test
+            @DisplayName("아이디 존재x 경우")
+            void isExistsId() throws Exception{
+                String diffId = "diffUser";
+                id = diffId;
+                UserDto userDto = getUserDto();
+                String json = objectMapper.writeValueAsString(userDto);
+                mockMvc.perform(post("/users/login").contentType(MediaType.APPLICATION_JSON)
+                                .content(json))
+                        .andExpect(status().is4xxClientError())
+                        .andDo(print());
+            }
+
+
+            @Test
+            @DisplayName("비밀번호 틀리는경우")
+            void password() throws Exception{
+                String diffPassword = "2222";
+                password = diffPassword;
+                UserDto userDto = getUserDto();
+                String json = objectMapper.writeValueAsString(userDto);
+                mockMvc.perform(post("/users/login").contentType(MediaType.APPLICATION_JSON)
+                                .content(json))
+                        .andExpect(status().is4xxClientError())
+                        .andDo(print());
+            }
+        }
+    }
 }
