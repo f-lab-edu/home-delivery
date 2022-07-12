@@ -89,7 +89,7 @@ class JwtLoginServiceTest {
 
 
     @Test
-    void reissue_DB에_존재하지_않는_refreshToken_으로_실패() {
+    void reissue_db에_존재하지_않는_refreshToken_으로_실패() {
         // given
         TokenDto tokenDto = TestDto.getTokenDto();
         AuthDto authDto = TestDto.getAuthDto();
@@ -108,7 +108,7 @@ class JwtLoginServiceTest {
 
 
     @Test
-    void reissue_DB와_동일하지_않은_refreshToken_으로_실패() {
+    void reissue_db와_동일하지_않은_refreshToken_으로_실패() {
 
         // given
         TokenDto tokenDto = TestDto.getTokenDto();

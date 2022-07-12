@@ -33,7 +33,7 @@ public class JwtLoginService implements LoginService {
     @Override
     public TokenDto reissue(String accessToken, String refreshToken) {
 
-        jwtProvider.validateTokens(tokenDao, accessToken, refreshToken);
+        jwtProvider.validateTokenToReissue(tokenDao, accessToken, refreshToken);
 
         AuthDto authDto = jwtProvider.getAuthDto(refreshToken);
 

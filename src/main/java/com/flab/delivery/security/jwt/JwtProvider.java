@@ -6,16 +6,19 @@ import com.flab.delivery.dto.UserDto;
 import com.flab.delivery.dto.UserDto.AuthDto;
 import com.flab.delivery.exception.CertifyException;
 import io.jsonwebtoken.*;
-import lombok.RequiredArgsConstructor;
+import io.jsonwebtoken.io.Encoders;
+import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
+import javax.crypto.SecretKey;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Base64;
 import java.util.Date;
+
+import static io.jsonwebtoken.SignatureAlgorithm.HS256;
 
 /**
  * Json Web Token (Jwt) 생성 및 유효성 검증을 하는 컴포넌트
@@ -26,8 +29,6 @@ import java.util.Date;
 @Component
 public class JwtProvider {
 
-    @Value("${jwt.secret}")
-    private String secretKey;
 
     @Value("${jwt.accessTokenValidTime}")
     private int accessTokenValidTime;
@@ -35,10 +36,8 @@ public class JwtProvider {
     @Value("${jwt.refreshTokenValidTime}")
     private int refreshTokenValidTime;
 
-    @PostConstruct
-    protected void init() {
-        secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
-    }
+    private final SecretKey key = Keys.secretKeyFor(HS256);
+    private final JwtParser parser = Jwts.parserBuilder().setSigningKey(key).build();
 
     /**
      * JWT Token 생성
@@ -65,27 +64,26 @@ public class JwtProvider {
 
     private String getToken(Claims claims, Date now, int accessTokenValidTime) {
         return Jwts.builder()
-                .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
                 .setClaims(claims) // 정보 저장
                 .setIssuedAt(now) // 토큰 발행 시간 정보
-                .setExpiration(new Date(now.getTime() + (accessTokenValidTime * 1000)))
-                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .setExpiration(new Date(now.getTime() + (accessTokenValidTime * 1000))) // 토큰 만료시간
+                .signWith(key)
                 .compact();
     }
 
 
     /**
-     * jwt 에서 회원 구분 PK 추출
+     * JWT 에서 Claims 정보를 추출
+     * 만료된 토큰이라도, RefreshToken 을 통해 재발급을 위해 Claims 반환
      */
     public Claims parseClaims(String token) {
 
         try {
-            return Jwts.parser()
-                    .setSigningKey(secretKey)
-                    .parseClaimsJws(token).getBody();
+            return parser.parseClaimsJws(token).getBody();
         } catch (ExpiredJwtException e) {
-            log.error("ExpiredJwtException : ", e);
             return e.getClaims();
+        } catch (JwtException | IllegalArgumentException e) {
+            throw new CertifyException("옳바르지 않은 토큰 입니다.", HttpStatus.UNAUTHORIZED);
         }
     }
 
@@ -99,11 +97,11 @@ public class JwtProvider {
     /**
      * Jwt 의 유효성 및 만료일자 확인
      */
-    public boolean validationToken(String token) {
+    public boolean isValidToken(String token) {
         try {
-            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+            parser.parseClaimsJws(token);
             return true;
-        } catch (java.lang.SecurityException | MalformedJwtException | SignatureException e) {
+        } catch (SignatureException | MalformedJwtException e) {
             log.error("잘못된 Jwt 서명입니다.");
         } catch (ExpiredJwtException e) {
             log.error("만료된 토큰입니다.");
@@ -128,13 +126,13 @@ public class JwtProvider {
     /**
      * Reissue 토큰 검증
      */
-    public void validateTokens(TokenDao tokenDao, String accessToken, String refreshToken) {
-        String userId = parseClaims(accessToken).getSubject();
+    public void validateTokenToReissue(TokenDao tokenDao, String accessToken, String refreshToken) {
 
-        if (!validationToken(refreshToken) || !validationToken(accessToken)) {
-            log.error("잘못된 토큰 갱신 요청 userId = {}", userId);
+        if (!isValidToken(refreshToken)) {
             throw getCertifyException("토큰을 갱신할 수 없습니다");
         }
+
+        String userId = parseClaims(refreshToken).getSubject();
 
         if (!isExpiredToken(accessToken)) {
             tokenDao.removeTokenByUserId(userId);
@@ -147,8 +145,11 @@ public class JwtProvider {
         return new CertifyException(message, HttpStatus.CONFLICT);
     }
 
-    public AuthDto getAuthDto(String refreshToken) {
-        Claims claims = parseClaims(refreshToken);
+    /**
+     * 토큰을 통해 AuthDto 생성
+     */
+    public AuthDto getAuthDto(String token) {
+        Claims claims = parseClaims(token);
         return AuthDto.builder()
                 .id(claims.getSubject())
                 .level(String.valueOf(claims.get("level")))
