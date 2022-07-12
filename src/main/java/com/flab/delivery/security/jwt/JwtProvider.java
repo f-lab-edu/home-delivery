@@ -13,7 +13,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Date;
+import javax.annotation.PostConstruct;
 import javax.crypto.SecretKey;
 import javax.servlet.http.HttpServletRequest;
 
@@ -33,11 +36,14 @@ public class JwtProvider {
     @Value("${jwt.refreshTokenValidTime}")
     private int refreshTokenValidTime;
 
-    /**
-     * HS256 알고리즘을 사용하여 랜덤 키 생성
-     */
-    private final SecretKey key = Keys.secretKeyFor(HS256);
-    private final JwtParser parser = Jwts.parserBuilder().setSigningKey(key).build();
+    private final SecretKey key;
+
+    private final JwtParser parser;
+
+    public JwtProvider(@Value("${jwt.secretKey}") String secretKey) {
+        this.key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+        this.parser = Jwts.parserBuilder().setSigningKey(key).build();
+    }
 
     /**
      * JWT Token 생성
