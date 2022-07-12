@@ -37,11 +37,16 @@ public class LoginCheckAspect {
         if(sessionUserId == null){
             throw new SessionLoginException("세션 아이디가 존재하지 않습니다");
         }
+
+        UserLevel targetUserLevel = target.userLevel();
+
+        if (targetUserLevel == UserLevel.ALL) {
+            return;
+        }
+
         UserDto findUser = userMapper.findById(sessionUserId);
 
-        UserLevel userLevel = target.userLevel();
-
-        if(findUser.getLevel() != userLevel){
+        if(findUser.getLevel() != targetUserLevel){
             throw new SessionLoginException("권한이 없습니다");
         }
     }

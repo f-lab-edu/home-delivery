@@ -27,11 +27,11 @@ class UserServiceImplTest {
     @InjectMocks
     UserServiceImpl userService;
 
-    @Mock
-    HttpSession httpSession;
+    @InjectMocks
+    SessionLoginServiceImpl loginService;
 
     @Mock
-    SessionLoginServiceImpl loginService;
+    HttpSession httpSession;
 
 
     @Nested
@@ -54,7 +54,7 @@ class UserServiceImplTest {
 
 
         @Nested
-        @DisplayName("성공 케이스")
+        @DisplayName("성공")
         class SuccessCase {
             @Test
             @DisplayName("회원가입 성공")
@@ -76,7 +76,7 @@ class UserServiceImplTest {
         }
 
         @Nested
-        @DisplayName("실패 케이스")
+        @DisplayName("실패")
         class FailCase {
             @Test
             @DisplayName("아이디 이미 존재")
@@ -119,8 +119,8 @@ class UserServiceImplTest {
                                 .password(PasswordEncoder.encrypt(userDto.getPassword()))
                         .build());
 
-                // refactoring -> when(httpSession.getAttribute("SESSION_ID")).thenReturn("user1");
-                when(loginService.getSessionUserId()).thenReturn("user1");
+                when(httpSession.getAttribute("SESSION_ID")).thenReturn("user1");
+                // refactoring -> when(loginService.getSessionUserId()).thenReturn("user1");
                 // when
                 userService.loginUser(userDto);
                 String getSessionID = loginService.getSessionUserId();
@@ -168,12 +168,6 @@ class UserServiceImplTest {
 
     }
 
-    @Test
-    @DisplayName("세션  null 테스트")
-    void session_test(){
-        httpSession.removeAttribute("SESSION_ID");
-        System.out.println();
-    }
 
 
 }

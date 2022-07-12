@@ -1,26 +1,26 @@
 package com.flab.delivery.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.flab.delivery.dto.SignUpDto;
 import com.flab.delivery.dto.UserDto;
 import com.flab.delivery.enums.UserLevel;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
 @SpringBootTest
@@ -33,6 +33,8 @@ class UserControllerTest {
 
     @Autowired
     ObjectMapper objectMapper;
+
+
 
     @Nested
     @DisplayName("/users/signup")
@@ -148,7 +150,33 @@ class UserControllerTest {
                     mockMvc.perform(post("/users/signup").contentType(MediaType.APPLICATION_JSON)
                                     .content(json))
                             .andExpect(status().isBadRequest())
-                            .andExpect(content().string("비밀번호는 8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요."))
+                            .andExpect(content().string("비밀번호는 필수 입력값입니다"))
+                            .andDo(print());
+                }
+
+                @Test
+                @DisplayName("길이")
+                void password_length() throws Exception{
+                    password = "1111";
+                    SignUpDto userDto = getSignUpDto();
+                    String json = objectMapper.writeValueAsString(userDto);
+                    mockMvc.perform(post("/users/signup").contentType(MediaType.APPLICATION_JSON)
+                                    .content(json))
+                            .andExpect(status().isBadRequest())
+                            .andExpect(content().string("비밀번호는 8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요"))
+                            .andDo(print());
+                }
+
+                @Test
+                @DisplayName("대소문자")
+                void password_form() throws Exception{
+                    password = "@11111111";
+                    SignUpDto userDto = getSignUpDto();
+                    String json = objectMapper.writeValueAsString(userDto);
+                    mockMvc.perform(post("/users/signup").contentType(MediaType.APPLICATION_JSON)
+                                    .content(json))
+                            .andExpect(status().isBadRequest())
+                            .andExpect(content().string("비밀번호는 8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요"))
                             .andDo(print());
                 }
 
@@ -327,6 +355,7 @@ class UserControllerTest {
                                 .content(json))
                         .andExpect(status().is2xxSuccessful())
                         .andDo(print());
+
             }
 
         }
@@ -344,7 +373,9 @@ class UserControllerTest {
                 mockMvc.perform(post("/users/login").contentType(MediaType.APPLICATION_JSON)
                                 .content(json))
                         .andExpect(status().is4xxClientError())
+                        .andExpect(content().string("존재하지 않는 아이디입니다"))
                         .andDo(print());
+
             }
 
 
@@ -358,8 +389,48 @@ class UserControllerTest {
                 mockMvc.perform(post("/users/login").contentType(MediaType.APPLICATION_JSON)
                                 .content(json))
                         .andExpect(status().is4xxClientError())
+                        .andExpect(content().string("아이디랑 비밀번호를 확인해주세요"))
                         .andDo(print());
             }
         }
+    }
+
+
+    @Nested
+    @DisplayName("/users/logout")
+    class logoutUser{
+        MockHttpSession mockHttpSession = new MockHttpSession();
+
+        @Nested
+        @DisplayName("성공")
+        class SuccessCase{
+            @Test
+            @DisplayName("로그 아웃")
+            void logout_success() throws Exception {
+                mockHttpSession.setAttribute("SESSION_ID", "user1");
+                mockMvc.perform(delete("/users/logout").session(mockHttpSession))
+                        .andExpect(status().is2xxSuccessful())
+                        .andDo(print());
+
+                Assertions.assertNull(mockHttpSession.getAttribute("SESSION_ID"));
+            }
+        }
+
+        @Nested
+        @DisplayName("실패")
+        class FailCase{
+
+            @Test
+            @DisplayName("세션 없는 경우")
+            void session() throws Exception {
+                mockMvc.perform(delete("/users/logout"))
+                        .andExpect(status().is4xxClientError())
+                        .andExpect(content().string("세션 아이디가 존재하지 않습니다"))
+                        .andDo(print());
+
+            }
+        }
+
+
     }
 }

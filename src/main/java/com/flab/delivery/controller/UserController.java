@@ -34,8 +34,8 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    // 로그아웃은 로그인된 상태이다
-    @LoginCheck(userLevel = UserLevel.USER)
+    // 로그아웃은 로그인된 상태만 가능하다
+    @LoginCheck(userLevel = UserLevel.ALL)
     @DeleteMapping("/logout")
     public ResponseEntity logoutUser(){
         loginService.logoutUser();
