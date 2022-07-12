@@ -9,8 +9,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-@EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true) // PreAuthorize 사용하기 위해 설정
+@EnableWebSecurity // SpringSecurity 활성화
+@EnableGlobalMethodSecurity(prePostEnabled = true) // 애노테이션 @PreAuthorize 사용하기 위해 설정
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 

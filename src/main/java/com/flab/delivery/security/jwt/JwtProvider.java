@@ -6,7 +6,6 @@ import com.flab.delivery.dto.UserDto;
 import com.flab.delivery.dto.UserDto.AuthDto;
 import com.flab.delivery.exception.CertifyException;
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.io.Encoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.extern.slf4j.Slf4j;
@@ -14,16 +13,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import javax.crypto.SecretKey;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
 
 import static io.jsonwebtoken.SignatureAlgorithm.HS256;
 
 /**
- * Json Web Token (Jwt) 생성 및 유효성 검증을 하는 컴포넌트
- * Claim : 회원을 구분할 수 있는 값을 세팅
- * resolveToken : header 에 세팅된 토큰값을 가져와서 유효성을 검사
+ * JWT 관련 작업을 수행하는 Component
  */
 @Slf4j
 @Component
@@ -36,6 +33,9 @@ public class JwtProvider {
     @Value("${jwt.refreshTokenValidTime}")
     private int refreshTokenValidTime;
 
+    /**
+     * HS256 알고리즘을 사용하여 랜덤 키 생성
+     */
     private final SecretKey key = Keys.secretKeyFor(HS256);
     private final JwtParser parser = Jwts.parserBuilder().setSigningKey(key).build();
 
