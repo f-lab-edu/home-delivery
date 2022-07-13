@@ -4,7 +4,7 @@ import com.flab.delivery.dto.LoginDto;
 import com.flab.delivery.dto.SignUpDto;
 import com.flab.delivery.dto.TokenDto;
 import com.flab.delivery.dto.UserDto;
-import com.flab.delivery.exception.CertifyException;
+import com.flab.delivery.exception.AuthorizationException;
 import com.flab.delivery.exception.UserException;
 import com.flab.delivery.mapper.UserMapper;
 import com.flab.delivery.utils.PasswordEncoder;
@@ -46,7 +46,7 @@ public class UserService {
                 });
 
         if (!passwordEncoder.isMatch(loginDto.getPassword(), findMember.getPassword())) {
-            throw new CertifyException("비밀번호가 일치하지 않습니다.", HttpStatus.UNAUTHORIZED);
+            throw new AuthorizationException("비밀번호가 일치하지 않습니다.", HttpStatus.UNAUTHORIZED);
         }
 
         return loginService.login(findMember);

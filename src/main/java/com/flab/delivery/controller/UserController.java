@@ -4,7 +4,7 @@ import com.flab.delivery.dto.LoginDto;
 import com.flab.delivery.dto.SignUpDto;
 import com.flab.delivery.dto.TokenDto;
 import com.flab.delivery.dto.UserDto.AuthDto;
-import com.flab.delivery.exception.CertifyException;
+import com.flab.delivery.exception.AuthorizationException;
 import com.flab.delivery.security.jwt.CurrentUser;
 import com.flab.delivery.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -54,7 +54,7 @@ public class UserController {
     public ResponseEntity<HttpStatus> logout(@CurrentUser AuthDto authDto) {
 
         if (authDto == null) {
-            throw new CertifyException("로그인 되지 않은 사용자 입니다.", HttpStatus.UNAUTHORIZED);
+            throw new AuthorizationException("로그인 되지 않은 사용자 입니다.", HttpStatus.UNAUTHORIZED);
         }
 
         userService.logout(authDto.getId());

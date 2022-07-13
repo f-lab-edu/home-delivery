@@ -1,7 +1,7 @@
 package com.flab.delivery.security.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.flab.delivery.exception.CertifyException;
+import com.flab.delivery.exception.AuthorizationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -28,7 +28,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setHeader("content-type", MediaType.APPLICATION_JSON_VALUE);
         response.getWriter().write(objectMapper.writeValueAsString(
-                new CertifyException("인증을 처리할 수 없습니다.", HttpStatus.UNAUTHORIZED)));
+                new AuthorizationException("인증을 처리할 수 없습니다.", HttpStatus.UNAUTHORIZED)));
 
         response.getWriter().flush();
         response.getWriter().close();

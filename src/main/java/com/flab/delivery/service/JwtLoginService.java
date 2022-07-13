@@ -4,7 +4,7 @@ import com.flab.delivery.dao.TokenDao;
 import com.flab.delivery.dto.TokenDto;
 import com.flab.delivery.dto.UserDto;
 import com.flab.delivery.dto.UserDto.AuthDto;
-import com.flab.delivery.exception.CertifyException;
+import com.flab.delivery.exception.AuthorizationException;
 import com.flab.delivery.security.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,10 +41,10 @@ public class JwtLoginService implements LoginService {
         String level = authDto.getLevel();
 
         TokenDto findTokenDto = tokenDao.getTokenByUserId(userId)
-                .orElseThrow(() -> new CertifyException("토큰을 찾을 수 없습니다.", HttpStatus.CONFLICT));
+                .orElseThrow(() -> new AuthorizationException("토큰을 찾을 수 없습니다.", HttpStatus.CONFLICT));
 
         if (!findTokenDto.getRefreshToken().equals(refreshToken)) {
-            throw new CertifyException("토큰 값이 옳바르지 않습니다.", HttpStatus.FORBIDDEN);
+            throw new AuthorizationException("토큰 값이 옳바르지 않습니다.", HttpStatus.FORBIDDEN);
         }
 
         return tokenDao.save(userId, jwtProvider.createToken(userId, level));

@@ -4,7 +4,7 @@ import com.flab.delivery.dto.LoginDto;
 import com.flab.delivery.dto.SignUpDto;
 import com.flab.delivery.dto.TestDto;
 import com.flab.delivery.dto.UserDto;
-import com.flab.delivery.exception.CertifyException;
+import com.flab.delivery.exception.AuthorizationException;
 import com.flab.delivery.exception.UserException;
 import com.flab.delivery.mapper.UserMapper;
 import com.flab.delivery.utils.PasswordEncoder;
@@ -101,7 +101,7 @@ class UserServiceTest {
         given(passwordEncoder.isMatch(eq(loginDto.getPassword()), eq(userDto.getPassword()))).willReturn(false);
 
         // when
-        assertThatThrownBy(() -> userService.login(loginDto)).isInstanceOf(CertifyException.class);
+        assertThatThrownBy(() -> userService.login(loginDto)).isInstanceOf(AuthorizationException.class);
 
         //then
         verify(mapper).findUserById(eq(loginDto.getId()));

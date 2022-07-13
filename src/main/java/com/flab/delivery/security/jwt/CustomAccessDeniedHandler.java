@@ -2,7 +2,7 @@ package com.flab.delivery.security.jwt;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.flab.delivery.exception.CertifyException;
+import com.flab.delivery.exception.AuthorizationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -29,7 +29,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         response.setHeader("content-type", MediaType.APPLICATION_JSON_VALUE);
         response.getWriter().write(objectMapper.writeValueAsString(
-                new CertifyException("권한이 없습니다.", HttpStatus.FORBIDDEN)));
+                new AuthorizationException("권한이 없습니다.", HttpStatus.FORBIDDEN)));
 
         response.getWriter().flush();
         response.getWriter().close();

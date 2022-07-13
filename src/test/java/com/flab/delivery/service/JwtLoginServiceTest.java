@@ -5,10 +5,8 @@ import com.flab.delivery.dto.TestDto;
 import com.flab.delivery.dto.TokenDto;
 import com.flab.delivery.dto.UserDto;
 import com.flab.delivery.dto.UserDto.AuthDto;
-import com.flab.delivery.exception.CertifyException;
+import com.flab.delivery.exception.AuthorizationException;
 import com.flab.delivery.security.jwt.JwtProvider;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -99,7 +97,7 @@ class JwtLoginServiceTest {
         given(tokenDao.getTokenByUserId(eq(userId))).willReturn(Optional.empty());
 
         // when
-        assertThatThrownBy(() -> loginService.reissue(tokenDto.getAccessToken(), tokenDto.getRefreshToken())).isInstanceOf(CertifyException.class);
+        assertThatThrownBy(() -> loginService.reissue(tokenDto.getAccessToken(), tokenDto.getRefreshToken())).isInstanceOf(AuthorizationException.class);
 
         //then
         verify(tokenDao, never()).save(any(), any());
@@ -120,7 +118,7 @@ class JwtLoginServiceTest {
         given(tokenDao.getTokenByUserId(eq(userId))).willReturn(Optional.of(wrongToken));
 
         // when
-        assertThatThrownBy(() -> loginService.reissue(tokenDto.getAccessToken(), tokenDto.getRefreshToken())).isInstanceOf(CertifyException.class);
+        assertThatThrownBy(() -> loginService.reissue(tokenDto.getAccessToken(), tokenDto.getRefreshToken())).isInstanceOf(AuthorizationException.class);
 
         //then
         verify(tokenDao, never()).save(any(), any());

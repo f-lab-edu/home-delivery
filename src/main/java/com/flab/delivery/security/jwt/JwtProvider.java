@@ -4,7 +4,7 @@ import com.flab.delivery.dao.TokenDao;
 import com.flab.delivery.dto.TokenDto;
 import com.flab.delivery.dto.UserDto;
 import com.flab.delivery.dto.UserDto.AuthDto;
-import com.flab.delivery.exception.CertifyException;
+import com.flab.delivery.exception.AuthorizationException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
@@ -14,13 +14,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.Date;
-import javax.annotation.PostConstruct;
 import javax.crypto.SecretKey;
 import javax.servlet.http.HttpServletRequest;
-
-import static io.jsonwebtoken.SignatureAlgorithm.HS256;
 
 /**
  * JWT 관련 작업을 수행하는 Component
@@ -89,7 +85,7 @@ public class JwtProvider {
         } catch (ExpiredJwtException e) {
             return e.getClaims();
         } catch (JwtException | IllegalArgumentException e) {
-            throw new CertifyException("옳바르지 않은 토큰 입니다.", HttpStatus.UNAUTHORIZED);
+            throw new AuthorizationException("옳바르지 않은 토큰 입니다.", HttpStatus.UNAUTHORIZED);
         }
     }
 
@@ -147,8 +143,8 @@ public class JwtProvider {
         }
     }
 
-    private CertifyException getCertifyException(String message) {
-        return new CertifyException(message, HttpStatus.CONFLICT);
+    private AuthorizationException getCertifyException(String message) {
+        return new AuthorizationException(message, HttpStatus.CONFLICT);
     }
 
     /**
