@@ -1,7 +1,7 @@
 package com.flab.delivery.security.jwt;
 
 import com.flab.delivery.dto.UserDto.AuthDto;
-import com.flab.delivery.exception.AuthorizationException;
+import com.flab.delivery.exception.AuthException;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,7 +24,7 @@ public class CustomUserDetailService implements UserDetailsService {
         Claims claims = jwtProvider.parseClaims(token);
 
         if (claims.get("level") == null) {
-            throw new AuthorizationException("권한이 없습니다.", HttpStatus.FORBIDDEN);
+            throw new AuthException("권한이 없습니다.", HttpStatus.FORBIDDEN);
         }
 
         return new CustomUser(

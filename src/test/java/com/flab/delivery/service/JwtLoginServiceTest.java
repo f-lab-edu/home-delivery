@@ -5,7 +5,7 @@ import com.flab.delivery.dto.TestDto;
 import com.flab.delivery.dto.TokenDto;
 import com.flab.delivery.dto.UserDto;
 import com.flab.delivery.dto.UserDto.AuthDto;
-import com.flab.delivery.exception.AuthorizationException;
+import com.flab.delivery.exception.AuthException;
 import com.flab.delivery.security.jwt.JwtProvider;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -97,7 +97,7 @@ class JwtLoginServiceTest {
         given(tokenDao.getTokenByUserId(eq(userId))).willReturn(Optional.empty());
 
         // when
-        assertThatThrownBy(() -> loginService.reissue(tokenDto.getAccessToken(), tokenDto.getRefreshToken())).isInstanceOf(AuthorizationException.class);
+        assertThatThrownBy(() -> loginService.reissue(tokenDto.getAccessToken(), tokenDto.getRefreshToken())).isInstanceOf(AuthException.class);
 
         //then
         verify(tokenDao, never()).save(any(), any());
@@ -118,7 +118,7 @@ class JwtLoginServiceTest {
         given(tokenDao.getTokenByUserId(eq(userId))).willReturn(Optional.of(wrongToken));
 
         // when
-        assertThatThrownBy(() -> loginService.reissue(tokenDto.getAccessToken(), tokenDto.getRefreshToken())).isInstanceOf(AuthorizationException.class);
+        assertThatThrownBy(() -> loginService.reissue(tokenDto.getAccessToken(), tokenDto.getRefreshToken())).isInstanceOf(AuthException.class);
 
         //then
         verify(tokenDao, never()).save(any(), any());

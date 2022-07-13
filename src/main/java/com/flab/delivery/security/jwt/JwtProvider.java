@@ -4,7 +4,7 @@ import com.flab.delivery.dao.TokenDao;
 import com.flab.delivery.dto.TokenDto;
 import com.flab.delivery.dto.UserDto;
 import com.flab.delivery.dto.UserDto.AuthDto;
-import com.flab.delivery.exception.AuthorizationException;
+import com.flab.delivery.exception.AuthException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
@@ -85,7 +85,7 @@ public class JwtProvider {
         } catch (ExpiredJwtException e) {
             return e.getClaims();
         } catch (JwtException | IllegalArgumentException e) {
-            throw new AuthorizationException("옳바르지 않은 토큰 입니다.", HttpStatus.UNAUTHORIZED);
+            throw new AuthException("옳바르지 않은 토큰 입니다.", HttpStatus.UNAUTHORIZED);
         }
     }
 
@@ -143,8 +143,8 @@ public class JwtProvider {
         }
     }
 
-    private AuthorizationException getCertifyException(String message) {
-        return new AuthorizationException(message, HttpStatus.CONFLICT);
+    private AuthException getCertifyException(String message) {
+        return new AuthException(message, HttpStatus.CONFLICT);
     }
 
     /**
