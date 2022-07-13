@@ -1,6 +1,6 @@
 package com.flab.delivery.controller;
 
-import com.flab.delivery.annotation.hasCertify;
+import com.flab.delivery.annotation.hasAuthorization;
 import com.flab.delivery.dto.LoginDto;
 import com.flab.delivery.dto.SignUpDto;
 import com.flab.delivery.service.UserService;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-import static com.flab.delivery.annotation.hasCertify.UserLevel.*;
+import static com.flab.delivery.annotation.hasAuthorization.UserLevel.*;
 import static com.flab.delivery.controller.response.HttpStatusResponse.STATUS_CREATED;
 import static com.flab.delivery.controller.response.HttpStatusResponse.STATUS_OK;
 
@@ -46,7 +46,7 @@ public class UserController {
         return STATUS_OK;
     }
 
-    @hasCertify(level = ALL)
+    @hasAuthorization(level = ALL)
     @DeleteMapping("/logout")
     public ResponseEntity<HttpStatus> logout() {
 

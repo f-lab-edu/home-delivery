@@ -4,22 +4,22 @@
 <mapper namespace="com.flab.delivery.mapper.UserMapper">
 
     <insert id="save">
-        insert into user(id, email, password, name, phone_number, level)
-        values (#{id}, #{email}, #{password}, #{name}, #{phoneNumber}, #{level});
+        INSERT INTO USER(id, email, password, name, phone_number, level)
+        VALUES (#{id}, #{email}, #{password}, #{name}, #{phoneNumber}, #{level});
     </insert>
 
     <select id="existsUserById" resultType="boolean">
-        select exists(select id from user where id = #{id});
+        SELECT exists(SELECT id FROM user WHERE id = #{id});
     </select>
 
     <select id="getCountById" resultType="long">
-        select count(id)
-        from user;
+        SELECT count(id)
+        FROM user;
     </select>
 
     <select id="findUserById" resultType="UserDto">
-        select id, password, name, email, phone_number, level
-        from user
-        where id = #{id};
+        SELECT id, password, name, email, phone_number, level
+        FROM user
+        WHERE id = #{id};
     </select>
 </mapper>

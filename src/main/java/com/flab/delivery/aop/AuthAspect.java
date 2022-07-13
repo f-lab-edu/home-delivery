@@ -1,9 +1,9 @@
 package com.flab.delivery.aop;
 
-import com.flab.delivery.annotation.hasCertify;
-import com.flab.delivery.annotation.hasCertify.UserLevel;
+import com.flab.delivery.annotation.hasAuthorization;
+import com.flab.delivery.annotation.hasAuthorization.UserLevel;
 import com.flab.delivery.dto.UserDto;
-import com.flab.delivery.exception.CertifyException;
+import com.flab.delivery.exception.AuthException;
 import com.flab.delivery.mapper.UserMapper;
 import com.flab.delivery.service.LoginService;
 import lombok.RequiredArgsConstructor;
@@ -15,20 +15,20 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 @RequiredArgsConstructor
-public class CertifyAspect {
+public class AuthAspect {
 
     private final LoginService loginService;
     private final UserMapper userMapper;
 
 
     @Before("@annotation(target)")
-    public void checkCertify(hasCertify target) {
+    public void checkCertify(hasAuthorization target) {
 
         String currentUserId = loginService.getCurrentUserId();
 
         // 인증
         if (currentUserId == null) {
-            throw new CertifyException("로그인 되지 않은 사용자 입니다.", HttpStatus.UNAUTHORIZED);
+            throw new AuthException("로그인 되지 않은 사용자 입니다.", HttpStatus.UNAUTHORIZED);
         }
 
         if (target.level() == UserLevel.ALL) {
@@ -38,7 +38,7 @@ public class CertifyAspect {
         UserDto user = userMapper.findUserById(currentUserId).get();
 
         if (UserLevel.valueOf(user.getLevel()) != target.level()) {
-            throw new CertifyException("권한이 없습니다.", HttpStatus.FORBIDDEN);
+            throw new AuthException("권한이 없습니다.", HttpStatus.FORBIDDEN);
         }
     }
 }

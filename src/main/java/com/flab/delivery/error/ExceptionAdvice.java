@@ -1,6 +1,6 @@
 package com.flab.delivery.error;
 
-import com.flab.delivery.exception.CertifyException;
+import com.flab.delivery.exception.AuthException;
 import com.flab.delivery.exception.UserException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -27,8 +27,8 @@ public class ExceptionAdvice {
         return getBadResponse(e.getMessage());
     }
 
-    @ExceptionHandler(CertifyException.class)
-    public ResponseEntity<String> passwordExceptionHandler(CertifyException e) {
+    @ExceptionHandler(AuthException.class)
+    public ResponseEntity<String> passwordExceptionHandler(AuthException e) {
         return new ResponseEntity<>(e.getMessage(), e.getStatus());
     }
 
