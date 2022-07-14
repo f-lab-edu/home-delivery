@@ -23,13 +23,13 @@ public class UserController {
     private final LoginService loginService;
 
     @PostMapping("/signup")
-    public ResponseEntity createUser(@RequestBody @Valid SignUpDto signUpDto){
+    public ResponseEntity<Void> createUser(@RequestBody @Valid SignUpDto signUpDto) {
         userService.createUser(signUpDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping("/login")
-    public ResponseEntity loginUser(@RequestBody UserDto userDto){
+    public ResponseEntity<Void> loginUser(@RequestBody UserDto userDto) {
         userService.loginUser(userDto);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
@@ -37,7 +37,7 @@ public class UserController {
     // 로그아웃은 로그인된 상태만 가능하다
     @LoginCheck(userLevel = UserLevel.ALL)
     @DeleteMapping("/logout")
-    public ResponseEntity logoutUser(){
+    public ResponseEntity<Void> logoutUser() {
         loginService.logoutUser();
         return ResponseEntity.status(HttpStatus.OK).build();
     }

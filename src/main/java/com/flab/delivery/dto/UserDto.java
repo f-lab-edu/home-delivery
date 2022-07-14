@@ -1,19 +1,16 @@
 package com.flab.delivery.dto;
 
 import com.flab.delivery.enums.UserLevel;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserDto {
 
     private String id;
@@ -33,9 +30,9 @@ public class UserDto {
     private LocalDateTime modifiedAt;
 
     @Builder
-    public UserDto(String id, String email, String password, String name, String phoneNumber, UserLevel level){
+    public UserDto(String id, String email, String password, String name, String phoneNumber, UserLevel level) {
         this.id = id;
-        this. email = email;
+        this.email = email;
         this.password = password;
         this.name = name;
         this.phoneNumber = phoneNumber;

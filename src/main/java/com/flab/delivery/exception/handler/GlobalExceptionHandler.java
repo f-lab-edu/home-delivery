@@ -15,8 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(SessionLoginException.class)
-    public ResponseEntity handleSessionLoginException(SessionLoginException ex, HttpServletRequest request){
-        log.info("Http Method : {}  URI : {}, msg : {}",request.getMethod(),request.getRequestURI(), ex.getMessage());
+    public ResponseEntity<String> handleSessionLoginException(SessionLoginException ex, HttpServletRequest request) {
+        log.info("Http Method : {}  URI : {}, msg : {}", request.getMethod(), request.getRequestURI(), ex.getMessage());
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
     }
 }

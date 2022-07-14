@@ -18,26 +18,25 @@ import javax.servlet.http.HttpServletRequest;
 public class UserExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity handleMethodArgumentNotValidException(MethodArgumentNotValidException ex, HttpServletRequest request){
+    public ResponseEntity<String> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex, HttpServletRequest request) {
         String msg = ex.getBindingResult().getAllErrors().get(0).getDefaultMessage();
-        log.info("Http Method : {}, URI : {}, msg : {}",request.getMethod(),request.getRequestURI(), msg);
+        log.info("Http Method : {}, URI : {}, msg : {}", request.getMethod(), request.getRequestURI(), msg);
         return getBadResponse(msg);
     }
 
-
     @ExceptionHandler(SignUpException.class)
-    public ResponseEntity handleSignUpException(SignUpException ex, HttpServletRequest request){
-        log.info("Http Method : {}  URI : {}, msg : {}",request.getMethod(),request.getRequestURI(), ex.getMessage());
+    public ResponseEntity<String> handleSignUpException(SignUpException ex, HttpServletRequest request) {
+        log.info("Http Method : {}  URI : {}, msg : {}", request.getMethod(), request.getRequestURI(), ex.getMessage());
         return getBadResponse(ex.getMessage());
     }
 
     @ExceptionHandler(LoginException.class)
-    public ResponseEntity handleLoginException(LoginException ex, HttpServletRequest request){
-        log.info("Http Method : {}  URI : {}, msg : {}",request.getMethod(),request.getRequestURI(), ex.getMessage());
+    public ResponseEntity<String> handleLoginException(LoginException ex, HttpServletRequest request) {
+        log.info("Http Method : {}  URI : {}, msg : {}", request.getMethod(), request.getRequestURI(), ex.getMessage());
         return getBadResponse(ex.getMessage());
     }
 
-    private ResponseEntity<String> getBadResponse(String msg){
+    private ResponseEntity<String> getBadResponse(String msg) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(msg);
     }
 }

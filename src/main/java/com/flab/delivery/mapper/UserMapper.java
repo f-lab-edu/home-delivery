@@ -5,7 +5,7 @@ import com.flab.delivery.dto.UserDto;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
-public interface UserMapper{
+public interface UserMapper {
 
     void insertUser(SignUpDto userDto);
 

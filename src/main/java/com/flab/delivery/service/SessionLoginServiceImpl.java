@@ -12,7 +12,7 @@ import javax.servlet.http.HttpSession;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class SessionLoginServiceImpl implements LoginService{
+public class SessionLoginServiceImpl implements LoginService {
 
     private final HttpSession httpSession;
     private final String SESSION_ID = "SESSION_ID";
