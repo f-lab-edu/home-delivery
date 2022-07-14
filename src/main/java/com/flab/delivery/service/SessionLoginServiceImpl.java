@@ -19,7 +19,7 @@ public class SessionLoginServiceImpl implements LoginService {
 
 
     @Override
-    public void loginUser(String id) {
+    public void loginUser(final String id) {
         httpSession.setAttribute(SESSION_ID, id);
     }
 

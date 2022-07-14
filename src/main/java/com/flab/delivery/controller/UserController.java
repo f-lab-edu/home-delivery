@@ -23,13 +23,13 @@ public class UserController {
     private final LoginService loginService;
 
     @PostMapping("/signup")
-    public ResponseEntity<Void> createUser(@RequestBody @Valid SignUpDto signUpDto) {
+    public ResponseEntity<Void> createUser(@RequestBody @Valid final SignUpDto signUpDto) {
         userService.createUser(signUpDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Void> loginUser(@RequestBody UserDto userDto) {
+    public ResponseEntity<Void> loginUser(@RequestBody final UserDto userDto) {
         userService.loginUser(userDto);
         return ResponseEntity.status(HttpStatus.OK).build();
     }

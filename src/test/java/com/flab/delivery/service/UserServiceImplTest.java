@@ -27,11 +27,10 @@ class UserServiceImplTest {
     @InjectMocks
     UserServiceImpl userService;
 
-    @InjectMocks
+    @Mock
     SessionLoginServiceImpl loginService;
 
-    @Mock
-    HttpSession httpSession;
+
 
 
     @Nested
@@ -119,8 +118,7 @@ class UserServiceImplTest {
                                 .password(PasswordEncoder.encrypt(userDto.getPassword()))
                         .build());
 
-                when(httpSession.getAttribute("SESSION_ID")).thenReturn("user1");
-                // refactoring -> when(loginService.getSessionUserId()).thenReturn("user1");
+                when(loginService.getSessionUserId()).thenReturn("user1");
                 // when
                 userService.loginUser(userDto);
                 String getSessionID = loginService.getSessionUserId();

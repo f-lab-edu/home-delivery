@@ -137,7 +137,7 @@ class UserControllerTest {
                     mockMvc.perform(post("/users/signup").contentType(MediaType.APPLICATION_JSON)
                                     .content(json))
                             .andExpect(status().isBadRequest())
-                            .andExpect(content().string("비밀번호는 필수 입력값입니다"))
+                            .andExpect(content().string("비밀번호는 8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요"))
                             .andDo(print());
                 }
 
@@ -150,7 +150,7 @@ class UserControllerTest {
                     mockMvc.perform(post("/users/signup").contentType(MediaType.APPLICATION_JSON)
                                     .content(json))
                             .andExpect(status().isBadRequest())
-                            .andExpect(content().string("비밀번호는 필수 입력값입니다"))
+                            .andExpect(content().string("비밀번호는 8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요"))
                             .andDo(print());
                 }
 
