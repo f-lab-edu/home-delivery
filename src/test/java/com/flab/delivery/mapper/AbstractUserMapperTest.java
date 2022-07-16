@@ -31,7 +31,7 @@ public class AbstractUserMapperTest {
         mapper.save(signUpDto);
 
         //then
-        assertThat(mapper.existsUserById(signUpDto.getId())).isTrue();
+        assertThat(mapper.hasUserById(signUpDto.getId())).isTrue();
     }
 
     @Test
@@ -45,7 +45,7 @@ public class AbstractUserMapperTest {
         assertThatThrownBy(() -> mapper.save(signUpDto)).isInstanceOf(DataAccessException.class);
 
         //then
-        assertThat(mapper.existsUserById(signUpDto.getId())).isTrue();
+        assertThat(mapper.hasUserById(signUpDto.getId())).isTrue();
         assertThat(mapper.getCountById()).isEqualTo(1);
     }
 
@@ -61,8 +61,8 @@ public class AbstractUserMapperTest {
         mapper.save(user2);
 
         //then
-        assertThat(mapper.existsUserById(user1.getId())).isTrue();
-        assertThat(mapper.existsUserById(user2.getId())).isTrue();
+        assertThat(mapper.hasUserById(user1.getId())).isTrue();
+        assertThat(mapper.hasUserById(user2.getId())).isTrue();
     }
 
     @Test

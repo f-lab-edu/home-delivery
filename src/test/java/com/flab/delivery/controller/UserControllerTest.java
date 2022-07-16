@@ -16,6 +16,7 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.flab.delivery.utils.Constants.SESSION_ID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -52,7 +53,7 @@ public class UserControllerTest {
                 .andExpect(status().isCreated());
 
         //then
-        assertThat(mapper.existsUserById(signUpDto.getId())).isTrue();
+        assertThat(mapper.hasUserById(signUpDto.getId())).isTrue();
     }
 
     @Test
@@ -70,7 +71,7 @@ public class UserControllerTest {
                 .andDo(print());
 
         //then
-        assertThat(mapper.existsUserById(signUpDto.getId())).isFalse();
+        assertThat(mapper.hasUserById(signUpDto.getId())).isFalse();
 
     }
 
@@ -155,7 +156,7 @@ public class UserControllerTest {
     void logout_성공() throws Exception {
         // given
         userService.signUp(TestDto.getSignUpDto());
-        mockHttpSession.setAttribute("SESSION_ID", "test");
+        mockHttpSession.setAttribute(SESSION_ID, "test");
 
         // when
         mockMvc.perform(delete(uri + "/logout")
@@ -163,7 +164,7 @@ public class UserControllerTest {
                 .andExpect(status().isOk());
 
         //then
-        assertThat(mockHttpSession.getAttribute("SESSION_ID")).isNull();
+        assertThat(mockHttpSession.getAttribute(SESSION_ID)).isNull();
     }
 
     @Test

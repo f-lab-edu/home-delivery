@@ -7,11 +7,14 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface hasAuthorization {
+public @interface HasAuthorization {
 
-    UserLevel level();
+    UserType level() default UserType.ALL;
 
-    enum UserLevel {
-        ALL, USER, RIDER, OWNER
+    enum UserType {
+        ALL,
+        USER,
+        RIDER,
+        OWNER
     }
 }

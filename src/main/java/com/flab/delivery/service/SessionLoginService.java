@@ -6,12 +6,13 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
 
+import static com.flab.delivery.utils.Constants.SESSION_ID;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class SessionLoginService implements LoginService {
 
-    private static final String SESSION_ID = "SESSION_ID";
     private final HttpSession session;
 
     @Override

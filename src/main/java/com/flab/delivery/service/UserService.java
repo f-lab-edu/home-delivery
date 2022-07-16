@@ -18,18 +18,17 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     private final UserMapper mapper;
-    private final PasswordEncoder passwordEncoder;
     private final LoginService loginService;
 
     public void signUp(SignUpDto signUpDto) {
 
-        signUpDto.setPassword(passwordEncoder.encoder(signUpDto.getPassword()));
+        signUpDto.setPassword(PasswordEncoder.encode(signUpDto.getPassword()));
 
         mapper.save(signUpDto);
     }
 
-    public void checkIdDuplicated(String id) {
-        if (mapper.existsUserById(id)) {
+    public void checkDuplicatedId(String id) {
+        if (mapper.hasUserById(id)) {
             log.error("유저 회원가입 이미 존재하는 아이디 =  {} ", id);
             throw new UserException("이미 존재하는 아이디 입니다.");
         }
@@ -44,7 +43,7 @@ public class UserService {
                     throw new UserException("해당 회원을 찾을 수 없습니다.");
                 });
 
-        if (!passwordEncoder.isMatch(loginDto.getPassword(), findMember.getPassword())) {
+        if (!PasswordEncoder.matches(loginDto.getPassword(), findMember.getPassword())) {
             throw new AuthException("비밀번호가 일치하지 않습니다.", HttpStatus.UNAUTHORIZED);
         }
 

@@ -1,5 +1,7 @@
 package com.flab.delivery.dto;
 
+import com.flab.delivery.utils.PasswordEncoder;
+
 public class TestDto {
 
 
@@ -18,7 +20,7 @@ public class TestDto {
         return UserDto.builder()
                 .id("test")
                 .name("테스트")
-                .password("$#$FDFSASD!")
+                .password(PasswordEncoder.encode("!Asdasd1234v"))
                 .email("test@mail.com")
                 .phoneNumber("01011111111")
                 .level("USER")

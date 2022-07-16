@@ -8,7 +8,7 @@
         VALUES (#{id}, #{email}, #{password}, #{name}, #{phoneNumber}, #{level});
     </insert>
 
-    <select id="existsUserById" resultType="boolean">
+    <select id="hasUserById" resultType="boolean">
         SELECT exists(SELECT id FROM user WHERE id = #{id});
     </select>
 

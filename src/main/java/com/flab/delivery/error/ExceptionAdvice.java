@@ -1,6 +1,7 @@
 package com.flab.delivery.error;
 
 import com.flab.delivery.exception.AuthException;
+import com.flab.delivery.exception.BadInputException;
 import com.flab.delivery.exception.UserException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,12 @@ public class ExceptionAdvice {
 
     @ExceptionHandler(UserException.class)
     public ResponseEntity<String> userExceptionHandler(HttpServletRequest request, UserException e) {
+        log.error("requestUrl : {} , errorCode : {}", request.getRequestURI(), e);
+        return getBadResponse(e.getMessage());
+    }
+
+    @ExceptionHandler(BadInputException.class)
+    public ResponseEntity<String> badInputExceptionHandler(HttpServletRequest request, UserException e) {
         log.error("requestUrl : {} , errorCode : {}", request.getRequestURI(), e);
         return getBadResponse(e.getMessage());
     }

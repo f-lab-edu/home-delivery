@@ -1,7 +1,7 @@
 package com.flab.delivery.aop;
 
-import com.flab.delivery.annotation.hasAuthorization;
-import com.flab.delivery.annotation.hasAuthorization.UserLevel;
+import com.flab.delivery.annotation.HasAuthorization;
+import com.flab.delivery.annotation.HasAuthorization.UserType;
 import com.flab.delivery.dto.UserDto;
 import com.flab.delivery.exception.AuthException;
 import com.flab.delivery.mapper.UserMapper;
@@ -22,7 +22,7 @@ public class AuthAspect {
 
 
     @Before("@annotation(target)")
-    public void checkCertify(hasAuthorization target) {
+    public void checkCertify(HasAuthorization target) {
 
         String currentUserId = loginService.getCurrentUserId();
 
@@ -31,13 +31,13 @@ public class AuthAspect {
             throw new AuthException("로그인 되지 않은 사용자 입니다.", HttpStatus.UNAUTHORIZED);
         }
 
-        if (target.level() == UserLevel.ALL) {
+        if (target.level() == UserType.ALL) {
             return;
         }
 
         UserDto user = userMapper.findUserById(currentUserId).get();
 
-        if (UserLevel.valueOf(user.getLevel()) != target.level()) {
+        if (UserType.valueOf(user.getLevel()) != target.level()) {
             throw new AuthException("권한이 없습니다.", HttpStatus.FORBIDDEN);
         }
     }

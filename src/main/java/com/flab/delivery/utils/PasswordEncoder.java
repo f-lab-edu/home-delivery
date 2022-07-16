@@ -1,8 +1,20 @@
 package com.flab.delivery.utils;
 
-public interface PasswordEncoder {
+import org.mindrot.jbcrypt.BCrypt;
 
-    String encoder(String password);
+public class PasswordEncoder {
 
-    boolean isMatch(String password, String hashValue);
+    /**
+     * 인스턴스 생성 방지
+     */
+    private PasswordEncoder() {
+    }
+
+    public static String encode(String password) {
+        return BCrypt.hashpw(password, BCrypt.gensalt());
+    }
+
+    public static boolean matches(String password, String hashValue) {
+        return BCrypt.checkpw(password, hashValue);
+    }
 }

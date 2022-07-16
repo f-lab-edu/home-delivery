@@ -11,7 +11,7 @@ public interface UserMapper {
 
     void save(SignUpDto signUpDto);
 
-    boolean existsUserById(String id);
+    boolean hasUserById(String id);
 
     long getCountById();
 

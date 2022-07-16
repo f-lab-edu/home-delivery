@@ -7,7 +7,6 @@ import com.flab.delivery.dto.UserDto;
 import com.flab.delivery.exception.AuthException;
 import com.flab.delivery.exception.UserException;
 import com.flab.delivery.mapper.UserMapper;
-import com.flab.delivery.utils.PasswordEncoder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -29,8 +28,6 @@ class UserServiceTest {
     UserService userService;
 
     @Mock
-    PasswordEncoder passwordEncoder;
-    @Mock
     UserMapper mapper;
 
     @Mock
@@ -41,41 +38,39 @@ class UserServiceTest {
     void signUp_성공() {
         // given
         SignUpDto signUpDto = TestDto.getSignUpDto();
-        given(passwordEncoder.encoder(eq(signUpDto.getPassword()))).willReturn(any());
 
         // when
         userService.signUp(signUpDto);
 
         //then
         verify(mapper).save(any());
-        verify(passwordEncoder).encoder(any());
 
     }
 
     @Test
-    void checkIdDuplicated_중복된_아이디_없어서_성공() {
+    void checkDuplicatedId_중복된_아이디_없어서_성공() {
         // given
         SignUpDto signUpDto = TestDto.getSignUpDto();
-        given(mapper.existsUserById(eq(signUpDto.getId()))).willReturn(false);
+        given(mapper.hasUserById(eq(signUpDto.getId()))).willReturn(false);
 
         // when
-        userService.checkIdDuplicated(signUpDto.getId());
+        userService.checkDuplicatedId(signUpDto.getId());
 
         //then
-        verify(mapper).existsUserById(eq(signUpDto.getId()));
+        verify(mapper).hasUserById(eq(signUpDto.getId()));
     }
 
     @Test
-    void checkIdDuplicated_중복된_아이디_때문에_실패() {
+    void checkDuplicatedId_중복된_아이디_때문에_실패() {
         // given
         SignUpDto signUpDto = TestDto.getSignUpDto();
-        given(mapper.existsUserById(eq(signUpDto.getId()))).willReturn(true);
+        given(mapper.hasUserById(eq(signUpDto.getId()))).willReturn(true);
 
         // when
-        assertThatThrownBy(() -> userService.checkIdDuplicated(signUpDto.getId())).isInstanceOf(UserException.class);
+        assertThatThrownBy(() -> userService.checkDuplicatedId(signUpDto.getId())).isInstanceOf(UserException.class);
 
         //then
-        verify(mapper).existsUserById(eq(signUpDto.getId()));
+        verify(mapper).hasUserById(eq(signUpDto.getId()));
     }
 
     @Test
@@ -89,23 +84,22 @@ class UserServiceTest {
 
         //then
         verify(mapper).findUserById(eq(loginDto.getId()));
-        verify(passwordEncoder, never()).isMatch(any(), any());
     }
 
     @Test
     void login_비밀번호가_일치하지_않아_실패() {
         // given
         LoginDto loginDto = TestDto.getLoginDto();
+        loginDto.setPassword("wrongPassword");
+
         UserDto userDto = TestDto.getMemberDto();
         given(mapper.findUserById(eq(loginDto.getId()))).willReturn(Optional.of(userDto));
-        given(passwordEncoder.isMatch(eq(loginDto.getPassword()), eq(userDto.getPassword()))).willReturn(false);
 
         // when
         assertThatThrownBy(() -> userService.login(loginDto)).isInstanceOf(AuthException.class);
 
         //then
         verify(mapper).findUserById(eq(loginDto.getId()));
-        verify(passwordEncoder).isMatch(any(), any());
     }
 
     @Test
@@ -114,14 +108,12 @@ class UserServiceTest {
         LoginDto loginDto = TestDto.getLoginDto();
         UserDto userDto = TestDto.getMemberDto();
         given(mapper.findUserById(eq(loginDto.getId()))).willReturn(Optional.of(userDto));
-        given(passwordEncoder.isMatch(eq(loginDto.getPassword()), eq(userDto.getPassword()))).willReturn(true);
 
         // when
         userService.login(loginDto);
 
         //then
         verify(mapper).findUserById(eq(loginDto.getId()));
-        verify(passwordEncoder).isMatch(any(), any());
         verify(loginService).login(eq(loginDto.getId()));
 
     }
