@@ -5,7 +5,6 @@ import com.flab.delivery.controller.UserController;
 import com.flab.delivery.exception.LoginException;
 import com.flab.delivery.exception.SignUpException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -37,6 +36,6 @@ public class UserExceptionHandler {
     }
 
     private ResponseEntity<String> getBadResponse(String msg) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(msg);
+        return ResponseEntity.badRequest().body(msg);
     }
 }

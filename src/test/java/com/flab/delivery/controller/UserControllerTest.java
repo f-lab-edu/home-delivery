@@ -5,8 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.flab.delivery.dto.SignUpDto;
 import com.flab.delivery.dto.UserDto;
-import com.flab.delivery.enums.UserLevel;
+import com.flab.delivery.enums.UserType;
 
+import com.flab.delivery.utils.SessionConstant;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -35,16 +36,15 @@ class UserControllerTest {
     ObjectMapper objectMapper;
 
 
-
     @Nested
-    @DisplayName("/users/signup")
+    @DisplayName("POST : /users")
     class createUser{
         private String id = "testUser1";
         private String password = "!Test1111";
         private String email = "user@naver.com";
         private String name = "유저1";
         private String phoneNumber = "010-1111-1111";
-        private UserLevel level = UserLevel.USER;
+        private UserType level = UserType.USER;
 
         private SignUpDto getSignUpDto(){
             return SignUpDto.builder()
@@ -53,7 +53,7 @@ class UserControllerTest {
                     .name(name)
                     .email(email)
                     .phoneNumber(phoneNumber)
-                    .level(level)
+                    .type(level)
                     .build();
         }
 
@@ -66,7 +66,7 @@ class UserControllerTest {
             void crateUser_success() throws Exception{
                 SignUpDto userDto = getSignUpDto();
                 String json = objectMapper.writeValueAsString(userDto);
-                mockMvc.perform(post("/users/signup").contentType(MediaType.APPLICATION_JSON)
+                mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON)
                                 .content(json))
                         .andExpect(status().is2xxSuccessful())
                         .andDo(print());
@@ -88,7 +88,7 @@ class UserControllerTest {
                     id = null;
                     SignUpDto userDto = getSignUpDto();
                     String json = objectMapper.writeValueAsString(userDto);
-                    mockMvc.perform(post("/users/signup").contentType(MediaType.APPLICATION_JSON)
+                    mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON)
                             .content(json))
                             .andExpect(status().isBadRequest())
                             .andExpect(content().string("아이디는 필수 입력값입니다"))
@@ -101,7 +101,7 @@ class UserControllerTest {
                     id = "";
                     SignUpDto userDto = getSignUpDto();
                     String json = objectMapper.writeValueAsString(userDto);
-                    mockMvc.perform(post("/users/signup").contentType(MediaType.APPLICATION_JSON)
+                    mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON)
                                     .content(json))
                             .andExpect(status().isBadRequest())
                             .andExpect(content().string("아이디는 필수 입력값입니다"))
@@ -114,7 +114,7 @@ class UserControllerTest {
                     id = "user1";
                     SignUpDto userDto = getSignUpDto();
                     String json = objectMapper.writeValueAsString(userDto);
-                    mockMvc.perform(post("/users/signup").contentType(MediaType.APPLICATION_JSON)
+                    mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON)
                                     .content(json))
                             .andExpect(status().isBadRequest())
                             .andExpect(content().string("이미 존재하는 아이디입니다"))
@@ -134,7 +134,7 @@ class UserControllerTest {
                     password = null;
                     SignUpDto userDto = getSignUpDto();
                     String json = objectMapper.writeValueAsString(userDto);
-                    mockMvc.perform(post("/users/signup").contentType(MediaType.APPLICATION_JSON)
+                    mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON)
                                     .content(json))
                             .andExpect(status().isBadRequest())
                             .andExpect(content().string("비밀번호는 8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요"))
@@ -147,7 +147,7 @@ class UserControllerTest {
                     password = "";
                     SignUpDto userDto = getSignUpDto();
                     String json = objectMapper.writeValueAsString(userDto);
-                    mockMvc.perform(post("/users/signup").contentType(MediaType.APPLICATION_JSON)
+                    mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON)
                                     .content(json))
                             .andExpect(status().isBadRequest())
                             .andExpect(content().string("비밀번호는 8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요"))
@@ -160,7 +160,7 @@ class UserControllerTest {
                     password = "1111";
                     SignUpDto userDto = getSignUpDto();
                     String json = objectMapper.writeValueAsString(userDto);
-                    mockMvc.perform(post("/users/signup").contentType(MediaType.APPLICATION_JSON)
+                    mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON)
                                     .content(json))
                             .andExpect(status().isBadRequest())
                             .andExpect(content().string("비밀번호는 8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요"))
@@ -173,7 +173,7 @@ class UserControllerTest {
                     password = "@11111111";
                     SignUpDto userDto = getSignUpDto();
                     String json = objectMapper.writeValueAsString(userDto);
-                    mockMvc.perform(post("/users/signup").contentType(MediaType.APPLICATION_JSON)
+                    mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON)
                                     .content(json))
                             .andExpect(status().isBadRequest())
                             .andExpect(content().string("비밀번호는 8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요"))
@@ -193,9 +193,9 @@ class UserControllerTest {
                     email = null;
                     SignUpDto userDto = getSignUpDto();
                     String json = objectMapper.writeValueAsString(userDto);
-                    mockMvc.perform(post("/users/signup").contentType(MediaType.APPLICATION_JSON)
+                    mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON)
                                     .content(json))
-                            .andExpect(status().isBadRequest())
+                            .andExpect(status().is4xxClientError())
                             .andExpect(content().string("이메일은 필수 입력값입니다"))
                             .andDo(print());
                 }
@@ -206,7 +206,7 @@ class UserControllerTest {
                     email = "";
                     SignUpDto userDto = getSignUpDto();
                     String json = objectMapper.writeValueAsString(userDto);
-                    mockMvc.perform(post("/users/signup").contentType(MediaType.APPLICATION_JSON)
+                    mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON)
                                     .content(json))
                             .andExpect(status().isBadRequest())
                             .andExpect(content().string("이메일 형식이 아닙니다"))
@@ -219,7 +219,7 @@ class UserControllerTest {
                     email = "user!naver.com";
                     SignUpDto userDto = getSignUpDto();
                     String json = objectMapper.writeValueAsString(userDto);
-                    mockMvc.perform(post("/users/signup").contentType(MediaType.APPLICATION_JSON)
+                    mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON)
                                     .content(json))
                             .andExpect(status().isBadRequest())
                             .andExpect(content().string("이메일 형식이 아닙니다"))
@@ -237,7 +237,7 @@ class UserControllerTest {
                     name = null;
                     SignUpDto userDto = getSignUpDto();
                     String json = objectMapper.writeValueAsString(userDto);
-                    mockMvc.perform(post("/users/signup").contentType(MediaType.APPLICATION_JSON)
+                    mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON)
                                     .content(json))
                             .andExpect(status().isBadRequest())
                             .andExpect(content().string("이름은 필수 입력값입니다"))
@@ -251,7 +251,7 @@ class UserControllerTest {
                     name = "";
                     SignUpDto userDto = getSignUpDto();
                     String json = objectMapper.writeValueAsString(userDto);
-                    mockMvc.perform(post("/users/signup").contentType(MediaType.APPLICATION_JSON)
+                    mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON)
                                     .content(json))
                             .andExpect(status().isBadRequest())
                             .andExpect(content().string("이름은 필수 입력값입니다"))
@@ -270,7 +270,7 @@ class UserControllerTest {
                     phoneNumber = null;
                     SignUpDto userDto = getSignUpDto();
                     String json = objectMapper.writeValueAsString(userDto);
-                    mockMvc.perform(post("/users/signup").contentType(MediaType.APPLICATION_JSON)
+                    mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON)
                                     .content(json))
                             .andExpect(status().isBadRequest())
                             .andExpect(content().string("핸드폰 번호는 필수 입력값입니다"))
@@ -283,7 +283,7 @@ class UserControllerTest {
                     phoneNumber = "";
                     SignUpDto userDto = getSignUpDto();
                     String json = objectMapper.writeValueAsString(userDto);
-                    mockMvc.perform(post("/users/signup").contentType(MediaType.APPLICATION_JSON)
+                    mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON)
                                     .content(json))
                             .andExpect(status().isBadRequest())
                             .andExpect(content().string("핸드폰 형식이 아닙니다"))
@@ -296,7 +296,7 @@ class UserControllerTest {
                     phoneNumber = "01011111111";
                     SignUpDto userDto = getSignUpDto();
                     String json = objectMapper.writeValueAsString(userDto);
-                    mockMvc.perform(post("/users/signup").contentType(MediaType.APPLICATION_JSON)
+                    mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON)
                                     .content(json))
                             .andExpect(status().isBadRequest())
                             .andExpect(content().string("핸드폰 형식이 아닙니다"))
@@ -315,7 +315,7 @@ class UserControllerTest {
                     level = null;
                     SignUpDto userDto = getSignUpDto();
                     String json = objectMapper.writeValueAsString(userDto);
-                    mockMvc.perform(post("/users/signup").contentType(MediaType.APPLICATION_JSON)
+                    mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON)
                                     .content(json))
                             .andExpect(status().isBadRequest())
                             .andExpect(content().string("권한은 필수 입력값입니다"))
@@ -407,12 +407,12 @@ class UserControllerTest {
             @Test
             @DisplayName("로그 아웃")
             void logout_success() throws Exception {
-                mockHttpSession.setAttribute("SESSION_ID", "user1");
+                mockHttpSession.setAttribute(SessionConstant.SESSION_ID, "user1");
                 mockMvc.perform(delete("/users/logout").session(mockHttpSession))
                         .andExpect(status().is2xxSuccessful())
                         .andDo(print());
 
-                Assertions.assertNull(mockHttpSession.getAttribute("SESSION_ID"));
+                Assertions.assertNull(mockHttpSession.getAttribute(SessionConstant.SESSION_ID));
             }
         }
 

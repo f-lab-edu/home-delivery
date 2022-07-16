@@ -1,5 +1,6 @@
 package com.flab.delivery.service;
 
+import com.flab.delivery.utils.SessionConstant;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,12 +22,14 @@ class SessionLoginServiceImplTest {
     @InjectMocks
     SessionLoginServiceImpl loginService;
 
+    private final String SESSION_ID = SessionConstant.SESSION_ID;
+
     @Test
     @DisplayName("현재 세션아이디")
     void getSessionUserId(){
         // given
         loginService.loginUser("user1");
-        when(httpSession.getAttribute("SESSION_ID")).thenReturn("user1");
+        when(httpSession.getAttribute(SESSION_ID)).thenReturn("user1");
         // when
         String sessionUserId = loginService.getSessionUserId();
         // then

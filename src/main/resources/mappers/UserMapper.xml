@@ -4,14 +4,14 @@
 <mapper namespace="com.flab.delivery.mapper.UserMapper">
 
 
-    <select id="isExistsId" resultType="boolean">
-        SELECT EXISTS (SELECT id FROM USER WHERE id = #{id})
+    <select id="idExists" resultType="boolean">
+        SELECT EXISTS (SELECT id FROM USER LIMIT1 WHERE id = #{id})
     </select>
 
 
-    <insert id="insertUser" parameterType="com.flab.delivery.dto.SignUpDto">
-        INSERT INTO USER(id, email, password, name, phone_number, level)
-        VALUES(#{id}, #{email}, #{password}, #{name}, #{phoneNumber}, #{level})
+    <insert id="save" parameterType="com.flab.delivery.dto.SignUpDto">
+        INSERT INTO USER(id, email, password, name, phone_number, type)
+        VALUES(#{id}, #{email}, #{password}, #{name}, #{phoneNumber}, #{type})
     </insert>
 
     <select id="findById" resultType="com.flab.delivery.dto.UserDto">

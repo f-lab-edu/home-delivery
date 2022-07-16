@@ -2,7 +2,7 @@ package com.flab.delivery.service;
 
 import com.flab.delivery.dto.SignUpDto;
 import com.flab.delivery.dto.UserDto;
-import com.flab.delivery.enums.UserLevel;
+import com.flab.delivery.enums.UserType;
 import com.flab.delivery.exception.LoginException;
 import com.flab.delivery.exception.SignUpException;
 import com.flab.delivery.mapper.UserMapper;
@@ -12,8 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import javax.servlet.http.HttpSession;
 
 import static org.mockito.Mockito.when;
 
@@ -47,7 +45,7 @@ class UserServiceImplTest {
                     .email("user@naver.com")
                     .name("유저1")
                     .phoneNumber("010-1111-111")
-                    .level(UserLevel.USER)
+                    .type(UserType.USER)
                     .build();
         }
 
@@ -63,7 +61,7 @@ class UserServiceImplTest {
                         .id("user1")
                         .build();
 
-                when(userMapper.isExistsId("user1")).thenReturn(false);
+                when(userMapper.idExists("user1")).thenReturn(false);
                 when(userMapper.findById("user1")).thenReturn(userDto);
                 // when
                 userService.createUser(signUpDto);
@@ -81,7 +79,7 @@ class UserServiceImplTest {
             @DisplayName("아이디 이미 존재")
             void createUser_fail(){
                 // given
-                when(userMapper.isExistsId("user1")).thenReturn(true);
+                when(userMapper.idExists("user1")).thenReturn(true);
                 // when
                 SignUpException e = Assertions.assertThrows(SignUpException.class, () -> {
                     userService.createUser(signUpDto);
@@ -112,7 +110,7 @@ class UserServiceImplTest {
             @DisplayName("로그인 성공")
             void loginUser_success(){
                 // given
-                when(userMapper.isExistsId(userDto.getId())).thenReturn(true);
+                when(userMapper.idExists(userDto.getId())).thenReturn(true);
                 when(userMapper.findById(userDto.getId())).thenReturn(UserDto.builder()
                                 .id(userDto.getId())
                                 .password(PasswordEncoder.encrypt(userDto.getPassword()))
@@ -135,7 +133,7 @@ class UserServiceImplTest {
             @DisplayName("아이디 존재x 경우")
             void loginUser_fail_아이디(){
                 // given
-                when(userMapper.isExistsId("user1")).thenReturn(false);
+                when(userMapper.idExists("user1")).thenReturn(false);
                 // when
                 LoginException ex = Assertions.assertThrows(LoginException.class, () -> {
                     userService.loginUser(userDto);
@@ -150,7 +148,7 @@ class UserServiceImplTest {
                 // given
                 String diffPassword = "2222";
 
-                when(userMapper.isExistsId(userDto.getId())).thenReturn(true);
+                when(userMapper.idExists(userDto.getId())).thenReturn(true);
                 when(userMapper.findById(userDto.getId())).thenReturn(UserDto.builder()
                         .id(userDto.getId())
                         .password(PasswordEncoder.encrypt(diffPassword))

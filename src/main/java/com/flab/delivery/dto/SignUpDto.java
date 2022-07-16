@@ -1,6 +1,6 @@
 package com.flab.delivery.dto;
 
-import com.flab.delivery.enums.UserLevel;
+import com.flab.delivery.enums.UserType;
 import lombok.*;
 
 import javax.validation.constraints.Email;
@@ -9,7 +9,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 @Getter
-@NoArgsConstructor (access = AccessLevel.PRIVATE)
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
 public class SignUpDto {
 
     @NotBlank(message = "아이디는 필수 입력값입니다")
@@ -31,16 +33,5 @@ public class SignUpDto {
     private String phoneNumber;
 
     @NotNull(message = "권한은 필수 입력값입니다")
-    private UserLevel level;
-
-
-    @Builder
-    public SignUpDto(String id, String email, String password, String name, String phoneNumber, UserLevel level) {
-        this.id = id;
-        this.email = email;
-        this.password = password;
-        this.name = name;
-        this.phoneNumber = phoneNumber;
-        this.level = level;
-    }
+    private UserType type;
 }

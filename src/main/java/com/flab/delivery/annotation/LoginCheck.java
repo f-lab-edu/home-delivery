@@ -1,6 +1,6 @@
 package com.flab.delivery.annotation;
 
-import com.flab.delivery.enums.UserLevel;
+import com.flab.delivery.enums.UserType;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -11,5 +11,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface LoginCheck {
-    UserLevel userLevel();
+    UserType userType() default UserType.ALL;
 }

@@ -7,9 +7,10 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface UserMapper {
 
-    void insertUser(SignUpDto userDto);
+    void save(SignUpDto userDto);
 
-    boolean isExistsId(String id);
+    boolean idExists(String id);
+
 
     UserDto findById(String id);
 

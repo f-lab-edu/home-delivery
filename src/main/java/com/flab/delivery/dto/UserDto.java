@@ -1,16 +1,15 @@
 package com.flab.delivery.dto;
 
-import com.flab.delivery.enums.UserLevel;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.flab.delivery.enums.UserType;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor
+@Builder
 public class UserDto {
 
     private String id;
@@ -23,19 +22,9 @@ public class UserDto {
 
     private String phoneNumber;
 
-    private UserLevel level;
+    private UserType type;
 
     private LocalDateTime createdAt;
 
     private LocalDateTime modifiedAt;
-
-    @Builder
-    public UserDto(String id, String email, String password, String name, String phoneNumber, UserLevel level) {
-        this.id = id;
-        this.email = email;
-        this.password = password;
-        this.name = name;
-        this.phoneNumber = phoneNumber;
-        this.level = level;
-    }
 }
