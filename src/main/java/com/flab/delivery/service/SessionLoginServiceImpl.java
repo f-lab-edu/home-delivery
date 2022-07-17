@@ -23,7 +23,7 @@ public class SessionLoginServiceImpl implements LoginService {
 
     @Override
     public String getSessionUserId() {
-        return (String)httpSession.getAttribute(SessionConstant.SESSION_ID);
+        return (String) httpSession.getAttribute(SessionConstant.SESSION_ID);
     }
 
     // 세션으로 로그인 한 후 로그아웃을 시켜줘야한다
