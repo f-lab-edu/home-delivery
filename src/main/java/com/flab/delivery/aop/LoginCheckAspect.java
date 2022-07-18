@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 @Aspect
@@ -27,7 +28,7 @@ public class LoginCheckAspect {
         String sessionUserId = loginService.getSessionUserId();
 
         if (sessionUserId == null) {
-            throw new SessionLoginException("세션 아이디가 존재하지 않습니다");
+            throw new SessionLoginException("세션 아이디가 존재하지 않습니다", HttpStatus.UNAUTHORIZED);
         }
 
         UserType targetUserType = target.userType();
@@ -39,7 +40,7 @@ public class LoginCheckAspect {
         UserDto findUser = userMapper.findById(sessionUserId);
 
         if (findUser.getType() != targetUserType) {
-            throw new SessionLoginException("권한이 없습니다");
+            throw new SessionLoginException("권한이 없습니다", HttpStatus.FORBIDDEN);
         }
     }
 

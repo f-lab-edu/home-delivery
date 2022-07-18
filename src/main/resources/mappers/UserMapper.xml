@@ -5,21 +5,22 @@
 
 
     <select id="idExists" resultType="boolean">
-        SELECT EXISTS (SELECT id FROM USER LIMIT1 WHERE id = #{id})
+        SELECT id
+        FROM USER
+        WHERE id = #{id};
     </select>
 
 
     <insert id="save" parameterType="com.flab.delivery.dto.SignUpDto">
         INSERT INTO USER(id, email, password, name, phone_number, type)
-        VALUES(#{id}, #{email}, #{password}, #{name}, #{phoneNumber}, #{type})
+        VALUES (#{id}, #{email}, #{password}, #{name}, #{phoneNumber}, #{type})
     </insert>
 
     <select id="findById" resultType="com.flab.delivery.dto.UserDto">
         SELECT *
         FROM USER
-        WHERE id=#{id}
+        WHERE id = #{id}
     </select>
-
 
 
 </mapper>
