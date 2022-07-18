@@ -7,6 +7,7 @@ import javax.validation.constraints.NotBlank;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 public class LoginDto {
 
@@ -16,8 +17,4 @@ public class LoginDto {
     @NotBlank(message = "비밀번호를 입력해 주세요.")
     private String password;
 
-    LoginDto(String id, String password) {
-        this.id = id;
-        this.password = password;
-    }
 }

@@ -4,6 +4,7 @@ import lombok.*;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 public class UserDto {
 
@@ -25,12 +26,4 @@ public class UserDto {
     @NonNull
     private String level;
 
-    UserDto(@NonNull String id, @NonNull String password, @NonNull String name, @NonNull String email, @NonNull String phoneNumber, @NonNull String level) {
-        this.id = id;
-        this.password = password;
-        this.name = name;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
-        this.level = level;
-    }
 }

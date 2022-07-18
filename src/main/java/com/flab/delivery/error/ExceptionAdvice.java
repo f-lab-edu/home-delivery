@@ -1,5 +1,6 @@
 package com.flab.delivery.error;
 
+import com.flab.delivery.controller.reponse.CommonResult;
 import com.flab.delivery.exception.AuthException;
 import com.flab.delivery.exception.BadInputException;
 import com.flab.delivery.exception.UserException;
@@ -17,29 +18,29 @@ import javax.servlet.http.HttpServletRequest;
 public class ExceptionAdvice {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<String> methodArgumentNotValidExceptionHandler(HttpServletRequest request, MethodArgumentNotValidException e) {
+    public CommonResult methodArgumentNotValidExceptionHandler(HttpServletRequest request, MethodArgumentNotValidException e) {
         log.error("requestUrl : {} , errorCode : {}", request.getRequestURI(), e);
         return getBadResponse(e.getMessage());
     }
 
     @ExceptionHandler(UserException.class)
-    public ResponseEntity<String> userExceptionHandler(HttpServletRequest request, UserException e) {
+    public CommonResult userExceptionHandler(HttpServletRequest request, UserException e) {
         log.error("requestUrl : {} , errorCode : {}", request.getRequestURI(), e);
         return getBadResponse(e.getMessage());
     }
 
     @ExceptionHandler(BadInputException.class)
-    public ResponseEntity<String> badInputExceptionHandler(HttpServletRequest request, BadInputException e) {
+    public CommonResult badInputExceptionHandler(HttpServletRequest request, BadInputException e) {
         log.error("requestUrl : {} , errorCode : {}", request.getRequestURI(), e);
         return getBadResponse(e.getMessage());
     }
 
     @ExceptionHandler(AuthException.class)
-    public ResponseEntity<String> passwordExceptionHandler(AuthException e) {
-        return new ResponseEntity<>(e.getMessage(), e.getStatus());
+    public CommonResult passwordExceptionHandler(AuthException e) {
+        return CommonResult.getSimpleResult(e.getStatus().value(), e.getMessage());
     }
 
-    private ResponseEntity getBadResponse(String e) {
-        return new ResponseEntity(e, HttpStatus.BAD_REQUEST);
+    private CommonResult getBadResponse(String errorMessage) {
+        return CommonResult.getSimpleResult(HttpStatus.BAD_REQUEST.value(), errorMessage);
     }
 }

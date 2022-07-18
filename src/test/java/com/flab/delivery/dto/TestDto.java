@@ -28,6 +28,10 @@ public class TestDto {
     }
 
     public static LoginDto getLoginDto() {
-        return new LoginDto("test", "!Asdasd1234v");
+        return LoginDto.builder()
+                .id("test")
+                .password("!Asdasd1234v")
+                .build();
     }
+
 }

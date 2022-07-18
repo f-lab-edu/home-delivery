@@ -20,6 +20,7 @@ import static com.flab.delivery.utils.Constants.SESSION_ID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -50,7 +51,8 @@ public class UserControllerTest {
         mockMvc.perform(post(uri)
                         .content(objectMapper.writeValueAsString(signUpDto))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated());
+                .andExpect(jsonPath("$.status").value(201))
+                .andExpect(jsonPath("$.message").exists());
 
         //then
         assertThat(mapper.hasUserById(signUpDto.getId())).isTrue();
@@ -67,7 +69,8 @@ public class UserControllerTest {
         mockMvc.perform(post(uri)
                         .content(objectMapper.writeValueAsString(signUpDto))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.message").exists())
                 .andDo(print());
 
         //then
@@ -84,7 +87,8 @@ public class UserControllerTest {
         // when
         // then
         mockMvc.perform(get(getExistsUri(signUpDto)))
-                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.message").exists())
                 .andDo(print());
 
 
@@ -100,7 +104,8 @@ public class UserControllerTest {
         // when
         // then
         mockMvc.perform(get(getExistsUri(signUpDto)))
-                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.message").exists())
                 .andDo(print());
 
 
@@ -134,7 +139,8 @@ public class UserControllerTest {
         mockMvc.perform(post(uri + "/login")
                         .content(objectMapper.writeValueAsString(loginDto))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.message").exists());
     }
 
     @Test
@@ -149,7 +155,8 @@ public class UserControllerTest {
         mockMvc.perform(post(uri + "/login")
                         .content(objectMapper.writeValueAsString(loginDto))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnauthorized());
+                .andExpect(jsonPath("$.status").value(401))
+                .andExpect(jsonPath("$.message").exists());
     }
 
     @Test
@@ -161,7 +168,8 @@ public class UserControllerTest {
         // when
         mockMvc.perform(delete(uri + "/logout")
                         .session(mockHttpSession))
-                .andExpect(status().isOk());
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.message").exists());
 
         //then
         assertThat(mockHttpSession.getAttribute(SESSION_ID)).isNull();
@@ -174,7 +182,8 @@ public class UserControllerTest {
         //then
         mockMvc.perform(delete(uri + "/logout")
                         .session(mockHttpSession))
-                .andExpect(status().isUnauthorized());
+                .andExpect(jsonPath("$.status").value(401))
+                .andExpect(jsonPath("$.message").exists());
 
     }
 }

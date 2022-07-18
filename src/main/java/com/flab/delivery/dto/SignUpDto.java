@@ -9,8 +9,8 @@ import javax.validation.constraints.Pattern;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
-@AllArgsConstructor
 public class SignUpDto {
 
     @NotBlank
