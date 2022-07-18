@@ -91,7 +91,7 @@ class UserControllerTest {
                     mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON)
                             .content(json))
                             .andExpect(status().isBadRequest())
-                            .andExpect(content().string("아이디는 필수 입력값입니다"))
+                            .andExpect(content().string("아이디 길이는 4~20자 입니다"))
                             .andDo(print());
                 }
 
@@ -104,7 +104,7 @@ class UserControllerTest {
                     mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON)
                                     .content(json))
                             .andExpect(status().isBadRequest())
-                            .andExpect(content().string("아이디는 필수 입력값입니다"))
+                            .andExpect(content().string("아이디 길이는 4~20자 입니다"))
                             .andDo(print());
                 }
 

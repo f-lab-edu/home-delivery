@@ -15,8 +15,8 @@ import javax.validation.constraints.Pattern;
 @Builder
 public class SignUpDto {
 
-    @NotBlank(message = "아이디는 필수 입력값입니다")
-    @Length(min = 6, max = 20)
+    @NotBlank(message = "아이디 길이는 4~20자 입니다")
+    @Length(min = 4, max = 20, message = "아이디 길이는 4~20자 입니다")
     private String id;
 
     @NotNull(message = "이메일은 필수 입력값입니다")
