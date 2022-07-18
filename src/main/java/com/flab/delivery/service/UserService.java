@@ -4,6 +4,7 @@ import com.flab.delivery.dto.LoginDto;
 import com.flab.delivery.dto.SignUpDto;
 import com.flab.delivery.dto.UserDto;
 import com.flab.delivery.exception.AuthException;
+import com.flab.delivery.exception.BadInputException;
 import com.flab.delivery.exception.UserException;
 import com.flab.delivery.mapper.UserMapper;
 import com.flab.delivery.utils.PasswordEncoder;
@@ -30,7 +31,7 @@ public class UserService {
     public void checkDuplicatedId(String id) {
         if (mapper.hasUserById(id)) {
             log.error("유저 회원가입 이미 존재하는 아이디 =  {} ", id);
-            throw new UserException("이미 존재하는 아이디 입니다.");
+            throw new BadInputException("이미 존재하는 아이디 입니다.");
         }
     }
 

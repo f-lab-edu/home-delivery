@@ -29,7 +29,7 @@ public class ExceptionAdvice {
     }
 
     @ExceptionHandler(BadInputException.class)
-    public ResponseEntity<String> badInputExceptionHandler(HttpServletRequest request, UserException e) {
+    public ResponseEntity<String> badInputExceptionHandler(HttpServletRequest request, BadInputException e) {
         log.error("requestUrl : {} , errorCode : {}", request.getRequestURI(), e);
         return getBadResponse(e.getMessage());
     }

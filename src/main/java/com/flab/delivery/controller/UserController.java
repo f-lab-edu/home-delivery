@@ -11,9 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-import static com.flab.delivery.controller.response.HttpStatusResponse.STATUS_CREATED;
-import static com.flab.delivery.controller.response.HttpStatusResponse.STATUS_OK;
-
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
@@ -26,7 +23,7 @@ public class UserController {
 
         userService.signUp(signUpDto);
 
-        return STATUS_CREATED;
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping("/{id}/exists")
@@ -34,7 +31,7 @@ public class UserController {
 
         userService.checkDuplicatedId(id);
 
-        return STATUS_OK;
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/login")
@@ -42,7 +39,7 @@ public class UserController {
 
         userService.login(loginDto);
 
-        return STATUS_OK;
+        return ResponseEntity.ok().build();
     }
 
     @HasAuthorization()
@@ -51,6 +48,6 @@ public class UserController {
 
         userService.logout();
 
-        return STATUS_OK;
+        return ResponseEntity.ok().build();
     }
 }

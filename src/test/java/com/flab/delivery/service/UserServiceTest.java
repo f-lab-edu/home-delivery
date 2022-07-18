@@ -5,6 +5,7 @@ import com.flab.delivery.dto.SignUpDto;
 import com.flab.delivery.dto.TestDto;
 import com.flab.delivery.dto.UserDto;
 import com.flab.delivery.exception.AuthException;
+import com.flab.delivery.exception.BadInputException;
 import com.flab.delivery.exception.UserException;
 import com.flab.delivery.mapper.UserMapper;
 import org.junit.jupiter.api.Test;
@@ -67,7 +68,7 @@ class UserServiceTest {
         given(mapper.hasUserById(eq(signUpDto.getId()))).willReturn(true);
 
         // when
-        assertThatThrownBy(() -> userService.checkDuplicatedId(signUpDto.getId())).isInstanceOf(UserException.class);
+        assertThatThrownBy(() -> userService.checkDuplicatedId(signUpDto.getId())).isInstanceOf(BadInputException.class);
 
         //then
         verify(mapper).hasUserById(eq(signUpDto.getId()));
