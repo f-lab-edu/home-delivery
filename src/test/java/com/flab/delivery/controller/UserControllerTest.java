@@ -3,6 +3,7 @@ package com.flab.delivery.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import com.flab.delivery.annotation.EnableMockMvc;
 import com.flab.delivery.dto.SignUpDto;
 import com.flab.delivery.dto.UserDto;
 import com.flab.delivery.enums.UserType;
@@ -29,8 +30,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @SpringBootTest
-@AutoConfigureMockMvc
 @Transactional
+@EnableMockMvc
 class UserControllerTest {
 
     @Autowired
@@ -38,27 +39,6 @@ class UserControllerTest {
 
     @Autowired
     ObjectMapper objectMapper;
-
-    @Autowired
-    WebApplicationContext wac;
-
-    @BeforeAll
-    static void befroeAll() {
-        System.out.println(System.currentTimeMillis());
-    }
-
-    @AfterAll
-    static void afterAll() {
-        System.out.println(System.currentTimeMillis());
-    }
-
-    @BeforeEach
-    void setUp() {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(wac)
-                .addFilters(new CharacterEncodingFilter("UTF-8", true))  // 필터 추가
-                .alwaysDo(print())
-                .build();
-    }
 
 
     @Nested

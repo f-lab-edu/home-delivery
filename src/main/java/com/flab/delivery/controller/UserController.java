@@ -22,7 +22,7 @@ public class UserController {
     private final LoginService loginService;
 
     @PostMapping
-    public CommonResult<Void>createUser(@RequestBody @Valid final SignUpDto signUpDto) {
+    public CommonResult<Void> createUser(@RequestBody @Valid final SignUpDto signUpDto) {
         userService.createUser(signUpDto);
         return CommonResult.getSimpleSuccessResult(HttpStatus.CREATED.value());
     }
