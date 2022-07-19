@@ -1,6 +1,7 @@
 package com.flab.delivery.exception.handler;
 
 import com.flab.delivery.exception.SessionLoginException;
+import com.flab.delivery.response.CommonResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,8 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(SessionLoginException.class)
-    public ResponseEntity<String> handleSessionLoginException(SessionLoginException ex, HttpServletRequest request) {
+    public CommonResult<Void> handleSessionLoginException(SessionLoginException ex, HttpServletRequest request) {
         log.info("Http Method : {}  URI : {}, msg : {}", request.getMethod(), request.getRequestURI(), ex.getMessage());
-        return ResponseEntity.status(ex.getHttpStatus()).body(ex.getMessage());
+        return CommonResult.getSimpleResult(ex.getHttpStatus().value(), ex.getMessage());
     }
 }

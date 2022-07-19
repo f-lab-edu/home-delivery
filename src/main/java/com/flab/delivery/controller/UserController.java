@@ -3,9 +3,11 @@ package com.flab.delivery.controller;
 import com.flab.delivery.annotation.LoginCheck;
 import com.flab.delivery.dto.SignUpDto;
 import com.flab.delivery.dto.UserDto;
+import com.flab.delivery.response.CommonResult;
 import com.flab.delivery.service.LoginService;
 import com.flab.delivery.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,24 +22,22 @@ public class UserController {
     private final LoginService loginService;
 
     @PostMapping
-    public ResponseEntity<Void> createUser(@RequestBody @Valid final SignUpDto signUpDto) {
+    public CommonResult<Void>createUser(@RequestBody @Valid final SignUpDto signUpDto) {
         userService.createUser(signUpDto);
-        return ResponseEntity.ok().build();
+        return CommonResult.getSimpleSuccessResult(HttpStatus.CREATED.value());
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Void> loginUser(@RequestBody final UserDto userDto) {
+    public CommonResult<Void> loginUser(@RequestBody final UserDto userDto) {
         userService.loginUser(userDto);
-        return ResponseEntity.ok().build();
+        return CommonResult.getSimpleSuccessResult(HttpStatus.OK.value());
     }
 
     // 로그아웃은 로그인된 상태만 가능하다
     @LoginCheck
     @DeleteMapping("/logout")
-    public ResponseEntity<Void> logoutUser() {
+    public CommonResult<Void> logoutUser() {
         loginService.logoutUser();
-        return ResponseEntity.ok().build();
+        return CommonResult.getSimpleSuccessResult(HttpStatus.OK.value());
     }
-
-
 }
