@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 @Getter
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 public class SignUpDto {

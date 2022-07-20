@@ -3,6 +3,7 @@ package com.flab.delivery.controller;
 import com.flab.delivery.annotation.LoginCheck;
 import com.flab.delivery.dto.SignUpDto;
 import com.flab.delivery.dto.UserDto;
+import com.flab.delivery.mapper.UserMapper;
 import com.flab.delivery.response.CommonResult;
 import com.flab.delivery.service.LoginService;
 import com.flab.delivery.service.UserService;
@@ -22,22 +23,23 @@ public class UserController {
     private final LoginService loginService;
 
     @PostMapping
-    public CommonResult<Void> createUser(@RequestBody @Valid final SignUpDto signUpDto) {
+    public CommonResult<Void> createUser(@RequestBody @Valid SignUpDto signUpDto) {
         userService.createUser(signUpDto);
         return CommonResult.getSimpleSuccessResult(HttpStatus.CREATED.value());
     }
 
     @PostMapping("/login")
-    public CommonResult<Void> loginUser(@RequestBody final UserDto userDto) {
+    public CommonResult<Void> loginUser(@RequestBody UserDto userDto) {
         userService.loginUser(userDto);
         return CommonResult.getSimpleSuccessResult(HttpStatus.OK.value());
     }
 
-    // 로그아웃은 로그인된 상태만 가능하다
+
     @LoginCheck
     @DeleteMapping("/logout")
     public CommonResult<Void> logoutUser() {
         loginService.logoutUser();
         return CommonResult.getSimpleSuccessResult(HttpStatus.OK.value());
     }
+
 }

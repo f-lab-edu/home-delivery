@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 public class UserDto {
 

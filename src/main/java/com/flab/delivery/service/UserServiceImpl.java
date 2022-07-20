@@ -21,7 +21,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public void createUser(final SignUpDto signUpDto) {
+    public void createUser(SignUpDto signUpDto) {
         if (userMapper.idExists(signUpDto.getId())) {
             throw new SignUpException("이미 존재하는 아이디입니다");
         }
@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void loginUser(final UserDto userDto) {
+    public void loginUser(UserDto userDto) {
         if (!userMapper.idExists(userDto.getId())) {
             throw new LoginException("존재하지 않는 아이디입니다");
         }

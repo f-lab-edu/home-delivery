@@ -8,20 +8,16 @@ import com.flab.delivery.dto.SignUpDto;
 import com.flab.delivery.dto.UserDto;
 import com.flab.delivery.enums.UserType;
 
-import com.flab.delivery.utils.SessionConstant;
+import com.flab.delivery.utils.SessionConstants;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.filter.CharacterEncodingFilter;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -412,12 +408,12 @@ class UserControllerTest {
             @Test
             @DisplayName("로그 아웃")
             void logout_success() throws Exception {
-                mockHttpSession.setAttribute(SessionConstant.SESSION_ID, "user1");
+                mockHttpSession.setAttribute(SessionConstants.SESSION_ID, "user1");
                 mockMvc.perform(delete("/users/logout").session(mockHttpSession))
                         .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
                         .andDo(print());
 
-                Assertions.assertNull(mockHttpSession.getAttribute(SessionConstant.SESSION_ID));
+                Assertions.assertNull(mockHttpSession.getAttribute(SessionConstants.SESSION_ID));
             }
         }
 
