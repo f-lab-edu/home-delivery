@@ -24,7 +24,7 @@ public class DatabaseConfig {
 
         Resource[] res = new PathMatchingResourcePatternResolver().getResources("classpath:mappers/*Mapper.xml");
 
-        // camel case
+        
         sessionFactory.setConfiguration(mybatisConfig());
         sessionFactory.setMapperLocations(res);
 
