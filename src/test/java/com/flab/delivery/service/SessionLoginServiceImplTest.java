@@ -26,7 +26,7 @@ class SessionLoginServiceImplTest {
 
     @Test
     @DisplayName("현재 세션아이디")
-    void getSessionUserId(){
+    void getSessionUserId() {
         // given
         loginService.loginUser("user1");
         when(httpSession.getAttribute(SESSION_ID)).thenReturn("user1");
@@ -38,7 +38,7 @@ class SessionLoginServiceImplTest {
 
     @Test
     @DisplayName("로그아웃")
-    void logout(){
+    void logout() {
         // given
         loginService.loginUser("user1");
         when(loginService.getSessionUserId()).thenReturn("user1");

@@ -29,16 +29,14 @@ class UserServiceImplTest {
     SessionLoginServiceImpl loginService;
 
 
-
-
     @Nested
     @DisplayName("회원가입")
-    class createUser{
+    class createUser {
 
         private SignUpDto signUpDto;
 
         @BeforeEach
-        void setUp(){
+        void setUp() {
             signUpDto = SignUpDto.builder()
                     .id("user1")
                     .password(PasswordEncoder.encrypt("1111"))
@@ -55,7 +53,7 @@ class UserServiceImplTest {
         class SuccessCase {
             @Test
             @DisplayName("회원가입 성공")
-            void createUser_success(){
+            void createUser_success() {
                 // given
                 UserDto userDto = UserDto.builder()
                         .id("user1")
@@ -77,7 +75,7 @@ class UserServiceImplTest {
         class FailCase {
             @Test
             @DisplayName("아이디 이미 존재")
-            void createUser_fail(){
+            void createUser_fail() {
                 // given
                 when(userMapper.idExists("user1")).thenReturn(true);
                 // when
@@ -92,10 +90,11 @@ class UserServiceImplTest {
 
     @Nested
     @DisplayName("로그인")
-    class loginUser{
+    class loginUser {
         private UserDto userDto;
+
         @BeforeEach
-        void setUp(){
+        void setUp() {
             userDto = UserDto.builder()
                     .id("user1")
                     .password("1111")
@@ -104,16 +103,16 @@ class UserServiceImplTest {
 
         @Nested
         @DisplayName("성공")
-        class SuccessCase{
+        class SuccessCase {
 
             @Test
             @DisplayName("로그인 성공")
-            void loginUser_success(){
+            void loginUser_success() {
                 // given
                 when(userMapper.idExists(userDto.getId())).thenReturn(true);
                 when(userMapper.findById(userDto.getId())).thenReturn(UserDto.builder()
-                                .id(userDto.getId())
-                                .password(PasswordEncoder.encrypt(userDto.getPassword()))
+                        .id(userDto.getId())
+                        .password(PasswordEncoder.encrypt(userDto.getPassword()))
                         .build());
 
                 when(loginService.getSessionUserId()).thenReturn("user1");
@@ -127,11 +126,11 @@ class UserServiceImplTest {
 
         @Nested
         @DisplayName("실패")
-        class FailCase{
+        class FailCase {
 
             @Test
             @DisplayName("아이디 존재x 경우")
-            void loginUser_fail_아이디(){
+            void loginUser_fail_아이디() {
                 // given
                 when(userMapper.idExists("user1")).thenReturn(false);
                 // when
@@ -144,7 +143,7 @@ class UserServiceImplTest {
 
             @Test
             @DisplayName("비밀번호 틀린경우")
-            void loginUser_fail_패스워드(){
+            void loginUser_fail_패스워드() {
                 // given
                 String diffPassword = "2222";
 
@@ -163,7 +162,6 @@ class UserServiceImplTest {
         }
 
     }
-
 
 
 }
