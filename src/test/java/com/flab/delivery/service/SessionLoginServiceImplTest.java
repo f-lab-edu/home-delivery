@@ -11,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.servlet.http.HttpSession;
 
+import static com.flab.delivery.utils.SessionConstants.SESSION_ID;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -22,7 +23,6 @@ class SessionLoginServiceImplTest {
     @InjectMocks
     SessionLoginServiceImpl loginService;
 
-    private final String SESSION_ID = SessionConstants.SESSION_ID;
 
     @Test
     @DisplayName("현재 세션아이디")

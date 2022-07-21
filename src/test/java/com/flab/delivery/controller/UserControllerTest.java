@@ -2,32 +2,34 @@ package com.flab.delivery.controller;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import com.flab.delivery.annotation.EnableMockMvc;
 import com.flab.delivery.dto.SignUpDto;
 import com.flab.delivery.dto.UserDto;
 import com.flab.delivery.enums.UserType;
-
 import com.flab.delivery.utils.SessionConstants;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 
 @SpringBootTest
 @Transactional
 @EnableMockMvc
+@ActiveProfiles("test")
 class UserControllerTest {
 
     @Autowired
@@ -35,6 +37,7 @@ class UserControllerTest {
 
     @Autowired
     ObjectMapper objectMapper;
+
 
 
     @Nested
