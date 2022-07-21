@@ -46,6 +46,6 @@ public class UserServiceImpl implements UserService {
         if (!PasswordEncoder.matches(userDto.getPassword(), findUser.getPassword())) {
             throw new LoginException("아이디랑 비밀번호를 확인해주세요");
         }
-        loginService.loginUser(userDto.getId());
+        loginService.loginUser(findUser);
     }
 }
