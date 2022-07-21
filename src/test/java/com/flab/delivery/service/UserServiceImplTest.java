@@ -2,9 +2,11 @@ package com.flab.delivery.service;
 
 import com.flab.delivery.dto.SignUpDto;
 import com.flab.delivery.dto.UserDto;
+import com.flab.delivery.dto.UserInfoDto;
 import com.flab.delivery.enums.UserType;
 import com.flab.delivery.exception.LoginException;
 import com.flab.delivery.exception.SignUpException;
+import com.flab.delivery.fixture.TestDto;
 import com.flab.delivery.mapper.UserMapper;
 import com.flab.delivery.utils.PasswordEncoder;
 import org.junit.jupiter.api.*;
@@ -13,6 +15,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 
@@ -161,6 +165,24 @@ class UserServiceImplTest {
             }
         }
 
+    }
+
+
+    @Test
+    void getUserInfo_성공() {
+        // given
+        UserDto userDto = TestDto.getUserDto();
+        when(userMapper.findById(eq("user1"))).thenReturn(userDto);
+
+        // when
+        UserInfoDto getUserInfo = userService.getUserInfo("user1");
+
+        //then
+        assertThat(getUserInfo.getName()).isEqualTo(userDto.getName());
+        assertThat(getUserInfo.getEmail()).isEqualTo(userDto.getEmail());
+        assertThat(getUserInfo.getPhoneNumber()).isEqualTo(userDto.getPhoneNumber());
+        assertThat(getUserInfo.getCreatedAt()).isEqualTo(userDto.getCreatedAt());
+        assertThat(getUserInfo.getModifiedAt()).isEqualTo(userDto.getModifiedAt());
     }
 
 

@@ -6,6 +6,7 @@ import com.flab.delivery.annotation.EnableMockMvc;
 import com.flab.delivery.dto.SignUpDto;
 import com.flab.delivery.dto.UserDto;
 import com.flab.delivery.enums.UserType;
+import com.flab.delivery.mapper.UserMapper;
 import com.flab.delivery.utils.SessionConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -20,8 +21,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
@@ -32,13 +32,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 class UserControllerTest {
 
+    private static final String NOT_EXISTS_SESSION_MESSAGE = "세션 아이디가 존재하지 않습니다";
     @Autowired
     MockMvc mockMvc;
 
     @Autowired
     ObjectMapper objectMapper;
 
+    @Autowired
+    UserMapper userMapper;
 
+    MockHttpSession mockHttpSession = new MockHttpSession();
 
     @Nested
     @DisplayName("POST : /users")
@@ -429,12 +433,48 @@ class UserControllerTest {
             void session() throws Exception {
                 mockMvc.perform(delete("/users/logout"))
                         .andExpect(jsonPath("$.status").value(HttpStatus.UNAUTHORIZED.value()))
-                        .andExpect(jsonPath("$.message").value("세션 아이디가 존재하지 않습니다"))
+                        .andExpect(jsonPath("$.message").value(NOT_EXISTS_SESSION_MESSAGE))
                         .andDo(print());
 
             }
         }
 
 
+    }
+
+    @Test
+    void getUserInfo_성공() throws Exception {
+        // given
+        String user = "user1";
+        mockHttpSession.setAttribute(SessionConstants.SESSION_ID, user);
+        mockHttpSession.setAttribute(SessionConstants.AUTH_TYPE, UserType.USER);
+        UserDto findUser = userMapper.findById(user);
+
+        // when
+        // then
+        mockMvc.perform(get("/users").session(mockHttpSession))
+                .andExpect(jsonPath("$.message").value("요청 성공하였습니다."))
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.data.email").value(findUser.getEmail()))
+                .andExpect(jsonPath("$.data.name").value(findUser.getName()))
+                .andExpect(jsonPath("$.data.phoneNumber").value(findUser.getPhoneNumber()))
+                .andExpect(jsonPath("$.data.type").value(findUser.getType().name()))
+                .andExpect(jsonPath("$.data.createdAt").value(findUser.getCreatedAt().toString()))
+                .andExpect(jsonPath("$.data.modifiedAt").value(findUser.getModifiedAt().toString()));
+
+    }
+
+    @Test
+    void getUserInfo_로그인하지_않은_유저_실패() throws Exception {
+        // given
+        String user = "user1";
+
+        // when
+        // then
+        mockMvc.perform(get("/users").session(mockHttpSession))
+                .andExpect(jsonPath("$.message").value(NOT_EXISTS_SESSION_MESSAGE))
+                .andExpect(jsonPath("$.status").value(401))
+                .andExpect(jsonPath("$.data").isEmpty())
+                .andDo(print());
     }
 }

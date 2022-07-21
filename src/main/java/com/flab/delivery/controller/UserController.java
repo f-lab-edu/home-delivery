@@ -1,8 +1,10 @@
 package com.flab.delivery.controller;
 
 import com.flab.delivery.annotation.LoginCheck;
+import com.flab.delivery.annotation.SessionUserId;
 import com.flab.delivery.dto.SignUpDto;
 import com.flab.delivery.dto.UserDto;
+import com.flab.delivery.dto.UserInfoDto;
 import com.flab.delivery.mapper.UserMapper;
 import com.flab.delivery.response.CommonResult;
 import com.flab.delivery.service.LoginService;
@@ -40,6 +42,15 @@ public class UserController {
     public CommonResult<Void> logoutUser() {
         loginService.logoutUser();
         return CommonResult.getSimpleSuccessResult(HttpStatus.OK.value());
+    }
+
+    @LoginCheck
+    @GetMapping
+    public CommonResult<UserInfoDto> getUserInfo(@SessionUserId String userId) {
+        UserInfoDto userInfo = userService.getUserInfo(userId);
+
+        return CommonResult.getDataSuccessResult(userInfo);
+
     }
 
 }

@@ -2,6 +2,7 @@ package com.flab.delivery.service;
 
 import com.flab.delivery.dto.SignUpDto;
 import com.flab.delivery.dto.UserDto;
+import com.flab.delivery.dto.UserInfoDto;
 import com.flab.delivery.exception.LoginException;
 import com.flab.delivery.exception.SignUpException;
 import com.flab.delivery.mapper.UserMapper;
@@ -47,5 +48,10 @@ public class UserServiceImpl implements UserService {
             throw new LoginException("아이디랑 비밀번호를 확인해주세요");
         }
         loginService.loginUser(findUser);
+    }
+
+    @Override
+    public UserInfoDto getUserInfo(String userId) {
+        return UserInfoDto.fromUserDto(userMapper.findById(userId));
     }
 }

@@ -2,6 +2,7 @@ package com.flab.delivery.service;
 
 import com.flab.delivery.dto.SignUpDto;
 import com.flab.delivery.dto.UserDto;
+import com.flab.delivery.dto.UserInfoDto;
 
 public interface UserService {
 
@@ -9,5 +10,5 @@ public interface UserService {
 
     void loginUser(UserDto userDto);
 
-
+    UserInfoDto getUserInfo(String userId);
 }
