@@ -1,6 +1,5 @@
 package com.flab.delivery.mapper;
 
-import com.flab.delivery.dto.user.PasswordDto;
 import com.flab.delivery.dto.user.SignUpDto;
 import com.flab.delivery.dto.user.UserDto;
 import com.flab.delivery.dto.user.UserInfoUpdateDto;
