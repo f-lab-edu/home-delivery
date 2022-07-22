@@ -23,6 +23,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.flab.delivery.utils.SessionConstants.SESSION_ID;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -419,12 +420,12 @@ class UserControllerTest {
             @Test
             @DisplayName("로그 아웃")
             void logout_success() throws Exception {
-                mockHttpSession.setAttribute(SessionConstants.SESSION_ID, "user1");
+                mockHttpSession.setAttribute(SESSION_ID, "user1");
                 mockMvc.perform(delete("/users/logout").session(mockHttpSession))
                         .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
                         .andDo(print());
 
-                Assertions.assertNull(mockHttpSession.getAttribute(SessionConstants.SESSION_ID));
+                Assertions.assertNull(mockHttpSession.getAttribute(SESSION_ID));
             }
         }
 
@@ -450,7 +451,7 @@ class UserControllerTest {
     void getUserInfo_성공() throws Exception {
         // given
         String user = "user1";
-        mockHttpSession.setAttribute(SessionConstants.SESSION_ID, user);
+        mockHttpSession.setAttribute(SESSION_ID, user);
         mockHttpSession.setAttribute(SessionConstants.AUTH_TYPE, UserType.USER);
         UserDto findUser = userMapper.findById(user);
 
@@ -501,7 +502,7 @@ class UserControllerTest {
     void updateUserInfo_동일하지_않은_유저_실패() throws Exception {
         // given
         UserInfoUpdateDto userInfoUpdateDto = TestDto.getUserInfoUpdateDto();
-        mockHttpSession.setAttribute("SESSION_ID", "user2");
+        mockHttpSession.setAttribute(SESSION_ID, "user2");
 
         // when
         // then
@@ -524,7 +525,7 @@ class UserControllerTest {
                 .name("유저2")
                 .build();
 
-        mockHttpSession.setAttribute("SESSION_ID", "user1");
+        mockHttpSession.setAttribute(SESSION_ID, "user1");
 
         // when
         // then
@@ -542,7 +543,7 @@ class UserControllerTest {
     void updateUserInfo_성공() throws Exception {
         // given
         UserInfoUpdateDto userInfoUpdateDto = TestDto.getUserInfoUpdateDto();
-        mockHttpSession.setAttribute("SESSION_ID", "user1");
+        mockHttpSession.setAttribute(SESSION_ID, "user1");
 
         // when
         // then
@@ -553,5 +554,28 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.message").value(SUCCESS_MESSAGE))
                 .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()));
 
+    }
+
+    @Test
+    void deleteUser_로그인하지_않아서_실패() throws Exception {
+        // given
+        // when
+        // then
+        mockMvc.perform(delete("/users"))
+                .andExpect(jsonPath("$.message").value(NOT_EXISTS_SESSION_MESSAGE))
+                .andExpect(jsonPath("$.status").value(HttpStatus.UNAUTHORIZED.value()));
+    }
+
+    @Test
+    void deleteUser_성공() throws Exception {
+        // given
+        mockHttpSession.setAttribute(SESSION_ID, "user1");
+
+        // when
+        // then
+        mockMvc.perform(delete("/users")
+                        .session(mockHttpSession))
+                .andExpect(jsonPath("$.message").value(SUCCESS_MESSAGE))
+                .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()));
     }
 }

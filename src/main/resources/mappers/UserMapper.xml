@@ -27,4 +27,10 @@
             phone_number = #{phoneNumber}
         WHERE id = #{id};
     </update>
+
+    <delete id="deleteById">
+        DELETE
+        FROM USER
+        WHERE id = #{userId};
+    </delete>
 </mapper>

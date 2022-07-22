@@ -16,4 +16,6 @@ public interface UserMapper {
     UserDto findById(String id);
 
     int updateInfo(UserInfoUpdateDto userInfoUpdateDto);
+
+    void deleteById(String userId);
 }

@@ -61,4 +61,10 @@ public class UserController {
         return CommonResult.getSimpleSuccessResult(HttpStatus.OK.value());
     }
 
+    @LoginCheck
+    @DeleteMapping
+    public CommonResult<Void> deleteUser(@SessionUserId String userId) {
+        userService.deleteUser(userId);
+        return CommonResult.getSimpleSuccessResult(HttpStatus.OK.value());
+    }
 }

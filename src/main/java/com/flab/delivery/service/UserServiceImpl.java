@@ -67,4 +67,9 @@ public class UserServiceImpl implements UserService {
 
         userMapper.updateInfo(userInfoUpdateDto);
     }
+
+    @Override
+    public void deleteUser(String userId) {
+        userMapper.deleteById(userId);
+    }
 }

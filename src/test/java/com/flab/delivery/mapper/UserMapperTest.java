@@ -47,4 +47,17 @@ class UserMapperTest {
         assertThat(updateUser.getId()).isEqualTo(userInfoRequestDto.getId());
         assertThat(updateUser.getPassword()).isEqualTo(findUser.getPassword());
     }
+
+    @Test
+    void deleteById_확인() {
+        // given
+        UserDto findUser = userMapper.findById("user1");
+
+        // when
+        userMapper.deleteById(findUser.getId());
+
+        // then
+        boolean idExists = userMapper.idExists(findUser.getId());
+        assertThat(idExists).isFalse();
+    }
 }
