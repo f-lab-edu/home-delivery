@@ -20,5 +20,11 @@
         WHERE id = #{id}
     </select>
 
-
+    <update id="updateInfo" parameterType="UserInfoUpdateDto">
+        UPDATE USER
+        SET email        = #{email},
+            name         = #{name},
+            phone_number = #{phoneNumber}
+        WHERE id = #{id};
+    </update>
 </mapper>

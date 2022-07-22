@@ -1,7 +1,7 @@
 package com.flab.delivery.service;
 
 
-import com.flab.delivery.dto.UserDto;
+import com.flab.delivery.dto.user.UserDto;
 import com.flab.delivery.enums.UserType;
 import com.flab.delivery.utils.SessionConstants;
 import lombok.RequiredArgsConstructor;

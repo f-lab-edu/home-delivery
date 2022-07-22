@@ -1,14 +1,17 @@
 package com.flab.delivery.service;
 
-import com.flab.delivery.dto.SignUpDto;
-import com.flab.delivery.dto.UserDto;
-import com.flab.delivery.dto.UserInfoDto;
+import com.flab.delivery.dto.user.SignUpDto;
+import com.flab.delivery.dto.user.UserDto;
+import com.flab.delivery.dto.user.UserInfoDto;
+import com.flab.delivery.dto.user.UserInfoUpdateDto;
 import com.flab.delivery.exception.LoginException;
+import com.flab.delivery.exception.SessionLoginException;
 import com.flab.delivery.exception.SignUpException;
 import com.flab.delivery.mapper.UserMapper;
 import com.flab.delivery.utils.PasswordEncoder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 
@@ -53,5 +56,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserInfoDto getUserInfo(String userId) {
         return UserInfoDto.fromUserDto(userMapper.findById(userId));
+    }
+
+    @Override
+    public void updateUserInfo(String userId, UserInfoUpdateDto userInfoUpdateDto) {
+
+        if (!userId.equals(userInfoUpdateDto.getId())) {
+            throw new SessionLoginException("권한이 없습니다.", HttpStatus.FORBIDDEN);
+        }
+
+        userMapper.updateInfo(userInfoUpdateDto);
     }
 }

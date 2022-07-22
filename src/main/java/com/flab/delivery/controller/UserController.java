@@ -2,16 +2,15 @@ package com.flab.delivery.controller;
 
 import com.flab.delivery.annotation.LoginCheck;
 import com.flab.delivery.annotation.SessionUserId;
-import com.flab.delivery.dto.SignUpDto;
-import com.flab.delivery.dto.UserDto;
-import com.flab.delivery.dto.UserInfoDto;
-import com.flab.delivery.mapper.UserMapper;
+import com.flab.delivery.dto.user.SignUpDto;
+import com.flab.delivery.dto.user.UserDto;
+import com.flab.delivery.dto.user.UserInfoDto;
+import com.flab.delivery.dto.user.UserInfoUpdateDto;
 import com.flab.delivery.response.CommonResult;
 import com.flab.delivery.service.LoginService;
 import com.flab.delivery.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -51,6 +50,15 @@ public class UserController {
 
         return CommonResult.getDataSuccessResult(userInfo);
 
+    }
+
+    @LoginCheck
+    @PutMapping
+    public CommonResult<Void> updateUserInfo(@SessionUserId String userId,
+                                             @RequestBody @Valid UserInfoUpdateDto userInfoUpdateDto) {
+
+        userService.updateUserInfo(userId, userInfoUpdateDto);
+        return CommonResult.getSimpleSuccessResult(HttpStatus.OK.value());
     }
 
 }

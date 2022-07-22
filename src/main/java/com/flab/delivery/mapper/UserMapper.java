@@ -1,7 +1,8 @@
 package com.flab.delivery.mapper;
 
-import com.flab.delivery.dto.SignUpDto;
-import com.flab.delivery.dto.UserDto;
+import com.flab.delivery.dto.user.SignUpDto;
+import com.flab.delivery.dto.user.UserDto;
+import com.flab.delivery.dto.user.UserInfoUpdateDto;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
@@ -14,4 +15,5 @@ public interface UserMapper {
 
     UserDto findById(String id);
 
+    int updateInfo(UserInfoUpdateDto userInfoUpdateDto);
 }

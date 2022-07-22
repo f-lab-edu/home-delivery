@@ -1,10 +1,12 @@
 package com.flab.delivery.service;
 
-import com.flab.delivery.dto.SignUpDto;
-import com.flab.delivery.dto.UserDto;
-import com.flab.delivery.dto.UserInfoDto;
+import com.flab.delivery.dto.user.SignUpDto;
+import com.flab.delivery.dto.user.UserDto;
+import com.flab.delivery.dto.user.UserInfoDto;
+import com.flab.delivery.dto.user.UserInfoUpdateDto;
 import com.flab.delivery.enums.UserType;
 import com.flab.delivery.exception.LoginException;
+import com.flab.delivery.exception.SessionLoginException;
 import com.flab.delivery.exception.SignUpException;
 import com.flab.delivery.fixture.TestDto;
 import com.flab.delivery.mapper.UserMapper;
@@ -17,7 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -186,4 +188,33 @@ class UserServiceImplTest {
     }
 
 
+    @Test
+    void updateUserInfo_동일하지_않은_회원_실패() {
+        // given
+        UserInfoUpdateDto infoUpdateDto = UserInfoUpdateDto.builder()
+                .id("wrongId")
+                .name("테스트2")
+                .phoneNumber("010-1234-1234")
+                .email("test@naver.com")
+                .build();
+
+        // when
+        assertThatThrownBy(() -> userService.updateUserInfo("user1", infoUpdateDto))
+                .isInstanceOf(SessionLoginException.class);
+
+        //then
+        verify(userMapper, never()).updateInfo(any());
+    }
+
+    @Test
+    void updateUserInfo_성공() {
+        // given
+        UserInfoUpdateDto infoUpdateDto = TestDto.getUserInfoUpdateDto();
+
+        // when
+        userService.updateUserInfo("user1", infoUpdateDto);
+
+        //then
+        verify(userMapper).updateInfo(any());
+    }
 }

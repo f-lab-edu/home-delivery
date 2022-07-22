@@ -2,10 +2,8 @@ package com.flab.delivery.aop;
 
 
 import com.flab.delivery.annotation.LoginCheck;
-import com.flab.delivery.dto.UserDto;
 import com.flab.delivery.enums.UserType;
 import com.flab.delivery.exception.SessionLoginException;
-import com.flab.delivery.mapper.UserMapper;
 import com.flab.delivery.service.LoginService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

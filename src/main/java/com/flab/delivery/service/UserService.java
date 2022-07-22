@@ -1,8 +1,9 @@
 package com.flab.delivery.service;
 
-import com.flab.delivery.dto.SignUpDto;
-import com.flab.delivery.dto.UserDto;
-import com.flab.delivery.dto.UserInfoDto;
+import com.flab.delivery.dto.user.SignUpDto;
+import com.flab.delivery.dto.user.UserDto;
+import com.flab.delivery.dto.user.UserInfoDto;
+import com.flab.delivery.dto.user.UserInfoUpdateDto;
 
 public interface UserService {
 
@@ -11,4 +12,6 @@ public interface UserService {
     void loginUser(UserDto userDto);
 
     UserInfoDto getUserInfo(String userId);
+
+    void updateUserInfo(String userId, UserInfoUpdateDto userInfoUpdateDto);
 }

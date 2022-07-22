@@ -1,6 +1,7 @@
 package com.flab.delivery.fixture;
 
-import com.flab.delivery.dto.UserDto;
+import com.flab.delivery.dto.user.UserDto;
+import com.flab.delivery.dto.user.UserInfoUpdateDto;
 import com.flab.delivery.enums.UserType;
 import com.flab.delivery.utils.PasswordEncoder;
 
@@ -18,6 +19,15 @@ public class TestDto {
                 .name("유저1")
                 .createdAt(LocalDateTime.now())
                 .modifiedAt(LocalDateTime.now())
+                .build();
+    }
+
+    public static UserInfoUpdateDto getUserInfoUpdateDto() {
+        return UserInfoUpdateDto.builder()
+                .id("user1")
+                .name("테스트2")
+                .phoneNumber("010-1234-1234")
+                .email("test@naver.com")
                 .build();
     }
 }

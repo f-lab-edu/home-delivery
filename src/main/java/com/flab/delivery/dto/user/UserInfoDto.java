@@ -1,4 +1,4 @@
-package com.flab.delivery.dto;
+package com.flab.delivery.dto.user;
 
 import com.flab.delivery.enums.UserType;
 import lombok.*;
@@ -39,4 +39,6 @@ public class UserInfoDto {
                 .modifiedAt(userDto.getModifiedAt())
                 .build();
     }
+
 }
+
