@@ -1,8 +1,10 @@
 package com.flab.delivery.mapper;
 
 import com.flab.delivery.config.DatabaseConfig;
+import com.flab.delivery.dto.user.PasswordDto;
 import com.flab.delivery.dto.user.UserDto;
 import com.flab.delivery.dto.user.UserInfoUpdateDto;
+import com.flab.delivery.utils.PasswordEncoder;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,5 +61,22 @@ class UserMapperTest {
         // then
         boolean idExists = userMapper.idExists(findUser.getId());
         assertThat(idExists).isFalse();
+    }
+
+    @Test
+    void changePassword_확인() {
+        // given
+        UserDto findUser = userMapper.findById("user1");
+        PasswordDto passwordDto = PasswordDto.builder()
+                .newPassword("!newPassword")
+                .confirmedNewPassword("!newPassword")
+                .build();
+
+        // when
+        userMapper.changePassword(findUser.getId(), PasswordEncoder.encrypt(passwordDto.getNewPassword()));
+
+        //then
+        UserDto updateUser = userMapper.findById("user1");
+        assertThat(updateUser.getPassword()).isNotEqualTo(findUser.getPassword());
     }
 }

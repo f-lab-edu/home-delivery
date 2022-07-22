@@ -2,15 +2,14 @@ package com.flab.delivery.controller;
 
 import com.flab.delivery.annotation.LoginCheck;
 import com.flab.delivery.annotation.SessionUserId;
-import com.flab.delivery.dto.user.SignUpDto;
-import com.flab.delivery.dto.user.UserDto;
-import com.flab.delivery.dto.user.UserInfoDto;
-import com.flab.delivery.dto.user.UserInfoUpdateDto;
+import com.flab.delivery.controller.validator.PasswordValidator;
+import com.flab.delivery.dto.user.*;
 import com.flab.delivery.response.CommonResult;
 import com.flab.delivery.service.LoginService;
 import com.flab.delivery.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -22,6 +21,12 @@ public class UserController {
 
     private final UserService userService;
     private final LoginService loginService;
+    private final PasswordValidator passwordValidator;
+
+    @InitBinder("passwordDto")
+    public void initBinder(WebDataBinder webDataBinder) {
+        webDataBinder.addValidators(passwordValidator);
+    }
 
     @PostMapping
     public CommonResult<Void> createUser(@RequestBody @Valid SignUpDto signUpDto) {
@@ -65,6 +70,14 @@ public class UserController {
     @DeleteMapping
     public CommonResult<Void> deleteUser(@SessionUserId String userId) {
         userService.deleteUser(userId);
+        return CommonResult.getSimpleSuccessResult(HttpStatus.OK.value());
+    }
+
+    @LoginCheck
+    @PutMapping("/password")
+    public CommonResult<Void> changePassword(@SessionUserId String userId,
+                                             @RequestBody @Valid PasswordDto passwordDto) {
+        userService.changePassword(userId, passwordDto);
         return CommonResult.getSimpleSuccessResult(HttpStatus.OK.value());
     }
 }

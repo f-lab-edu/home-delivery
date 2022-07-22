@@ -1,5 +1,6 @@
 package com.flab.delivery.fixture;
 
+import com.flab.delivery.dto.user.PasswordDto;
 import com.flab.delivery.dto.user.UserDto;
 import com.flab.delivery.dto.user.UserInfoUpdateDto;
 import com.flab.delivery.enums.UserType;
@@ -28,6 +29,13 @@ public class TestDto {
                 .name("테스트2")
                 .phoneNumber("010-1234-1234")
                 .email("test@naver.com")
+                .build();
+    }
+
+    public static PasswordDto getPasswordDto() {
+        return PasswordDto.builder()
+                .newPassword("!NewPassword1234")
+                .confirmedNewPassword("!NewPassword1234")
                 .build();
     }
 }

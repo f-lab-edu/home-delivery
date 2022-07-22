@@ -33,4 +33,10 @@
         FROM USER
         WHERE id = #{userId};
     </delete>
+
+    <update id="changePassword">
+        UPDATE USER
+        SET password = #{newPassword}
+        WHERE id = #{userId};
+    </update>
 </mapper>

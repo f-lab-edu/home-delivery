@@ -1,9 +1,6 @@
 package com.flab.delivery.service;
 
-import com.flab.delivery.dto.user.SignUpDto;
-import com.flab.delivery.dto.user.UserDto;
-import com.flab.delivery.dto.user.UserInfoDto;
-import com.flab.delivery.dto.user.UserInfoUpdateDto;
+import com.flab.delivery.dto.user.*;
 import com.flab.delivery.enums.UserType;
 import com.flab.delivery.exception.LoginException;
 import com.flab.delivery.exception.SessionLoginException;
@@ -216,5 +213,17 @@ class UserServiceImplTest {
 
         //then
         verify(userMapper).updateInfo(any());
+    }
+
+    @Test
+    void changePassword_성공() {
+        // given
+        PasswordDto passwordDto = TestDto.getPasswordDto();
+
+        // when
+        userService.changePassword("user1", passwordDto);
+
+        //then
+        verify(userMapper).changePassword(eq("user1"), any());
     }
 }

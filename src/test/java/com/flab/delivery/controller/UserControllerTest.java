@@ -3,6 +3,7 @@ package com.flab.delivery.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flab.delivery.annotation.EnableMockMvc;
+import com.flab.delivery.dto.user.PasswordDto;
 import com.flab.delivery.dto.user.SignUpDto;
 import com.flab.delivery.dto.user.UserDto;
 import com.flab.delivery.dto.user.UserInfoUpdateDto;
@@ -420,7 +421,7 @@ class UserControllerTest {
             @Test
             @DisplayName("로그 아웃")
             void logout_success() throws Exception {
-                mockHttpSession.setAttribute(SESSION_ID, "user1");
+                setMockLoginUser(mockHttpSession, "user1");
                 mockMvc.perform(delete("/users/logout").session(mockHttpSession))
                         .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
                         .andDo(print());
@@ -451,7 +452,7 @@ class UserControllerTest {
     void getUserInfo_성공() throws Exception {
         // given
         String user = "user1";
-        mockHttpSession.setAttribute(SESSION_ID, user);
+        setMockLoginUser(mockHttpSession, user);
         mockHttpSession.setAttribute(SessionConstants.AUTH_TYPE, UserType.USER);
         UserDto findUser = userMapper.findById(user);
 
@@ -502,7 +503,7 @@ class UserControllerTest {
     void updateUserInfo_동일하지_않은_유저_실패() throws Exception {
         // given
         UserInfoUpdateDto userInfoUpdateDto = TestDto.getUserInfoUpdateDto();
-        mockHttpSession.setAttribute(SESSION_ID, "user2");
+        setMockLoginUser(mockHttpSession, "user2");
 
         // when
         // then
@@ -525,7 +526,7 @@ class UserControllerTest {
                 .name("유저2")
                 .build();
 
-        mockHttpSession.setAttribute(SESSION_ID, "user1");
+        setMockLoginUser(mockHttpSession, "user1");
 
         // when
         // then
@@ -543,7 +544,7 @@ class UserControllerTest {
     void updateUserInfo_성공() throws Exception {
         // given
         UserInfoUpdateDto userInfoUpdateDto = TestDto.getUserInfoUpdateDto();
-        mockHttpSession.setAttribute(SESSION_ID, "user1");
+        setMockLoginUser(mockHttpSession, "user1");
 
         // when
         // then
@@ -569,7 +570,7 @@ class UserControllerTest {
     @Test
     void deleteUser_성공() throws Exception {
         // given
-        mockHttpSession.setAttribute(SESSION_ID, "user1");
+        setMockLoginUser(mockHttpSession, "user1");
 
         // when
         // then
@@ -577,5 +578,78 @@ class UserControllerTest {
                         .session(mockHttpSession))
                 .andExpect(jsonPath("$.message").value(SUCCESS_MESSAGE))
                 .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()));
+    }
+
+    @Test
+    void changePassword_로그인하지_않아서_실패() throws Exception {
+        // given
+        PasswordDto wrongPasswordDto = TestDto.getPasswordDto();
+
+        // when
+        // then
+        mockMvc.perform(put("/users/password")
+                        .content(objectMapper.writeValueAsString(wrongPasswordDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message").value(NOT_EXISTS_SESSION_MESSAGE))
+                .andExpect(jsonPath("$.status").value(HttpStatus.UNAUTHORIZED.value()));
+
+    }
+
+    @Test
+    void changePassword_입력값_검증_실패() throws Exception {
+        // given
+        PasswordDto wrongPasswordDto = PasswordDto.builder()
+                .newPassword("wrongPassword")
+                .confirmedNewPassword("wrongPassword")
+                .build();
+
+        // when
+        // then
+        mockMvc.perform(put("/users/password")
+                .content(objectMapper.writeValueAsString(wrongPasswordDto))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message").value("비밀번호는 8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요"))
+                .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()));
+
+    }
+
+    @Test
+    void changePassword_동일하지_않은_새_비밀번호_실패() throws Exception {
+        // given
+
+        PasswordDto wrongPasswordDto = PasswordDto.builder()
+                .newPassword("!NewPassword123")
+                .confirmedNewPassword("!NewPassword1234")
+                .build();
+
+        // when
+        // then
+        mockMvc.perform(put("/users/password")
+                        .content(objectMapper.writeValueAsString(wrongPasswordDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message").value("입력하신 패스워드가 일치하지 않습니다."))
+                .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()));
+
+    }
+
+    @Test
+    void changePassword_성공() throws Exception {
+        // given
+        PasswordDto wrongPasswordDto = TestDto.getPasswordDto();
+        setMockLoginUser(mockHttpSession, "user1");
+
+        // when
+        // then
+        mockMvc.perform(put("/users/password")
+                        .content(objectMapper.writeValueAsString(wrongPasswordDto))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .session(mockHttpSession))
+                .andExpect(jsonPath("$.message").value(SUCCESS_MESSAGE))
+                .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()));
+
+    }
+
+    private void setMockLoginUser(MockHttpSession mockHttpSession, String user1) {
+        mockHttpSession.setAttribute(SESSION_ID, user1);
     }
 }

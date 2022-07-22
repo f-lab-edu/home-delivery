@@ -1,9 +1,6 @@
 package com.flab.delivery.service;
 
-import com.flab.delivery.dto.user.SignUpDto;
-import com.flab.delivery.dto.user.UserDto;
-import com.flab.delivery.dto.user.UserInfoDto;
-import com.flab.delivery.dto.user.UserInfoUpdateDto;
+import com.flab.delivery.dto.user.*;
 import com.flab.delivery.exception.LoginException;
 import com.flab.delivery.exception.SessionLoginException;
 import com.flab.delivery.exception.SignUpException;
@@ -71,5 +68,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(String userId) {
         userMapper.deleteById(userId);
+    }
+
+    @Override
+    public void changePassword(String userId, PasswordDto passwordDto) {
+        userMapper.changePassword(userId, PasswordEncoder.encrypt(passwordDto.getNewPassword()));
     }
 }
