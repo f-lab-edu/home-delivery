@@ -1,6 +1,7 @@
 package com.flab.delivery.mapper;
 
 import com.flab.delivery.config.DatabaseConfig;
+import com.flab.delivery.dto.address.AddressDto;
 import com.flab.delivery.dto.address.AddressRequestDto;
 import com.flab.delivery.fixture.TestDto;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.context.annotation.Import;
 import org.springframework.dao.DataAccessException;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -85,5 +88,36 @@ class AddressMapperTest {
         //then
         assertThatThrownBy(() -> addressMapper.addUserAddress(requestDto, addressId, null))
                 .isInstanceOf(DataAccessException.class);
+    }
+
+
+    @Test
+    void findUserAddressByUserId_성공() {
+        // given
+        String userId = "user1";
+
+        // when
+        List<AddressDto> addressDtoList = addressMapper.findUserAddressByUserId(userId);
+
+        // then
+        for (AddressDto addressDto : addressDtoList) {
+            assertThat(addressDto.getDetailAddress()).isNotNull();
+            assertThat(addressDto.getAlias()).isNotNull();
+            assertThat(addressDto.getTownName()).isNotNull();
+            assertThat(addressDto.isSelected()).isNotNull();
+        }
+    }
+
+    @Test
+    void findUserAddressByUserId_잘못된_유저로_조회시_빈리스트_반환() {
+        // given
+        String userId = "wrongUser";
+
+        // when
+        List<AddressDto> addressDtoList = addressMapper.findUserAddressByUserId(userId);
+
+        // then
+        assertThat(addressDtoList).isEmpty();
+
     }
 }

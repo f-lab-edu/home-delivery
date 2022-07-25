@@ -18,12 +18,19 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.stream.Collectors;
+
 import static com.flab.delivery.fixture.MessageConstants.HAVE_NO_AUTHORITY_MESSAGE;
 import static com.flab.delivery.fixture.MessageConstants.SUCCESS_MESSAGE;
 import static com.flab.delivery.utils.SessionConstants.AUTH_TYPE;
 import static com.flab.delivery.utils.SessionConstants.SESSION_ID;
+import static org.assertj.core.internal.bytebuddy.matcher.ElementMatchers.is;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @SpringBootTest
@@ -117,6 +124,41 @@ class AddressControllerTest {
                         .session(mockHttpSession))
                 .andExpect(jsonPath("$.status").value(HttpStatus.CREATED.value()))
                 .andExpect(jsonPath("$.message").value(SUCCESS_MESSAGE));
+
+    }
+
+
+    @Test
+    void getAllAddress_권한_없는_사용자_실패() throws Exception {
+        // given
+        mockHttpSession.setAttribute(SESSION_ID, "user1");
+
+        // when
+        // then
+        mockMvc.perform(get("/locations")
+                        .session(mockHttpSession))
+                .andExpect(jsonPath("$.status").value(HttpStatus.FORBIDDEN.value()))
+                .andExpect(jsonPath("$.message").value(HAVE_NO_AUTHORITY_MESSAGE));
+    }
+
+    @Test
+    void getAllAddress_성공() throws Exception {
+
+        // given
+        mockHttpSession.setAttribute(SESSION_ID, "user1");
+        mockHttpSession.setAttribute(AUTH_TYPE, UserType.USER);
+
+        // when
+        // then
+        mockMvc.perform(get("/locations")
+                        .session(mockHttpSession))
+                .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
+                .andExpect(jsonPath("$.message").value(SUCCESS_MESSAGE))
+                .andExpect(jsonPath("$.data[*].townName").exists())
+                .andExpect(jsonPath("$.data[*].detailAddress").exists())
+                .andExpect(jsonPath("$.data[*].alias").exists())
+                .andExpect(jsonPath("$.data[*].selected").exists())
+                .andDo(print());
 
     }
 

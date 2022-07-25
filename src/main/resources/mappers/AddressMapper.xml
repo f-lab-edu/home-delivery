@@ -14,4 +14,11 @@
         VALUES (#{userId}, #{addressId}, #{addressDto.detailAddress}, #{addressDto.alias});
     </insert>
 
+    <select id="findUserAddressByUserId" resultType="addressDto">
+        SELECT a.town_name, ua.detail_address, ua.alias, ua.selected
+        FROM User_Address ua
+                 INNER JOIN Address a ON ua.address_id = a.id
+        WHERE ua.user_id = #{userId};
+    </select>
+
 </mapper>

@@ -2,17 +2,16 @@ package com.flab.delivery.controller;
 
 import com.flab.delivery.annotation.LoginCheck;
 import com.flab.delivery.annotation.SessionUserId;
+import com.flab.delivery.dto.address.AddressDto;
 import com.flab.delivery.dto.address.AddressRequestDto;
 import com.flab.delivery.enums.UserType;
 import com.flab.delivery.response.CommonResult;
 import com.flab.delivery.service.AddressService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import javax.validation.Valid;
 
 @RestController
@@ -21,6 +20,15 @@ import javax.validation.Valid;
 public class AddressController {
 
     private final AddressService addressService;
+
+    @GetMapping
+    @LoginCheck(userType = UserType.USER)
+    public CommonResult<List<AddressDto>> getAllAddress(@SessionUserId String userId) {
+
+        List<AddressDto> getAddressDtoList = addressService.getAllAddress(userId);
+
+        return CommonResult.getDataSuccessResult(getAddressDtoList);
+    }
 
     @PostMapping
     @LoginCheck(userType = UserType.USER)

@@ -1,10 +1,13 @@
 package com.flab.delivery.service;
 
+import com.flab.delivery.dto.address.AddressDto;
 import com.flab.delivery.dto.address.AddressRequestDto;
 import com.flab.delivery.exception.AddressException;
 import com.flab.delivery.mapper.AddressMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -27,5 +30,11 @@ public class AddressServiceImpl implements AddressService {
 
         addressMapper.addUserAddress(addressRequestDto, findAddressId, userId);
 
+    }
+
+    @Override
+    public List<AddressDto> getAllAddress(String userId) {
+
+        return addressMapper.findUserAddressByUserId(userId);
     }
 }
