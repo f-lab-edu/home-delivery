@@ -8,6 +8,7 @@ import com.flab.delivery.enums.UserType;
 import com.flab.delivery.fixture.TestDto;
 import com.flab.delivery.service.AddressService;
 import com.flab.delivery.utils.SessionConstants;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -50,10 +51,16 @@ class AddressControllerTest {
 
     MockHttpSession mockHttpSession = new MockHttpSession();
 
+    @BeforeEach
+    void init() {
+        mockHttpSession.setAttribute(SESSION_ID, "user1");
+        mockHttpSession.setAttribute(AUTH_TYPE, UserType.USER);
+    }
+
     @Test
     void addAddress_권한_없는_사용자_실패() throws Exception {
         // given
-        mockHttpSession.setAttribute(SESSION_ID, "user1");
+        mockHttpSession.setAttribute(AUTH_TYPE, UserType.ALL);
         AddressRequestDto addressRequestDto = TestDto.getAddressRequestDto();
 
         // when
@@ -71,8 +78,6 @@ class AddressControllerTest {
     @Test
     void addAddress_db에_없는_주소_실패() throws Exception {
         // given
-        mockHttpSession.setAttribute(SESSION_ID, "user1");
-        mockHttpSession.setAttribute(AUTH_TYPE, UserType.USER);
         AddressRequestDto addressRequestDto = AddressRequestDto.builder()
                 .townName("WorngTown")
                 .detailAddress("15번길 13로")
@@ -92,8 +97,6 @@ class AddressControllerTest {
     @Test
     void addAddress_주소_입력_없어서_실패() throws Exception {
         // given
-        mockHttpSession.setAttribute(SESSION_ID, "user1");
-        mockHttpSession.setAttribute(AUTH_TYPE, UserType.USER);
         AddressRequestDto addressRequestDto = AddressRequestDto.builder()
                 .detailAddress("15번길 13로")
                 .build();
@@ -112,8 +115,6 @@ class AddressControllerTest {
     @Test
     void addAddress_성공() throws Exception {
         // given
-        mockHttpSession.setAttribute(SESSION_ID, "user1");
-        mockHttpSession.setAttribute(AUTH_TYPE, UserType.USER);
         AddressRequestDto addressRequestDto = TestDto.getAddressRequestDto();
 
         // when
@@ -131,7 +132,7 @@ class AddressControllerTest {
     @Test
     void getAllAddress_권한_없는_사용자_실패() throws Exception {
         // given
-        mockHttpSession.setAttribute(SESSION_ID, "user1");
+        mockHttpSession.setAttribute(AUTH_TYPE, UserType.ALL);
 
         // when
         // then
@@ -145,9 +146,6 @@ class AddressControllerTest {
     void getAllAddress_성공() throws Exception {
 
         // given
-        mockHttpSession.setAttribute(SESSION_ID, "user1");
-        mockHttpSession.setAttribute(AUTH_TYPE, UserType.USER);
-
         // when
         // then
         mockMvc.perform(get("/locations")
