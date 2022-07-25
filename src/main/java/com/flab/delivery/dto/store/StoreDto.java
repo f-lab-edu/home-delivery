@@ -17,7 +17,7 @@ public class StoreDto {
 
     private Long categoryId;
 
-    private String ownerId;
+    private String userId;
 
     private String detailAddress;
 

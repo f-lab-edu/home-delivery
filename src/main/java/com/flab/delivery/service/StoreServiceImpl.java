@@ -22,7 +22,6 @@ public class StoreServiceImpl implements StoreService {
 
     @Override
     public void createStore(StoreRequestDto storeRequestDto, String userId) {
-        // 매장 중복개설 매장중복 체크를 어떻게 할 것 인가
         // 매장 이름으로 중복 체크를 할것입니다 - 이름 + 상세주소
         Optional<Long> existsStore = storeMapper.existsByNameAndDetailAddress(storeRequestDto.getName(),
                 storeRequestDto.getDetailAddress());
@@ -39,26 +38,26 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public StoreDto getStore(Long storeId) {
-        return findStore(storeId);
+    public StoreDto getStore(Long id) {
+        return findStore(id);
     }
 
     @Override
-    public void updateStore(Long storeId, StoreRequestDto storeRequestDto) {
-        findStore(storeId);
-        storeMapper.updateById(storeId, storeRequestDto);
+    public void updateStore(Long id, StoreRequestDto storeRequestDto) {
+        findStore(id);
+        storeMapper.updateById(id, storeRequestDto);
     }
 
     @Override
-    public void deleteStore(Long storeId) {
-        findStore(storeId);
-        storeMapper.deleteById(storeId);
+    public void deleteStore(Long id) {
+        findStore(id);
+        storeMapper.deleteById(id);
     }
 
     @Override
-    public void changeStatus(Long storeId, StoreStatus status) {
-        findStore(storeId);
-        storeMapper.updateStatusById(storeId, status);
+    public void changeStatus(Long id, StoreStatus status) {
+        findStore(id);
+        storeMapper.updateStatusById(id, status);
     }
 
     private StoreDto findStore(Long storeId) {

@@ -12,13 +12,13 @@ public interface StoreService {
 
     List<StoreDto> getOwnerStoreList(String userId);
 
-    StoreDto getStore(Long storeId);
+    StoreDto getStore(Long id);
 
-    void updateStore(Long storeId, StoreRequestDto storeRequestDto);
+    void updateStore(Long id, StoreRequestDto storeRequestDto);
 
-    void deleteStore(Long storeId);
+    void deleteStore(Long id);
 
-    void changeStatus(Long storeId, StoreStatus status);
+    void changeStatus(Long id, StoreStatus status);
 
 
 }
