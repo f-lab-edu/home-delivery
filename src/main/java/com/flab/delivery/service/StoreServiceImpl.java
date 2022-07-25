@@ -4,6 +4,7 @@ import com.flab.delivery.dto.store.StoreDto;
 import com.flab.delivery.dto.store.StoreRequestDto;
 import com.flab.delivery.enums.StoreStatus;
 import com.flab.delivery.exception.NotFoundException;
+import com.flab.delivery.exception.StoreException;
 import com.flab.delivery.mapper.StoreMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +27,7 @@ public class StoreServiceImpl implements StoreService {
         Optional<Long> existsStore = storeMapper.existsByNameAndDetailAddress(storeRequestDto.getName(),
                 storeRequestDto.getDetailAddress());
         if (existsStore.isPresent()) {
-            throw new RuntimeException("이미 존재하는 매장입니다");
+            throw new StoreException("이미 존재하는 매장입니다");
         }
         storeMapper.save(storeRequestDto, userId);
     }
