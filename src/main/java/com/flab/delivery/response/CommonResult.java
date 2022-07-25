@@ -8,6 +8,7 @@ import lombok.Getter;
 public class CommonResult<T> {
 
     private static final String version = "v1";
+    private static final String SUCCESS_MESSAGE = "요청 성공하였습니다.";
     private int status;
     private String message;
     private T data;
@@ -18,7 +19,7 @@ public class CommonResult<T> {
     public static CommonResult getSimpleSuccessResult(int status) {
         return CommonResult.builder()
                 .status(status)
-                .message("요청 성공하였습니다.")
+                .message(SUCCESS_MESSAGE)
                 .build();
     }
 
@@ -49,6 +50,17 @@ public class CommonResult<T> {
         return CommonResult.builder()
                 .status(status)
                 .message(message)
+                .data(data)
+                .build();
+    }
+
+    /**
+     * 데이터를 포함하는 단순 성공 응답
+     */
+    public static <T> CommonResult getDataSuccessResult(T data) {
+        return CommonResult.builder()
+                .status(200)
+                .message(SUCCESS_MESSAGE)
                 .data(data)
                 .build();
     }
