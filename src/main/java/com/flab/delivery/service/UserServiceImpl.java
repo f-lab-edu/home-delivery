@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService {
     public void updateUserInfo(String userId, UserInfoUpdateDto userInfoUpdateDto) {
 
         if (!userId.equals(userInfoUpdateDto.getId())) {
-            throw new SessionLoginException("권한이 없습니다.", HttpStatus.FORBIDDEN);
+            throw new SessionLoginException("권한이 없습니다", HttpStatus.FORBIDDEN);
         }
 
         userMapper.updateInfo(userInfoUpdateDto);

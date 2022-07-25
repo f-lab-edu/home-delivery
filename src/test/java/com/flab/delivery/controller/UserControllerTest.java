@@ -24,6 +24,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.flab.delivery.fixture.MessageConstants.*;
 import static com.flab.delivery.utils.SessionConstants.SESSION_ID;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -35,10 +36,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @EnableMockMvc
 @ActiveProfiles("test")
 class UserControllerTest {
-
-    private static final String NOT_EXISTS_SESSION_MESSAGE = "세션 아이디가 존재하지 않습니다";
-    private static final String WRONG_EMAIL_MESSAGE = "이메일 형식이 아닙니다";
-    private static final String SUCCESS_MESSAGE = "요청 성공하였습니다.";
     @Autowired
     MockMvc mockMvc;
 
@@ -511,7 +508,7 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userInfoUpdateDto))
                         .session(mockHttpSession))
-                .andExpect(jsonPath("$.message").value("권한이 없습니다."))
+                .andExpect(jsonPath("$.message").value(HAVE_NO_AUTHORITY_MESSAGE))
                 .andExpect(jsonPath("$.status").value(HttpStatus.FORBIDDEN.value()));
 
     }
@@ -606,8 +603,8 @@ class UserControllerTest {
         // when
         // then
         mockMvc.perform(put("/users/password")
-                .content(objectMapper.writeValueAsString(wrongPasswordDto))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .content(objectMapper.writeValueAsString(wrongPasswordDto))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.message").value("비밀번호는 8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요"))
                 .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()));
 

@@ -1,5 +1,6 @@
 package com.flab.delivery.fixture;
 
+import com.flab.delivery.dto.address.AddressRequestDto;
 import com.flab.delivery.dto.user.PasswordDto;
 import com.flab.delivery.dto.user.UserDto;
 import com.flab.delivery.dto.user.UserInfoUpdateDto;
@@ -36,6 +37,14 @@ public class TestDto {
         return PasswordDto.builder()
                 .newPassword("!NewPassword1234")
                 .confirmedNewPassword("!NewPassword1234")
+                .build();
+    }
+
+    public static AddressRequestDto getAddressRequestDto() {
+        return AddressRequestDto.builder()
+                .townName("운암동")
+                .detailAddress("13번길 15")
+                .alias("기타")
                 .build();
     }
 }

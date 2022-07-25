@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flab.delivery.mapper.AddressMapper">
+
+    <select id="findIdByTownName" resultType="long">
+        SELECT id
+        FROM Address
+        WHERE town_name = #{townName};
+    </select>
+
+    <insert id="addUserAddress">
+        INSERT INTO User_Address(user_id, address_id, detail_address, alias)
+        VALUES (#{userId}, #{addressId}, #{addressDto.detailAddress}, #{addressDto.alias});
+    </insert>
+
+</mapper>
