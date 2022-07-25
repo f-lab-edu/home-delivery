@@ -10,17 +10,17 @@ import java.util.Optional;
 
 public interface StoreMapper {
 
-    void save(StoreRequestDto storeRequestDto, @Param("userId") String userId);
+    void save(@Param("store") StoreRequestDto storeRequestDto, @Param("userId") String userId);
 
     Optional<Long> existsByNameAndDetailAddress(@Param("name") String name, @Param("detailAddress") String detailAddress);
 
     List<StoreDto> findAllByUserId(String userId);
 
-    Optional<StoreDto> findById(@Param("id") Long storeId);
+    Optional<StoreDto> findById(Long id);
 
-    void updateById(@Param("id") Long storeId, StoreRequestDto storeRequestDto);
+    void updateById(@Param("id") Long storeId, @Param("store") StoreRequestDto storeRequestDto);
 
-    void deleteById(@Param("id") Long storeId);
+    void deleteById(Long id);
 
-    void updateStatusById(@Param("id") Long storeId, @Param("status") StoreStatus status);
+    void updateStatusById(@Param("id") Long id, @Param("status") StoreStatus status);
 }

@@ -13,10 +13,10 @@
 
 
     <insert id="save" parameterType="StoreRequestDto">
-        INSERT INTO STORE(address_id, category_id, owener_id detail_address, name, phone_number, info, open_time,
+        INSERT INTO STORE(address_id, category_id, user_id, detail_address, name, phone_number, info, open_time,
                           end_time, min_price)
-        VALUES (#{addressId}, #{categoryId}, #{userId}, #{detailAddress}, #{name},
-                #{phoneNumber}, #{info}, #{openTime}, #{endTime}, #{minPrice})
+        VALUES (#{store.addressId}, #{store.categoryId}, #{userId}, #{store.detailAddress}, #{store.name},
+                #{store.phoneNumber}, #{store.info}, #{store.openTime}, #{store.endTime}, #{store.minPrice})
     </insert>
 
     <select id="findAllByUserId" resultType="StoreDto">
@@ -33,15 +33,15 @@
 
     <update id="updateById" parameterType="StoreRequestDto">
         UPDATE STORE
-        SET address_id     = #{addressId},
-            category_id    = #{categoryId},
-            detail_address = #{detailAddress},
-            name           = #{name},
-            phone_number   = #{phoneNumber},
-            info           = #{info},
-            open_time      = #{openTime},
-            end_time       = #{endTime},
-            min_price      = #{minPrice}
+        SET address_id     = #{store.addressId},
+            category_id    = #{store.categoryId},
+            detail_address = #{store.detailAddress},
+            name           = #{store.name},
+            phone_number   = #{store.phoneNumber},
+            info           = #{store.info},
+            open_time      = #{store.openTime},
+            end_time       = #{store.endTime},
+            min_price      = #{store.minPrice}
         WHERE id = #{id}
     </update>
 
