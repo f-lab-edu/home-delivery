@@ -42,29 +42,29 @@ public class StoreController {
 
     @LoginCheck(userType = UserType.OWNER)
     @GetMapping("/{id}")
-    public CommonResult<StoreDto> getStore(@PathVariable("id") Long storeId) {
-        return CommonResult.getDataSuccessResult(storeService.getStore(storeId));
+    public CommonResult<StoreDto> getStore(@PathVariable("id") Long id) {
+        return CommonResult.getDataSuccessResult(storeService.getStore(id));
     }
 
     @LoginCheck(userType = UserType.OWNER)
     @PutMapping("/{id}")
-    public CommonResult<Void> updateStore(@PathVariable("id") Long storeId, @RequestBody @Valid StoreRequestDto storeRequestDto) {
-        storeService.updateStore(storeId, storeRequestDto);
+    public CommonResult<Void> updateStore(@PathVariable("id") Long id, @RequestBody @Valid StoreRequestDto storeRequestDto) {
+        storeService.updateStore(id, storeRequestDto);
         return CommonResult.getSimpleSuccessResult(HttpStatus.OK.value());
     }
 
     @LoginCheck(userType = UserType.OWNER)
     @DeleteMapping("/{id}")
-    public CommonResult<Void> deleteStore(@PathVariable("id") Long storeId) {
-        storeService.deleteStore(storeId);
+    public CommonResult<Void> deleteStore(@PathVariable("id") Long id) {
+        storeService.deleteStore(id);
         return CommonResult.getSimpleSuccessResult(HttpStatus.OK.value());
     }
 
     // PutMapping vs PatchMapping !!!
     @LoginCheck(userType = UserType.OWNER)
     @PutMapping("/{id}/status")
-    public CommonResult<Void> changeStatus(@PathVariable("id") Long storeId, @RequestBody StoreDto storeDto) {
-        storeService.changeStatus(storeId, storeDto.getStatus());
+    public CommonResult<Void> changeStatus(@PathVariable("id") Long id, @RequestBody StoreDto storeDto) {
+        storeService.changeStatus(id, storeDto.getStatus());
         return CommonResult.getSimpleSuccessResult(HttpStatus.OK.value());
     }
 
