@@ -15,10 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -49,7 +47,7 @@ class StoreControllerTest {
         private String endTime = "오후 12시";
         private Long minPrice = 18000L;
 
-        private String ownerId = "user2";
+        private final String ownerId = "user2";
         private final String url = "/stores";
 
         private MockHttpSession mockHttpSession = new MockHttpSession();
@@ -454,7 +452,7 @@ class StoreControllerTest {
     @DisplayName("GET : /stores")
     class getOwnerStoreList {
 
-        private String ownerId = "user2";
+        private final String ownerId = "user2";
 
         private MockHttpSession mockHttpSession = new MockHttpSession();
 
