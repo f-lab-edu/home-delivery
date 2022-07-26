@@ -9,4 +9,6 @@ public interface AddressService {
     void addAddress(AddressRequestDto addressRequestDto, String userId);
 
     List<AddressDto> getAllAddress(String userId);
+
+    void removeAddress(Long userAddressId, String userId);
 }

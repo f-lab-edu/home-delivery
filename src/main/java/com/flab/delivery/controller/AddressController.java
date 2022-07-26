@@ -40,4 +40,12 @@ public class AddressController {
         return CommonResult.getSimpleSuccessResult(HttpStatus.CREATED.value());
     }
 
+    @DeleteMapping("/{id}")
+    @LoginCheck(userType = UserType.USER)
+    public CommonResult<Void> deleteAddress(@PathVariable Long id, @SessionUserId String userId) {
+
+        addressService.removeAddress(id, userId);
+
+        return CommonResult.getSimpleSuccessResult(HttpStatus.OK.value());
+    }
 }

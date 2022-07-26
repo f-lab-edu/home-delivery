@@ -8,6 +8,7 @@ import lombok.*;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class AddressDto {
 
+    private Long id;
     private String townName;
     private String detailAddress;
     private String alias;

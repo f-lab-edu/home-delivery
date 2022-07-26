@@ -4,6 +4,7 @@ import com.flab.delivery.dto.address.AddressRequestDto;
 import com.flab.delivery.exception.AddressException;
 import com.flab.delivery.fixture.TestDto;
 import com.flab.delivery.mapper.AddressMapper;
+import com.flab.delivery.mapper.UserAddressMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -25,6 +26,9 @@ class AddressServiceImplTest {
     private AddressServiceImpl addressService;
 
     @Mock
+    private UserAddressMapper userAddressMapper;
+
+    @Mock
     private AddressMapper addressMapper;
 
 
@@ -40,7 +44,7 @@ class AddressServiceImplTest {
                 .isInstanceOf(AddressException.class);
 
         verify(addressMapper).findIdByTownName(anyString());
-        verify(addressMapper, never()).addUserAddress(eq(requestDto), anyLong(), eq(SESSION_USER_ID));
+        verify(userAddressMapper, never()).addAddress(eq(requestDto), anyLong(), eq(SESSION_USER_ID));
 
     }
 
@@ -55,7 +59,7 @@ class AddressServiceImplTest {
 
         //then
         verify(addressMapper).findIdByTownName(anyString());
-        verify(addressMapper).addUserAddress(eq(requestDto), eq(1L), eq(SESSION_USER_ID));
+        verify(userAddressMapper).addAddress(eq(requestDto), eq(1L), eq(SESSION_USER_ID));
 
     }
 
@@ -74,8 +78,38 @@ class AddressServiceImplTest {
 
         //then
         verify(addressMapper).findIdByTownName(anyString());
-        verify(addressMapper).addUserAddress(valueCapture.capture(), eq(1L), eq(SESSION_USER_ID));
+        verify(userAddressMapper).addAddress(valueCapture.capture(), eq(1L), eq(SESSION_USER_ID));
         assertThat(valueCapture.getValue().getAlias()).isEqualTo(requestDto.getDetailAddress());
 
+    }
+
+
+    @Test
+    void removeAddress_성공() {
+        // given
+        Long userAddressId = 1L;
+        given(userAddressMapper.existsById(userAddressId)).willReturn(true);
+
+        // when
+        addressService.removeAddress(userAddressId, SESSION_USER_ID);
+
+        // then
+        verify(userAddressMapper).existsById(userAddressId);
+        verify(userAddressMapper).deleteById(userAddressId);
+    }
+
+    @Test
+    void removeAddress_존재하지_않는_아이디_실패() {
+        // given
+        Long userAddressId = 1L;
+        given(userAddressMapper.existsById(userAddressId)).willReturn(false);
+
+        // when
+        assertThatThrownBy(() -> addressService.removeAddress(userAddressId, SESSION_USER_ID))
+                .isInstanceOf(AddressException.class);
+
+        // then
+        verify(userAddressMapper).existsById(userAddressId);
+        verify(userAddressMapper, never()).deleteById(userAddressId);
     }
 }

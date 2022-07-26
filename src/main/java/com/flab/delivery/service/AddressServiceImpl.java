@@ -4,6 +4,7 @@ import com.flab.delivery.dto.address.AddressDto;
 import com.flab.delivery.dto.address.AddressRequestDto;
 import com.flab.delivery.exception.AddressException;
 import com.flab.delivery.mapper.AddressMapper;
+import com.flab.delivery.mapper.UserAddressMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import java.util.List;
 public class AddressServiceImpl implements AddressService {
 
     private final AddressMapper addressMapper;
+    private final UserAddressMapper userAddressMapper;
 
     @Override
     public void addAddress(AddressRequestDto addressRequestDto, String userId) {
@@ -28,13 +30,23 @@ public class AddressServiceImpl implements AddressService {
             addressRequestDto.changeAlias(addressRequestDto.getDetailAddress());
         }
 
-        addressMapper.addUserAddress(addressRequestDto, findAddressId, userId);
+        userAddressMapper.addAddress(addressRequestDto, findAddressId, userId);
 
     }
 
     @Override
     public List<AddressDto> getAllAddress(String userId) {
 
-        return addressMapper.findUserAddressByUserId(userId);
+        return userAddressMapper.findAllByUserId(userId);
+    }
+
+    @Override
+    public void removeAddress(Long userAddressId, String userId) {
+
+        if (!userAddressMapper.existsById(userAddressId)) {
+            throw new AddressException("존재하지 않는 주소 입니다.");
+        }
+
+        userAddressMapper.deleteById(userAddressId);
     }
 }
