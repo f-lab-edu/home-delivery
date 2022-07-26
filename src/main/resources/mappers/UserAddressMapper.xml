@@ -23,6 +23,28 @@
     <delete id="deleteById">
         DELETE
         FROM User_Address
-        WHERE id = #{id};
+        WHERE id = #{id}
+          AND user_id = #{userId};
     </delete>
+
+    <update id="resetSelection">
+        UPDATE User_Address
+        SET selected = false
+        WHERE user_id = #{userId}
+          AND selected = true;
+    </update>
+
+    <select id="findById" resultType="AddressDto">
+        SELECT ua.id, a.town_name, ua.detail_address, ua.alias, ua.selected
+        FROM User_Address ua
+                 INNER JOIN Address a ON ua.address_id = a.id
+        WHERE ua.id = #{id};
+    </select>
+
+    <update id="changeAddress">
+        UPDATE User_Address
+        SET selected = true
+        WHERE id = #{id}
+          AND user_id = #{userId}
+    </update>
 </mapper>

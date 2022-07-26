@@ -87,29 +87,76 @@ class AddressServiceTest {
     @Test
     void removeAddress_성공() {
         // given
-        Long userAddressId = 1L;
-        given(userAddressMapper.existsById(userAddressId)).willReturn(true);
+        Long id = 1L;
+        given(userAddressMapper.existsById(id)).willReturn(true);
 
         // when
-        addressService.removeAddress(userAddressId, SESSION_USER_ID);
+        addressService.removeAddress(id, SESSION_USER_ID);
 
         // then
-        verify(userAddressMapper).existsById(userAddressId);
-        verify(userAddressMapper).deleteById(userAddressId);
+        verify(userAddressMapper).existsById(id);
+        verify(userAddressMapper).deleteById(eq(id), eq(SESSION_USER_ID));
     }
 
     @Test
     void removeAddress_존재하지_않는_아이디_실패() {
         // given
-        Long userAddressId = 1L;
-        given(userAddressMapper.existsById(userAddressId)).willReturn(false);
+        Long id = 1L;
+        given(userAddressMapper.existsById(id)).willReturn(false);
 
         // when
-        assertThatThrownBy(() -> addressService.removeAddress(userAddressId, SESSION_USER_ID))
+        assertThatThrownBy(() -> addressService.removeAddress(id, SESSION_USER_ID))
                 .isInstanceOf(AddressException.class);
 
         // then
-        verify(userAddressMapper).existsById(userAddressId);
-        verify(userAddressMapper, never()).deleteById(userAddressId);
+        verify(userAddressMapper).existsById(id);
+        verify(userAddressMapper, never()).deleteById(eq(id), eq(SESSION_USER_ID));
+    }
+
+    @Test
+    void selectAddress_성공() {
+        // given
+        Long id = 1L;
+        given(userAddressMapper.existsById(eq(id))).willReturn(true);
+        given(userAddressMapper.changeAddress(eq(id), eq(SESSION_USER_ID))).willReturn(1);
+
+        // when
+        addressService.selectAddress(id, SESSION_USER_ID);
+
+        // then
+        verify(userAddressMapper).changeAddress(eq(id), eq(SESSION_USER_ID));
+        verify(userAddressMapper).resetSelection(eq(SESSION_USER_ID));
+        verify(userAddressMapper).existsById(eq(id));
+    }
+
+    @Test
+    void selectAddress_존재하지_않는_주소_실패() {
+        // given
+        Long id = 1L;
+        given(userAddressMapper.existsById(eq(id))).willReturn(false);
+
+        // when
+        assertThatThrownBy(() -> addressService.selectAddress(id, SESSION_USER_ID))
+                .isInstanceOf(AddressException.class);
+        // then
+        verify(userAddressMapper, never()).changeAddress(eq(id), eq(SESSION_USER_ID));
+        verify(userAddressMapper, never()).resetSelection(eq(SESSION_USER_ID));
+        verify(userAddressMapper).existsById(eq(id));
+    }
+
+    @Test
+    void selectAddress_잘못된_요청_실패() {
+        // given
+        Long id = 1L;
+        given(userAddressMapper.existsById(eq(id))).willReturn(true);
+        given(userAddressMapper.changeAddress(eq(id), eq(SESSION_USER_ID))).willReturn(0);
+
+        // when
+        assertThatThrownBy(() -> addressService.selectAddress(id, SESSION_USER_ID))
+                .isInstanceOf(AddressException.class);
+        // then
+        verify(userAddressMapper).changeAddress(eq(id), eq(SESSION_USER_ID));
+        verify(userAddressMapper).resetSelection(eq(SESSION_USER_ID));
+        verify(userAddressMapper).existsById(eq(id));
     }
 }

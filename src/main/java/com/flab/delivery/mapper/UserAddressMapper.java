@@ -9,7 +9,7 @@ import java.util.List;
 
 @Mapper
 public interface UserAddressMapper {
-    Long addAddress(@Param("addressDto") AddressRequestDto addressRequestDto,
+    int addAddress(@Param("addressDto") AddressRequestDto addressRequestDto,
                     @Param("addressId") Long findAddressId,
                     @Param("userId") String userId);
 
@@ -17,5 +17,13 @@ public interface UserAddressMapper {
 
     boolean existsById(Long id);
 
-    void deleteById(Long id);
+    void deleteById(@Param("id") Long id,
+                    @Param("userId") String userId);
+
+    int resetSelection(String userId);
+
+    AddressDto findById(Long id);
+
+    int changeAddress(@Param("id") Long id,
+                       @Param("userId") String userId);
 }

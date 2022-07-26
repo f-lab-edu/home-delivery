@@ -191,4 +191,50 @@ class AddressControllerTest {
     }
 
 
+    @Test
+    void selectAddress_권한_없는_사용자_실패() throws Exception {
+        // given
+        mockHttpSession.setAttribute(AUTH_TYPE, UserType.ALL);
+
+        // when
+        // then
+        mockMvc.perform(put("/locations/1")
+                        .session(mockHttpSession))
+                .andExpect(jsonPath("$.status").value(HttpStatus.FORBIDDEN.value()))
+                .andExpect(jsonPath("$.message").value(HAVE_NO_AUTHORITY_MESSAGE));
+    }
+
+    @Test
+    void selectAddress_없는_주소_실패() throws Exception {
+        // given
+        // when
+        // then
+        mockMvc.perform(put("/locations/1")
+                        .session(mockHttpSession))
+                .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
+                .andExpect(jsonPath("$.message").value("존재하지 않는 주소 입니다."));
+    }
+
+    @Test
+    void selectAddress_잘못된_요청_실패() throws Exception {
+        // given
+        mockHttpSession.setAttribute(SESSION_ID, "user2");
+        // when
+        // then
+        mockMvc.perform(put("/locations/15")
+                        .session(mockHttpSession))
+                .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
+                .andExpect(jsonPath("$.message").value("잘못된 요청 입니다."));
+    }
+
+    @Test
+    void selectAddress_성공() throws Exception {
+        // given
+        // when
+        // then
+        mockMvc.perform(put("/locations/15")
+                        .session(mockHttpSession))
+                .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
+                .andExpect(jsonPath("$.message").value(SUCCESS_MESSAGE));
+    }
 }

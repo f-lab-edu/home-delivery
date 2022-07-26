@@ -22,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class UserAddressMapperTest {
 
+    private static final String USER_ID = "user1";
     @Autowired
     AddressMapper addressMapper;
 
@@ -34,10 +35,10 @@ public class UserAddressMapperTest {
         AddressRequestDto requestDto = TestDto.getAddressRequestDto();
 
         Long addressId = addressMapper.findIdByTownName(requestDto.getTownName());
-        String userId = "user1";
+        String userId = USER_ID;
 
         // when
-        Long result = userAddressMapper.addAddress(requestDto, addressId, userId);
+        int result = userAddressMapper.addAddress(requestDto, addressId, userId);
 
         //then
         assertThat(result).isNotNull();
@@ -49,7 +50,7 @@ public class UserAddressMapperTest {
         AddressRequestDto requestDto = TestDto.getAddressRequestDto();
 
         Long addressId = null;
-        String userId = "user1";
+        String userId = USER_ID;
 
         // when
         //then
@@ -74,7 +75,7 @@ public class UserAddressMapperTest {
     @Test
     void findAllByUserId_성공() {
         // given
-        String userId = "user1";
+        String userId = USER_ID;
 
         // when
         List<AddressDto> addressDtoList = userAddressMapper.findAllByUserId(userId);
@@ -105,7 +106,7 @@ public class UserAddressMapperTest {
     @Test
     void existsById_존재해서_True() {
         // given
-        Long id = userAddressMapper.findAllByUserId("user1").get(0).getId();
+        Long id = userAddressMapper.findAllByUserId(USER_ID).get(0).getId();
 
         // when
         boolean existsById = userAddressMapper.existsById(id);
@@ -128,14 +129,76 @@ public class UserAddressMapperTest {
     }
 
     @Test
-    void deleteById_존재하는_아이디_성공() {
+    void deleteById_성공() {
         // given
-        Long id = userAddressMapper.findAllByUserId("user1").get(0).getId();
+        Long id = userAddressMapper.findAllByUserId(USER_ID).get(0).getId();
 
         // when
-        userAddressMapper.deleteById(id);
+        userAddressMapper.deleteById(id, USER_ID);
 
         // then
         assertThat(userAddressMapper.existsById(id)).isFalse();
+    }
+
+    @Test
+    void deleteById_존재하지_않는_유저_실패() {
+        // given
+        Long id = userAddressMapper.findAllByUserId(USER_ID).get(0).getId();
+
+        // when
+        userAddressMapper.deleteById(id, "wrongUser");
+
+        // then
+        assertThat(userAddressMapper.existsById(id)).isTrue();
+    }
+
+    @Test
+    void resetSelection_성공() {
+        // given
+        long selectedId = 17L;
+
+        // when
+        AddressDto selectedAddress = userAddressMapper.findById(selectedId);
+        assertThat(selectedAddress.isSelected()).isTrue();
+
+        userAddressMapper.resetSelection(USER_ID);
+
+        // then
+        selectedAddress = userAddressMapper.findById(selectedId);
+        assertThat(selectedAddress.isSelected()).isFalse();
+    }
+
+    @Test
+    void changeAddress_성공() {
+        // given
+        Long id = 15L;
+
+        // when
+        AddressDto selectedAddress = userAddressMapper.findById(id);
+        assertThat(selectedAddress.isSelected()).isFalse();
+
+        userAddressMapper.changeAddress(id, USER_ID);
+
+        // then
+        selectedAddress = userAddressMapper.findById(id);
+        assertThat(selectedAddress.isSelected()).isTrue();
+
+    }
+
+    @Test
+    void changeAddress_잘못된_유저_아이디_실패() {
+        // given
+        Long id = 15L;
+
+        // when
+        AddressDto selectedAddress = userAddressMapper.findById(id);
+        assertThat(selectedAddress.isSelected()).isFalse();
+
+        userAddressMapper.changeAddress(id, "wrongUser");
+
+        // then
+        selectedAddress = userAddressMapper.findById(id);
+        assertThat(selectedAddress.isSelected()).isFalse();
+
     }
 }
