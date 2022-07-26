@@ -2,6 +2,7 @@ package com.flab.delivery.dto.store;
 
 import lombok.*;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -12,9 +13,11 @@ import javax.validation.constraints.Pattern;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class StoreRequestDto {
 
+    @Min(value = 1, message = "주소 정보가 올바르지 않습니다")
     @NotNull(message = "주소 정보가 올바르지 않습니다")
     private Long addressId;
 
+    @Min(value = 1, message = "카테고리 정보가 올바르지 않습니다")
     @NotNull(message = "카테고리 정보가 올바르지 않습니다")
     private Long categoryId;
 
@@ -41,6 +44,7 @@ public class StoreRequestDto {
     @NotBlank(message = "마감 시간 정보가 올바르지 않습니다")
     private String endTime;
 
+    @Min(value = 0, message = "최소 주문 가격 정보가 올바르지 않습니다")
     @NotNull(message = "최소 주문 가격 정보가 올바르지 않습니다")
     private Long minPrice;
 }

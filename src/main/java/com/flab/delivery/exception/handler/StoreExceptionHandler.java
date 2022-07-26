@@ -24,7 +24,7 @@ public class StoreExceptionHandler {
     }
 
     @ExceptionHandler(StoreException.class)
-    public CommonResult<Void> handleStoreException(SignUpException ex, HttpServletRequest request) {
+    public CommonResult<Void> handleStoreException(StoreException ex, HttpServletRequest request) {
         log.info("Http Method : {}  URI : {}, msg : {}", request.getMethod(), request.getRequestURI(), ex.getMessage());
         return getBadResponse(ex.getMessage());
     }
