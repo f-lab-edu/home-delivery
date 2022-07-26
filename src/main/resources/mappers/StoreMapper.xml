@@ -22,7 +22,7 @@
     <select id="findAllByUserId" resultType="StoreDto">
         SELECT *
         FROM STORE
-        WHERE owner_id = #{userId}
+        WHERE user_id = #{userId}
     </select>
 
     <select id="findById" resultType="StoreDto">
