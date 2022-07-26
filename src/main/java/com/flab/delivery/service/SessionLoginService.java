@@ -14,7 +14,7 @@ import javax.servlet.http.HttpSession;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class SessionLoginServiceImpl implements LoginService {
+public class SessionLoginService implements LoginService {
 
     private final HttpSession httpSession;
 

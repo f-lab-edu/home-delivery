@@ -48,4 +48,14 @@ public class AddressController {
 
         return CommonResult.getSimpleSuccessResult(HttpStatus.OK.value());
     }
+
+    @PutMapping("/{id}")
+    @LoginCheck(userType = UserType.USER)
+    public CommonResult<Void> selectAddress(@PathVariable Long id, @SessionUserId String userId) {
+
+        addressService.selectAddress(id, userId);
+
+        return CommonResult.getSimpleSuccessResult(HttpStatus.OK.value());
+    }
+
 }

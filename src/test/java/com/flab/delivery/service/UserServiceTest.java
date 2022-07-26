@@ -20,16 +20,16 @@ import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
-class UserServiceImplTest {
+class UserServiceTest {
 
     @Mock
     UserMapper userMapper;
 
     @InjectMocks
-    UserServiceImpl userService;
+    UserService userService;
 
     @Mock
-    SessionLoginServiceImpl loginService;
+    SessionLoginService loginService;
 
 
     @Nested

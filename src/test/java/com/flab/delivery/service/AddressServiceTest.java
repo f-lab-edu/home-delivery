@@ -19,11 +19,11 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class AddressServiceImplTest {
+class AddressServiceTest {
 
     private static final String SESSION_USER_ID = "user1";
     @InjectMocks
-    private AddressServiceImpl addressService;
+    private AddressService addressService;
 
     @Mock
     private UserAddressMapper userAddressMapper;
