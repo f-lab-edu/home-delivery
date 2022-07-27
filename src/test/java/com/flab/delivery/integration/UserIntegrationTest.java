@@ -1,4 +1,4 @@
-package com.flab.delivery.controller;
+package com.flab.delivery.integration;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 @EnableMockMvc
 @ActiveProfiles("test")
-class UserControllerTest {
+class UserIntegrationTest {
     @Autowired
     MockMvc mockMvc;
 
@@ -595,35 +595,40 @@ class UserControllerTest {
     @Test
     void changePassword_입력값_검증_실패() throws Exception {
         // given
+        setMockLoginUser(mockHttpSession, "user1");
+
         PasswordDto wrongPasswordDto = PasswordDto.builder()
+                .password("!wrongPassword")
                 .newPassword("wrongPassword")
-                .confirmedNewPassword("wrongPassword")
                 .build();
 
         // when
         // then
         mockMvc.perform(put("/users/password")
                         .content(objectMapper.writeValueAsString(wrongPasswordDto))
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .session(mockHttpSession))
                 .andExpect(jsonPath("$.message").value("비밀번호는 8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요"))
                 .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()));
 
     }
 
     @Test
-    void changePassword_동일하지_않은_새_비밀번호_실패() throws Exception {
+    void changePassword_동일하지_않은_비밀번호_실패() throws Exception {
         // given
+        setMockLoginUser(mockHttpSession, "user1");
 
         PasswordDto wrongPasswordDto = PasswordDto.builder()
-                .newPassword("!NewPassword123")
-                .confirmedNewPassword("!NewPassword1234")
+                .password("!WrongPassword")
+                .newPassword("!NewPassword1234")
                 .build();
 
         // when
         // then
         mockMvc.perform(put("/users/password")
                         .content(objectMapper.writeValueAsString(wrongPasswordDto))
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .session(mockHttpSession))
                 .andExpect(jsonPath("$.message").value("입력하신 패스워드가 일치하지 않습니다."))
                 .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()));
 

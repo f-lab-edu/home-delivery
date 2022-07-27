@@ -29,7 +29,7 @@ class UserServiceTest {
     UserService userService;
 
     @Mock
-    SessionLoginService loginService;
+    LoginService loginService;
 
 
     @Nested

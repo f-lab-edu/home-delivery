@@ -17,13 +17,13 @@ import static com.flab.delivery.utils.SessionConstants.SESSION_ID;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class SessionLoginServiceTest {
+class LoginServiceTest {
 
     @Mock
     HttpSession httpSession;
 
     @InjectMocks
-    SessionLoginService loginService;
+    LoginService loginService;
 
 
     @Test

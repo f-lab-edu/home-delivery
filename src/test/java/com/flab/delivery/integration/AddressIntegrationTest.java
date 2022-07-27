@@ -1,4 +1,4 @@
-package com.flab.delivery.controller;
+package com.flab.delivery.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flab.delivery.annotation.EnableMockMvc;
@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 @EnableMockMvc
 @ActiveProfiles("test")
-class AddressControllerTest {
+class AddressIntegrationTest {
 
     @Autowired
     AddressService addressService;

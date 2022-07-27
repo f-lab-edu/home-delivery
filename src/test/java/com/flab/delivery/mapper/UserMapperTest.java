@@ -68,8 +68,8 @@ class UserMapperTest {
         // given
         UserDto findUser = userMapper.findById("user1");
         PasswordDto passwordDto = PasswordDto.builder()
+                .password("password")
                 .newPassword("!newPassword")
-                .confirmedNewPassword("!newPassword")
                 .build();
 
         // when

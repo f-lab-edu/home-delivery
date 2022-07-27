@@ -35,8 +35,8 @@ public class TestDto {
 
     public static PasswordDto getPasswordDto() {
         return PasswordDto.builder()
+                .password("1111")
                 .newPassword("!NewPassword1234")
-                .confirmedNewPassword("!NewPassword1234")
                 .build();
     }
 
