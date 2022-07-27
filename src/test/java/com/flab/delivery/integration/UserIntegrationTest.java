@@ -488,7 +488,7 @@ class UserIntegrationTest {
 
         // when
         // then
-        mockMvc.perform(put("/users")
+        mockMvc.perform(patch("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userInfoUpdateDto)))
                 .andExpect(jsonPath("$.message").value(NOT_EXISTS_SESSION_MESSAGE))
@@ -504,7 +504,7 @@ class UserIntegrationTest {
 
         // when
         // then
-        mockMvc.perform(put("/users")
+        mockMvc.perform(patch("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userInfoUpdateDto))
                         .session(mockHttpSession))
@@ -527,7 +527,7 @@ class UserIntegrationTest {
 
         // when
         // then
-        mockMvc.perform(put("/users")
+        mockMvc.perform(patch("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userInfoUpdateDto))
                         .session(mockHttpSession))
@@ -545,7 +545,7 @@ class UserIntegrationTest {
 
         // when
         // then
-        mockMvc.perform(put("/users")
+        mockMvc.perform(patch("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userInfoUpdateDto))
                         .session(mockHttpSession))
@@ -584,7 +584,7 @@ class UserIntegrationTest {
 
         // when
         // then
-        mockMvc.perform(put("/users/password")
+        mockMvc.perform(patch("/users/password")
                         .content(objectMapper.writeValueAsString(wrongPasswordDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.message").value(NOT_EXISTS_SESSION_MESSAGE))
@@ -604,7 +604,7 @@ class UserIntegrationTest {
 
         // when
         // then
-        mockMvc.perform(put("/users/password")
+        mockMvc.perform(patch("/users/password")
                         .content(objectMapper.writeValueAsString(wrongPasswordDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .session(mockHttpSession))
@@ -625,7 +625,7 @@ class UserIntegrationTest {
 
         // when
         // then
-        mockMvc.perform(put("/users/password")
+        mockMvc.perform(patch("/users/password")
                         .content(objectMapper.writeValueAsString(wrongPasswordDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .session(mockHttpSession))
@@ -642,7 +642,7 @@ class UserIntegrationTest {
 
         // when
         // then
-        mockMvc.perform(put("/users/password")
+        mockMvc.perform(patch("/users/password")
                         .content(objectMapper.writeValueAsString(wrongPasswordDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .session(mockHttpSession))

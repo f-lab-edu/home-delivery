@@ -49,7 +49,7 @@ public class AddressController {
         return CommonResult.getSimpleSuccessResult(HttpStatus.OK.value());
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     @LoginCheck(userType = UserType.USER)
     public CommonResult<Void> selectAddress(@PathVariable Long id, @SessionUserId String userId) {
 

@@ -198,7 +198,7 @@ class AddressIntegrationTest {
 
         // when
         // then
-        mockMvc.perform(put("/locations/1")
+        mockMvc.perform(patch("/locations/1")
                         .session(mockHttpSession))
                 .andExpect(jsonPath("$.status").value(HttpStatus.FORBIDDEN.value()))
                 .andExpect(jsonPath("$.message").value(HAVE_NO_AUTHORITY_MESSAGE));
@@ -209,7 +209,7 @@ class AddressIntegrationTest {
         // given
         // when
         // then
-        mockMvc.perform(put("/locations/1")
+        mockMvc.perform(patch("/locations/1")
                         .session(mockHttpSession))
                 .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
                 .andExpect(jsonPath("$.message").value("존재하지 않는 주소 입니다."));
@@ -221,7 +221,7 @@ class AddressIntegrationTest {
         mockHttpSession.setAttribute(SESSION_ID, "user2");
         // when
         // then
-        mockMvc.perform(put("/locations/15")
+        mockMvc.perform(patch("/locations/15")
                         .session(mockHttpSession))
                 .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
                 .andExpect(jsonPath("$.message").value("잘못된 요청 입니다."));
@@ -232,7 +232,7 @@ class AddressIntegrationTest {
         // given
         // when
         // then
-        mockMvc.perform(put("/locations/15")
+        mockMvc.perform(patch("/locations/15")
                         .session(mockHttpSession))
                 .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
                 .andExpect(jsonPath("$.message").value(SUCCESS_MESSAGE));

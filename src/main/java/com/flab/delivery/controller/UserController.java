@@ -58,7 +58,7 @@ public class UserController {
     }
 
     @LoginCheck
-    @PutMapping
+    @PatchMapping
     public CommonResult<Void> updateUserInfo(@SessionUserId String userId,
                                              @RequestBody @Valid UserInfoUpdateDto userInfoUpdateDto) {
 
@@ -74,7 +74,7 @@ public class UserController {
     }
 
     @LoginCheck
-    @PutMapping("/password")
+    @PatchMapping("/password")
     public CommonResult<Void> changePassword(@SessionUserId String userId,
                                              @RequestBody @Valid PasswordDto passwordDto) {
         userService.changePassword(userId, passwordDto);
