@@ -57,16 +57,13 @@ public class AddressService {
     @Transactional(rollbackFor = AddressException.class)
     public void selectAddress(Long id, String userId) {
 
-        if (!isExistsById(id)) {
-            throw new AddressException("존재하지 않는 주소 입니다.");
-        }
-
-        userAddressMapper.resetSelection(userId);
         int updateCount = userAddressMapper.changeAddress(id, userId);
 
         if (updateCount == 0) {
             throw new AddressException("잘못된 요청 입니다.");
         }
+
+        userAddressMapper.resetSelection(userId);
     }
 
     private boolean isExistsById(Long id) {
