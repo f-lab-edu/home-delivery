@@ -2,7 +2,6 @@ package com.flab.delivery.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flab.delivery.annotation.EnableMockMvc;
-import com.flab.delivery.dto.SignUpDto;
 import com.flab.delivery.dto.store.StoreDto;
 import com.flab.delivery.dto.store.StoreRequestDto;
 import com.flab.delivery.enums.StoreStatus;
@@ -96,19 +95,6 @@ class StoreControllerTest {
             @Nested
             @DisplayName("세션")
             class fail_session {
-                @Test
-                @DisplayName("세션 존재x")
-                void sessionExists() throws Exception {
-                    // given
-                    String json = objectMapper.writeValueAsString(getStoreRequestDto());
-                    mockHttpSession.removeAttribute(SessionConstants.SESSION_ID);
-                    // when
-                    // then
-                    mockMvc.perform(post(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
-                            .andExpect(jsonPath("$.status").value(HttpStatus.UNAUTHORIZED.value()))
-                            .andExpect(jsonPath("$.message").value("세션 아이디가 존재하지 않습니다"))
-                            .andDo(print());
-                }
 
                 @Test
                 @DisplayName("권한")
@@ -480,18 +466,6 @@ class StoreControllerTest {
         @Nested
         @DisplayName("실패")
         class Fail {
-            @Test
-            @DisplayName("세션 존재x")
-            void sessionExists() throws Exception {
-                // given
-                mockHttpSession.removeAttribute(SessionConstants.SESSION_ID);
-                // when
-                // then
-                mockMvc.perform(get(url).session(mockHttpSession))
-                        .andExpect(jsonPath("$.status").value(HttpStatus.UNAUTHORIZED.value()))
-                        .andExpect(jsonPath("$.message").value("세션 아이디가 존재하지 않습니다"))
-                        .andDo(print());
-            }
 
             @Test
             @DisplayName("권한")
@@ -542,23 +516,11 @@ class StoreControllerTest {
         @DisplayName("실패")
         class Fail {
             @Test
-            @DisplayName("세션 존재x")
-            void sessionExists() throws Exception {
-                // given
-                mockHttpSession.removeAttribute(SessionConstants.SESSION_ID);
-                // when
-                // then
-                mockMvc.perform(get(url).session(mockHttpSession))
-                        .andExpect(jsonPath("$.status").value(HttpStatus.UNAUTHORIZED.value()))
-                        .andExpect(jsonPath("$.message").value("세션 아이디가 존재하지 않습니다"))
-                        .andDo(print());
-            }
-
-            @Test
             @DisplayName("권한")
             void userType() throws Exception {
                 // given
-                mockHttpSession.setAttribute(SessionConstants.SESSION_ID, "user1");
+                String userId = "user1";
+                mockHttpSession.setAttribute(SessionConstants.SESSION_ID, userId);
                 // when
                 // then
                 mockMvc.perform(get(url).session(mockHttpSession))
@@ -580,7 +542,7 @@ class StoreControllerTest {
     }
 
     @Nested
-    @DisplayName("PUT : /stores/{id}")
+    @DisplayName("PATCH : /stores/{id}")
     class updateStore {
 
 
@@ -632,7 +594,7 @@ class StoreControllerTest {
                 minPrice = 20000L;
                 String json = objectMapper.writeValueAsString(getStoreRequestDto());
                 // when
-                mockMvc.perform(put(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
+                mockMvc.perform(patch(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
                         .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
                         .andDo(print());
                 Long afterPrice = storeMapper.findById(id).get().getMinPrice();
@@ -644,32 +606,17 @@ class StoreControllerTest {
         @Nested
         @DisplayName("실패")
         class Fail {
-            // 세션정보불일치(세션x, 권한안맞는경우)
-            // 존재하지않는경우
-            // null인경우
-            @Test
-            @DisplayName("세션 존재x")
-            void sessionExists() throws Exception {
-                // given
-                mockHttpSession.removeAttribute(SessionConstants.SESSION_ID);
-                String json = objectMapper.writeValueAsString(getStoreRequestDto());
-                // when
-                // then
-                mockMvc.perform(put(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(jsonPath("$.status").value(HttpStatus.UNAUTHORIZED.value()))
-                        .andExpect(jsonPath("$.message").value("세션 아이디가 존재하지 않습니다"))
-                        .andDo(print());
-            }
 
             @Test
             @DisplayName("권한")
             void userType() throws Exception {
                 // given
+                String userId = "user1";
                 String json = objectMapper.writeValueAsString(getStoreRequestDto());
-                mockHttpSession.setAttribute(SessionConstants.SESSION_ID, "user1");
+                mockHttpSession.setAttribute(SessionConstants.SESSION_ID, userId);
                 // when
                 // then
-                mockMvc.perform(put(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
+                mockMvc.perform(patch(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
                         .andExpect(jsonPath("$.status").value(HttpStatus.FORBIDDEN.value()))
                         .andExpect(jsonPath("$.message").value("권한이 없습니다"))
                         .andDo(print());
@@ -681,7 +628,7 @@ class StoreControllerTest {
                 //given
                 String changeUrl = "/stores/1000";
                 String json = objectMapper.writeValueAsString(getStoreRequestDto());
-                mockMvc.perform(put(changeUrl).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
+                mockMvc.perform(patch(changeUrl).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
                         .andExpect(jsonPath("$.status").value(HttpStatus.NOT_FOUND.value()))
                         .andExpect(jsonPath("$.message").value("존재하지 않는 매장입니다"))
                         .andDo(print());
@@ -693,7 +640,7 @@ class StoreControllerTest {
                 // given
                 minPrice = -100L;
                 String json = objectMapper.writeValueAsString(getStoreRequestDto());
-                mockMvc.perform(put(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
+                mockMvc.perform(patch(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
                         .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
                         .andExpect(jsonPath("$.message").value("최소 주문 가격 정보가 올바르지 않습니다"))
                         .andDo(print());
@@ -731,23 +678,11 @@ class StoreControllerTest {
         @DisplayName("실패")
         class Fail {
             @Test
-            @DisplayName("세션 존재x")
-            void sessionExists() throws Exception {
-                // given
-                mockHttpSession.removeAttribute(SessionConstants.SESSION_ID);
-                // when
-                // then
-                mockMvc.perform(delete(url).session(mockHttpSession))
-                        .andExpect(jsonPath("$.status").value(HttpStatus.UNAUTHORIZED.value()))
-                        .andExpect(jsonPath("$.message").value("세션 아이디가 존재하지 않습니다"))
-                        .andDo(print());
-            }
-
-            @Test
             @DisplayName("권한")
             void userType() throws Exception {
                 // given
-                mockHttpSession.setAttribute(SessionConstants.SESSION_ID, "user1");
+                String userId = "user1";
+                mockHttpSession.setAttribute(SessionConstants.SESSION_ID, userId);
                 // when
                 // then
                 mockMvc.perform(delete(url).session(mockHttpSession))
@@ -770,12 +705,13 @@ class StoreControllerTest {
     }
 
     @Nested
-    @DisplayName("PUT : /stores/{id}/status")
+    @DisplayName("PATCH : /stores/{id}/status")
     class changeStatus {
 
         private final String ownerId = "user2";
         private final String url = "/stores/1/status";
         private MockHttpSession mockHttpSession = new MockHttpSession();
+        private final StoreStatus changeStatus = StoreStatus.OPEN;
 
         StoreDto getStoreDto(StoreStatus status) {
             return StoreDto.builder().status(status).build();
@@ -796,10 +732,9 @@ class StoreControllerTest {
                 // given
                 Long id = 1L;
                 StoreStatus beforeStatus = storeMapper.findById(id).get().getStatus();
-                StoreStatus changeStatus = StoreStatus.OPEN;
                 String json = objectMapper.writeValueAsString(getStoreDto(changeStatus));
                 // when
-                mockMvc.perform(put(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
+                mockMvc.perform(patch(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
                         .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
                         .andDo(print());
                 StoreStatus afterStatus = storeMapper.findById(id).get().getStatus();
@@ -812,28 +747,15 @@ class StoreControllerTest {
         @DisplayName("실패")
         class Fail {
             @Test
-            @DisplayName("세션 존재x")
-            void sessionExists() throws Exception {
-                // given
-                mockHttpSession.removeAttribute(SessionConstants.SESSION_ID);
-                String json = objectMapper.writeValueAsString(getStoreDto(StoreStatus.OPEN));
-                // when
-                // then
-                mockMvc.perform(put(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(jsonPath("$.status").value(HttpStatus.UNAUTHORIZED.value()))
-                        .andExpect(jsonPath("$.message").value("세션 아이디가 존재하지 않습니다"))
-                        .andDo(print());
-            }
-
-            @Test
             @DisplayName("권한")
             void userType() throws Exception {
                 // given
-                mockHttpSession.setAttribute(SessionConstants.SESSION_ID, "user1");
-                String json = objectMapper.writeValueAsString(getStoreDto(StoreStatus.OPEN));
+                String userId = "user1";
+                mockHttpSession.setAttribute(SessionConstants.SESSION_ID, userId);
+                String json = objectMapper.writeValueAsString(getStoreDto(changeStatus));
                 // when
                 // then
-                mockMvc.perform(put(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
+                mockMvc.perform(patch(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
                         .andExpect(jsonPath("$.status").value(HttpStatus.FORBIDDEN.value()))
                         .andExpect(jsonPath("$.message").value("권한이 없습니다"))
                         .andDo(print());
@@ -844,10 +766,10 @@ class StoreControllerTest {
             void exists() throws Exception {
                 //given
                 String changeUrl = "/stores/1000/status";
-                String json = objectMapper.writeValueAsString(getStoreDto(StoreStatus.OPEN));
+                String json = objectMapper.writeValueAsString(getStoreDto(changeStatus));
                 // when
                 // then
-                mockMvc.perform(put(changeUrl).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
+                mockMvc.perform(patch(changeUrl).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
                         .andExpect(jsonPath("$.status").value(HttpStatus.NOT_FOUND.value()))
                         .andExpect(jsonPath("$.message").value("존재하지 않는 매장입니다"))
                         .andDo(print());

@@ -21,8 +21,6 @@ public class StoreRequestDto {
     @NotNull(message = "카테고리 정보가 올바르지 않습니다")
     private Long categoryId;
 
-    // ownerId 없음 왜냐 세션에 있기때문에 안받습니다
-
     @NotBlank(message = "상세 주소 정보가 올바르지 않습니다")
     private String detailAddress;
 
@@ -35,8 +33,6 @@ public class StoreRequestDto {
 
     @NotBlank(message = "매장 설명 정보가 올바르지 않습니다")
     private String info;
-
-    // status도 입력안받습니다 기본값 CLOSED입니다
 
     @NotBlank(message = "오픈 시간 정보가 올바르지 않습니다")
     private String openTime;

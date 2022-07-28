@@ -47,7 +47,7 @@ public class StoreController {
     }
 
     @LoginCheck(userType = UserType.OWNER)
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     public CommonResult<Void> updateStore(@PathVariable("id") Long id, @RequestBody @Valid StoreRequestDto storeRequestDto) {
         storeService.updateStore(id, storeRequestDto);
         return CommonResult.getSimpleSuccessResult(HttpStatus.OK.value());
@@ -62,7 +62,7 @@ public class StoreController {
 
     // PutMapping vs PatchMapping !!!
     @LoginCheck(userType = UserType.OWNER)
-    @PutMapping("/{id}/status")
+    @PatchMapping("/{id}/status")
     public CommonResult<Void> changeStatus(@PathVariable("id") Long id, @RequestBody StoreDto storeDto) {
         storeService.changeStatus(id, storeDto.getStatus());
         return CommonResult.getSimpleSuccessResult(HttpStatus.OK.value());

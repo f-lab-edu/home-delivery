@@ -3,7 +3,6 @@ package com.flab.delivery.service;
 import com.flab.delivery.dto.store.StoreDto;
 import com.flab.delivery.dto.store.StoreRequestDto;
 import com.flab.delivery.enums.StoreStatus;
-import com.flab.delivery.exception.NotFoundException;
 import com.flab.delivery.exception.StoreException;
 import com.flab.delivery.mapper.StoreMapper;
 import org.junit.jupiter.api.*;
@@ -156,7 +155,7 @@ class StoreServiceImplTest {
                 // given
                 when(storeMapper.findById(storeId)).thenReturn(Optional.empty());
                 // when
-                NotFoundException ex = Assertions.assertThrows(NotFoundException.class, () -> {
+                StoreException ex = Assertions.assertThrows(StoreException.class, () -> {
                     storeService.getStore(storeId);
                 });
                 Assertions.assertEquals(ex.getMessage(), "존재하지 않는 매장입니다");
@@ -219,7 +218,7 @@ class StoreServiceImplTest {
                 // given
                 when(storeMapper.findById(storeId)).thenReturn(Optional.empty());
                 // when
-                NotFoundException ex = Assertions.assertThrows(NotFoundException.class, () -> {
+                StoreException ex = Assertions.assertThrows(StoreException.class, () -> {
                     storeService.updateStore(storeId, storeRequestDto);
                 });
                 // then
@@ -248,7 +247,7 @@ class StoreServiceImplTest {
                 storeService.deleteStore(storeId);
                 when(storeMapper.findById(storeId)).thenReturn(Optional.empty());
                 // then
-                Assertions.assertThrows(NotFoundException.class, () -> {
+                Assertions.assertThrows(StoreException.class, () -> {
                     storeService.deleteStore(storeId);
                 });
             }
@@ -266,7 +265,7 @@ class StoreServiceImplTest {
                 // given
                 when(storeMapper.findById(storeId)).thenReturn(Optional.empty());
                 // when
-                NotFoundException ex = Assertions.assertThrows(NotFoundException.class, () -> {
+                StoreException ex = Assertions.assertThrows(StoreException.class, () -> {
                     storeService.deleteStore(storeId);
                 });
                 // then
@@ -308,7 +307,7 @@ class StoreServiceImplTest {
                 // given
                 when(storeMapper.findById(storeId)).thenReturn(Optional.empty());
                 // when
-                NotFoundException ex = Assertions.assertThrows(NotFoundException.class, () -> {
+                StoreException ex = Assertions.assertThrows(StoreException.class, () -> {
                     storeService.deleteStore(storeId);
                 });
                 // then
