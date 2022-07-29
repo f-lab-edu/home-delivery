@@ -2,10 +2,8 @@ package com.flab.delivery.aop;
 
 
 import com.flab.delivery.annotation.LoginCheck;
-import com.flab.delivery.dto.UserDto;
 import com.flab.delivery.enums.UserType;
 import com.flab.delivery.exception.SessionLoginException;
-import com.flab.delivery.mapper.UserMapper;
 import com.flab.delivery.service.LoginService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +19,6 @@ import org.springframework.stereotype.Component;
 public class LoginCheckAspect {
 
     private final LoginService loginService;
-    private final UserMapper userMapper;
 
     @Before("@annotation(com.flab.delivery.annotation.LoginCheck) && @annotation(target)")
     public void sessionLoginCheck(LoginCheck target) {
@@ -37,9 +34,9 @@ public class LoginCheckAspect {
             return;
         }
 
-        UserDto findUser = userMapper.findById(sessionUserId);
+        UserType userType = loginService.getUserType();
 
-        if (findUser.getType() != targetUserType) {
+        if (userType != targetUserType) {
             throw new SessionLoginException("권한이 없습니다", HttpStatus.FORBIDDEN);
         }
     }
