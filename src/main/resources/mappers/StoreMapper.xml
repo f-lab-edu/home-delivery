@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flab.delivery.mapper.StoreMapper">
+
+
+    <select id="existsByNameAndDetailAddress" resultType="long">
+        SELECT id
+        FROM STORE
+        WHERE name = #{name}
+          AND detail_address = #{detailAddress} LIMIT 1;
+    </select>
+
+
+    <insert id="save" parameterType="StoreRequestDto">
+        INSERT INTO STORE(address_id, category_id, user_id, detail_address, name, phone_number, info, open_time,
+                          end_time, min_price)
+        VALUES (#{store.addressId}, #{store.categoryId}, #{userId}, #{store.detailAddress}, #{store.name},
+                #{store.phoneNumber}, #{store.info}, #{store.openTime}, #{store.endTime}, #{store.minPrice})
+    </insert>
+
+    <select id="findAllByUserId" resultType="StoreDto">
+        SELECT *
+        FROM STORE
+        WHERE user_id = #{userId}
+    </select>
+
+    <select id="findById" resultType="StoreDto">
+        SELECT *
+        FROM STORE
+        WHERE id = #{id}
+    </select>
+
+    <update id="updateById" parameterType="StoreRequestDto">
+        UPDATE STORE
+        SET address_id     = #{store.addressId},
+            category_id    = #{store.categoryId},
+            detail_address = #{store.detailAddress},
+            name           = #{store.name},
+            phone_number   = #{store.phoneNumber},
+            info           = #{store.info},
+            open_time      = #{store.openTime},
+            end_time       = #{store.endTime},
+            min_price      = #{store.minPrice}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE
+        FROM STORE
+        WHERE id = #{id}
+    </delete>
+
+    <update id="updateStatusById">
+        UPDATE STORE
+        SET status = #{status}
+        WHERE id = #{id}
+    </update>
+
+
+</mapper>
