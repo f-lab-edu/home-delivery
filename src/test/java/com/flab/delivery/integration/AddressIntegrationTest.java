@@ -205,17 +205,6 @@ class AddressIntegrationTest {
     }
 
     @Test
-    void selectAddress_없는_주소_실패() throws Exception {
-        // given
-        // when
-        // then
-        mockMvc.perform(patch("/locations/1")
-                        .session(mockHttpSession))
-                .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
-                .andExpect(jsonPath("$.message").value("존재하지 않는 주소 입니다."));
-    }
-
-    @Test
     void selectAddress_잘못된_요청_실패() throws Exception {
         // given
         mockHttpSession.setAttribute(SESSION_ID, "user2");

@@ -117,7 +117,6 @@ class AddressServiceTest {
     void selectAddress_성공() {
         // given
         Long id = 1L;
-        given(userAddressMapper.existsById(eq(id))).willReturn(true);
         given(userAddressMapper.changeAddress(eq(id), eq(SESSION_USER_ID))).willReturn(1);
 
         // when
@@ -126,29 +125,12 @@ class AddressServiceTest {
         // then
         verify(userAddressMapper).changeAddress(eq(id), eq(SESSION_USER_ID));
         verify(userAddressMapper).resetSelection(eq(SESSION_USER_ID));
-        verify(userAddressMapper).existsById(eq(id));
-    }
-
-    @Test
-    void selectAddress_존재하지_않는_주소_실패() {
-        // given
-        Long id = 1L;
-        given(userAddressMapper.existsById(eq(id))).willReturn(false);
-
-        // when
-        assertThatThrownBy(() -> addressService.selectAddress(id, SESSION_USER_ID))
-                .isInstanceOf(AddressException.class);
-        // then
-        verify(userAddressMapper, never()).changeAddress(eq(id), eq(SESSION_USER_ID));
-        verify(userAddressMapper, never()).resetSelection(eq(SESSION_USER_ID));
-        verify(userAddressMapper).existsById(eq(id));
     }
 
     @Test
     void selectAddress_잘못된_요청_실패() {
         // given
         Long id = 1L;
-        given(userAddressMapper.existsById(eq(id))).willReturn(true);
         given(userAddressMapper.changeAddress(eq(id), eq(SESSION_USER_ID))).willReturn(0);
 
         // when
@@ -156,7 +138,6 @@ class AddressServiceTest {
                 .isInstanceOf(AddressException.class);
         // then
         verify(userAddressMapper).changeAddress(eq(id), eq(SESSION_USER_ID));
-        verify(userAddressMapper).resetSelection(eq(SESSION_USER_ID));
-        verify(userAddressMapper).existsById(eq(id));
+        verify(userAddressMapper, never()).resetSelection(eq(SESSION_USER_ID));
     }
 }
