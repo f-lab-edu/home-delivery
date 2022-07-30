@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flab.delivery.mapper.UserAddressMapper">
+
+    <insert id="addAddress">
+        INSERT INTO User_Address(user_id, address_id, detail_address, alias)
+        VALUES (#{userId}, #{addressId}, #{addressDto.detailAddress}, #{addressDto.alias});
+    </insert>
+
+    <select id="findAllByUserId" resultType="addressDto">
+        SELECT ua.id, a.town_name, ua.detail_address, ua.alias, ua.selected
+        FROM User_Address ua
+                 INNER JOIN Address a ON ua.address_id = a.id
+        WHERE ua.user_id = #{userId};
+    </select>
+
+    <select id="existsById" resultType="boolean">
+        SELECT EXISTS
+                   (SELECT id FROM User_Address WHERE id = #{id})
+    </select>
+
+    <delete id="deleteById">
+        DELETE
+        FROM User_Address
+        WHERE id = #{id}
+          AND user_id = #{userId};
+    </delete>
+
+    <update id="resetSelection">
+        UPDATE User_Address
+        SET selected = false
+        WHERE user_id = #{userId}
+          AND selected = true;
+    </update>
+
+    <select id="findById" resultType="AddressDto">
+        SELECT ua.id, a.town_name, ua.detail_address, ua.alias, ua.selected
+        FROM User_Address ua
+                 INNER JOIN Address a ON ua.address_id = a.id
+        WHERE ua.id = #{id};
+    </select>
+
+    <update id="changeAddress">
+        UPDATE User_Address
+        SET selected = true
+        WHERE id = #{id}
+          AND user_id = #{userId}
+    </update>
+</mapper>

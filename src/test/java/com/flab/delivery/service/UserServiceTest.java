@@ -1,10 +1,11 @@
 package com.flab.delivery.service;
 
-import com.flab.delivery.dto.SignUpDto;
-import com.flab.delivery.dto.UserDto;
+import com.flab.delivery.dto.user.*;
 import com.flab.delivery.enums.UserType;
 import com.flab.delivery.exception.LoginException;
+import com.flab.delivery.exception.SessionLoginException;
 import com.flab.delivery.exception.SignUpException;
+import com.flab.delivery.fixture.TestDto;
 import com.flab.delivery.mapper.UserMapper;
 import com.flab.delivery.utils.PasswordEncoder;
 import org.junit.jupiter.api.*;
@@ -13,20 +14,22 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
-class UserServiceImplTest {
+class UserServiceTest {
 
     @Mock
     UserMapper userMapper;
 
     @InjectMocks
-    UserServiceImpl userService;
+    UserService userService;
 
     @Mock
-    SessionLoginServiceImpl loginService;
+    LoginService loginService;
 
 
     @Nested
@@ -164,4 +167,63 @@ class UserServiceImplTest {
     }
 
 
+    @Test
+    void getUserInfo_성공() {
+        // given
+        UserDto userDto = TestDto.getUserDto();
+        when(userMapper.findById(eq("user1"))).thenReturn(userDto);
+
+        // when
+        UserInfoDto getUserInfo = userService.getUserInfo("user1");
+
+        //then
+        assertThat(getUserInfo.getName()).isEqualTo(userDto.getName());
+        assertThat(getUserInfo.getEmail()).isEqualTo(userDto.getEmail());
+        assertThat(getUserInfo.getPhoneNumber()).isEqualTo(userDto.getPhoneNumber());
+        assertThat(getUserInfo.getCreatedAt()).isEqualTo(userDto.getCreatedAt());
+        assertThat(getUserInfo.getModifiedAt()).isEqualTo(userDto.getModifiedAt());
+    }
+
+
+    @Test
+    void updateUserInfo_동일하지_않은_회원_실패() {
+        // given
+        UserInfoUpdateDto infoUpdateDto = UserInfoUpdateDto.builder()
+                .id("wrongId")
+                .name("테스트2")
+                .phoneNumber("010-1234-1234")
+                .email("test@naver.com")
+                .build();
+
+        // when
+        assertThatThrownBy(() -> userService.updateUserInfo("user1", infoUpdateDto))
+                .isInstanceOf(SessionLoginException.class);
+
+        //then
+        verify(userMapper, never()).updateInfo(any());
+    }
+
+    @Test
+    void updateUserInfo_성공() {
+        // given
+        UserInfoUpdateDto infoUpdateDto = TestDto.getUserInfoUpdateDto();
+
+        // when
+        userService.updateUserInfo("user1", infoUpdateDto);
+
+        //then
+        verify(userMapper).updateInfo(any());
+    }
+
+    @Test
+    void changePassword_성공() {
+        // given
+        PasswordDto passwordDto = TestDto.getPasswordDto();
+
+        // when
+        userService.changePassword("user1", passwordDto);
+
+        //then
+        verify(userMapper).changePassword(eq("user1"), any());
+    }
 }

@@ -1,41 +1,51 @@
-package com.flab.delivery.controller;
+package com.flab.delivery.integration;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import com.flab.delivery.annotation.EnableMockMvc;
-import com.flab.delivery.dto.SignUpDto;
-import com.flab.delivery.dto.UserDto;
+import com.flab.delivery.dto.user.PasswordDto;
+import com.flab.delivery.dto.user.SignUpDto;
+import com.flab.delivery.dto.user.UserDto;
+import com.flab.delivery.dto.user.UserInfoUpdateDto;
 import com.flab.delivery.enums.UserType;
-
+import com.flab.delivery.fixture.TestDto;
+import com.flab.delivery.mapper.UserMapper;
 import com.flab.delivery.utils.SessionConstants;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static com.flab.delivery.fixture.MessageConstants.*;
+import static com.flab.delivery.utils.SessionConstants.SESSION_ID;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 
 @SpringBootTest
 @Transactional
 @EnableMockMvc
-class UserControllerTest {
-
+@ActiveProfiles("test")
+class UserIntegrationTest {
     @Autowired
     MockMvc mockMvc;
 
     @Autowired
     ObjectMapper objectMapper;
 
+    @Autowired
+    UserMapper userMapper;
+
+    MockHttpSession mockHttpSession = new MockHttpSession();
 
     @Nested
     @DisplayName("POST : /users")
@@ -70,7 +80,7 @@ class UserControllerTest {
                 mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON)
                                 .content(json))
                         .andExpect(jsonPath("$.status").value(201))
-                        .andExpect(jsonPath("$.message").value("요청 성공하였습니다."))
+                        .andExpect(jsonPath("$.message").value(SUCCESS_MESSAGE))
                         .andDo(print());
             }
         }
@@ -211,7 +221,7 @@ class UserControllerTest {
                     mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON)
                                     .content(json))
                             .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
-                            .andExpect(jsonPath("$.message").value("이메일 형식이 아닙니다"))
+                            .andExpect(jsonPath("$.message").value(WRONG_EMAIL_MESSAGE))
                             .andDo(print());
                 }
 
@@ -224,7 +234,7 @@ class UserControllerTest {
                     mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON)
                                     .content(json))
                             .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
-                            .andExpect(jsonPath("$.message").value("이메일 형식이 아닙니다"))
+                            .andExpect(jsonPath("$.message").value(WRONG_EMAIL_MESSAGE))
                             .andDo(print());
                 }
             }
@@ -408,12 +418,12 @@ class UserControllerTest {
             @Test
             @DisplayName("로그 아웃")
             void logout_success() throws Exception {
-                mockHttpSession.setAttribute(SessionConstants.SESSION_ID, "user1");
+                setMockLoginUser(mockHttpSession, "user1");
                 mockMvc.perform(delete("/users/logout").session(mockHttpSession))
                         .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
                         .andDo(print());
 
-                Assertions.assertNull(mockHttpSession.getAttribute(SessionConstants.SESSION_ID));
+                Assertions.assertNull(mockHttpSession.getAttribute(SESSION_ID));
             }
         }
 
@@ -426,12 +436,222 @@ class UserControllerTest {
             void session() throws Exception {
                 mockMvc.perform(delete("/users/logout"))
                         .andExpect(jsonPath("$.status").value(HttpStatus.UNAUTHORIZED.value()))
-                        .andExpect(jsonPath("$.message").value("세션 아이디가 존재하지 않습니다"))
+                        .andExpect(jsonPath("$.message").value(NOT_EXISTS_SESSION_MESSAGE))
                         .andDo(print());
 
             }
         }
 
 
+    }
+
+    @Test
+    void getUserInfo_성공() throws Exception {
+        // given
+        String user = "user1";
+        setMockLoginUser(mockHttpSession, user);
+        mockHttpSession.setAttribute(SessionConstants.AUTH_TYPE, UserType.USER);
+        UserDto findUser = userMapper.findById(user);
+
+        // when
+        // then
+        mockMvc.perform(get("/users").session(mockHttpSession))
+                .andExpect(jsonPath("$.message").value(SUCCESS_MESSAGE))
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.data.email").value(findUser.getEmail()))
+                .andExpect(jsonPath("$.data.name").value(findUser.getName()))
+                .andExpect(jsonPath("$.data.phoneNumber").value(findUser.getPhoneNumber()))
+                .andExpect(jsonPath("$.data.type").value(findUser.getType().name()))
+                .andExpect(jsonPath("$.data.createdAt").value(findUser.getCreatedAt().toString()))
+                .andExpect(jsonPath("$.data.modifiedAt").value(findUser.getModifiedAt().toString()));
+
+    }
+
+    @Test
+    void getUserInfo_로그인하지_않은_유저_실패() throws Exception {
+        // given
+        String user = "user1";
+
+        // when
+        // then
+        mockMvc.perform(get("/users").session(mockHttpSession))
+                .andExpect(jsonPath("$.message").value(NOT_EXISTS_SESSION_MESSAGE))
+                .andExpect(jsonPath("$.status").value(401))
+                .andExpect(jsonPath("$.data").isEmpty())
+                .andDo(print());
+    }
+
+    @Test
+    void updateUserInfo_로그인하지_않아서_실패() throws Exception {
+        // given
+        UserInfoUpdateDto userInfoUpdateDto = TestDto.getUserInfoUpdateDto();
+
+        // when
+        // then
+        mockMvc.perform(patch("/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(userInfoUpdateDto)))
+                .andExpect(jsonPath("$.message").value(NOT_EXISTS_SESSION_MESSAGE))
+                .andExpect(jsonPath("$.status").value(HttpStatus.UNAUTHORIZED.value()));
+
+    }
+
+    @Test
+    void updateUserInfo_동일하지_않은_유저_실패() throws Exception {
+        // given
+        UserInfoUpdateDto userInfoUpdateDto = TestDto.getUserInfoUpdateDto();
+        setMockLoginUser(mockHttpSession, "user2");
+
+        // when
+        // then
+        mockMvc.perform(patch("/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(userInfoUpdateDto))
+                        .session(mockHttpSession))
+                .andExpect(jsonPath("$.message").value(HAVE_NO_AUTHORITY_MESSAGE))
+                .andExpect(jsonPath("$.status").value(HttpStatus.FORBIDDEN.value()));
+
+    }
+
+    @Test
+    void updateUserInfo_입력값_검증_실패() throws Exception {
+        // given
+        UserInfoUpdateDto userInfoUpdateDto = UserInfoUpdateDto.builder()
+                .id("user1")
+                .email("worngEmail")
+                .phoneNumber("010-1234-1234")
+                .name("유저2")
+                .build();
+
+        setMockLoginUser(mockHttpSession, "user1");
+
+        // when
+        // then
+        mockMvc.perform(patch("/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(userInfoUpdateDto))
+                        .session(mockHttpSession))
+                .andExpect(jsonPath("$.message").value(WRONG_EMAIL_MESSAGE))
+                .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
+                .andDo(print());
+
+    }
+
+    @Test
+    void updateUserInfo_성공() throws Exception {
+        // given
+        UserInfoUpdateDto userInfoUpdateDto = TestDto.getUserInfoUpdateDto();
+        setMockLoginUser(mockHttpSession, "user1");
+
+        // when
+        // then
+        mockMvc.perform(patch("/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(userInfoUpdateDto))
+                        .session(mockHttpSession))
+                .andExpect(jsonPath("$.message").value(SUCCESS_MESSAGE))
+                .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()));
+
+    }
+
+    @Test
+    void deleteUser_로그인하지_않아서_실패() throws Exception {
+        // given
+        // when
+        // then
+        mockMvc.perform(delete("/users"))
+                .andExpect(jsonPath("$.message").value(NOT_EXISTS_SESSION_MESSAGE))
+                .andExpect(jsonPath("$.status").value(HttpStatus.UNAUTHORIZED.value()));
+    }
+
+    @Test
+    void deleteUser_성공() throws Exception {
+        // given
+        setMockLoginUser(mockHttpSession, "user1");
+
+        // when
+        // then
+        mockMvc.perform(delete("/users")
+                        .session(mockHttpSession))
+                .andExpect(jsonPath("$.message").value(SUCCESS_MESSAGE))
+                .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()));
+    }
+
+    @Test
+    void changePassword_로그인하지_않아서_실패() throws Exception {
+        // given
+        PasswordDto wrongPasswordDto = TestDto.getPasswordDto();
+
+        // when
+        // then
+        mockMvc.perform(patch("/users/password")
+                        .content(objectMapper.writeValueAsString(wrongPasswordDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message").value(NOT_EXISTS_SESSION_MESSAGE))
+                .andExpect(jsonPath("$.status").value(HttpStatus.UNAUTHORIZED.value()));
+
+    }
+
+    @Test
+    void changePassword_입력값_검증_실패() throws Exception {
+        // given
+        setMockLoginUser(mockHttpSession, "user1");
+
+        PasswordDto wrongPasswordDto = PasswordDto.builder()
+                .password("!wrongPassword")
+                .newPassword("wrongPassword")
+                .build();
+
+        // when
+        // then
+        mockMvc.perform(patch("/users/password")
+                        .content(objectMapper.writeValueAsString(wrongPasswordDto))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .session(mockHttpSession))
+                .andExpect(jsonPath("$.message").value("비밀번호는 8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요"))
+                .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()));
+
+    }
+
+    @Test
+    void changePassword_동일하지_않은_비밀번호_실패() throws Exception {
+        // given
+        setMockLoginUser(mockHttpSession, "user1");
+
+        PasswordDto wrongPasswordDto = PasswordDto.builder()
+                .password("!WrongPassword")
+                .newPassword("!NewPassword1234")
+                .build();
+
+        // when
+        // then
+        mockMvc.perform(patch("/users/password")
+                        .content(objectMapper.writeValueAsString(wrongPasswordDto))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .session(mockHttpSession))
+                .andExpect(jsonPath("$.message").value("입력하신 패스워드가 일치하지 않습니다."))
+                .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()));
+
+    }
+
+    @Test
+    void changePassword_성공() throws Exception {
+        // given
+        PasswordDto wrongPasswordDto = TestDto.getPasswordDto();
+        setMockLoginUser(mockHttpSession, "user1");
+
+        // when
+        // then
+        mockMvc.perform(patch("/users/password")
+                        .content(objectMapper.writeValueAsString(wrongPasswordDto))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .session(mockHttpSession))
+                .andExpect(jsonPath("$.message").value(SUCCESS_MESSAGE))
+                .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()));
+
+    }
+
+    private void setMockLoginUser(MockHttpSession mockHttpSession, String user1) {
+        mockHttpSession.setAttribute(SESSION_ID, user1);
     }
 }
