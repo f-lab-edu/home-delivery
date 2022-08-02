@@ -72,7 +72,7 @@ class StoreServiceImplTest {
         class FailCase {
             @DisplayName("이미 존재하는 경우")
             @Test
-            void fail() {
+            void exists() {
                 // given
                 when(storeMapper.existsByNameAndDetailAddress(requestDto.getName(), requestDto.getDetailAddress()))
                         .thenReturn(Optional.of(1L));
@@ -96,7 +96,7 @@ class StoreServiceImplTest {
         class SuccessCase {
             @Test
             @DisplayName("조회 성공")
-            void getOwnerStoreList_Success(@Mock List<StoreDto> storeList) {
+            void success(@Mock List<StoreDto> storeList) {
                 // given
                 when(storeList.size()).thenReturn(1);
                 when(storeMapper.findAllByUserId("user1")).thenReturn(storeList);
@@ -136,7 +136,7 @@ class StoreServiceImplTest {
         class SuccessCase {
             @DisplayName("상세조회 성공")
             @Test
-            void getStore_Success() {
+            void success() {
                 // given
                 when(storeMapper.findById(storeId)).thenReturn(Optional.of(storeDto));
                 // when
@@ -151,7 +151,7 @@ class StoreServiceImplTest {
         class FailCase {
             @DisplayName("존재하지 않는경우")
             @Test
-            void getStore_Fail_NotFound() {
+            void notFound() {
                 // given
                 when(storeMapper.findById(storeId)).thenReturn(Optional.empty());
                 // when
@@ -192,7 +192,7 @@ class StoreServiceImplTest {
 
             @Test
             @DisplayName("업데이트 성공")
-            void updateStore_Success() {
+            void success() {
                 // given
                 long before = 18000L;
                 when(storeMapper.findById(storeId)).thenReturn(Optional.of(StoreDto.builder()
@@ -214,7 +214,7 @@ class StoreServiceImplTest {
         class FailCase {
             @Test
             @DisplayName("존재하지 않는 경우")
-            void updateStore_Fail() {
+            void notFound() {
                 // given
                 when(storeMapper.findById(storeId)).thenReturn(Optional.empty());
                 // when
@@ -238,7 +238,7 @@ class StoreServiceImplTest {
         class SuccessCase {
             @Test
             @DisplayName("매장 삭제 성공")
-            void deleteStore_Success() {
+            void success() {
                 // given
                 when(storeMapper.findById(storeId)).thenReturn(Optional.of(StoreDto.builder()
                         .id(storeId)
@@ -261,7 +261,7 @@ class StoreServiceImplTest {
 
             @Test
             @DisplayName("존재하지 않는 경우")
-            void deleteStore_Fail_NotFound() {
+            void notFound() {
                 // given
                 when(storeMapper.findById(storeId)).thenReturn(Optional.empty());
                 // when
@@ -285,7 +285,7 @@ class StoreServiceImplTest {
 
             @Test
             @DisplayName("상태변경 성공")
-            void changeStatus_Success() {
+            void success() {
                 // given
                 StoreDto storeDto = StoreDto.builder().status(StoreStatus.OPEN).build();
                 when(storeMapper.findById(storeId)).thenReturn(Optional.of(StoreDto.builder().status(StoreStatus.CLOSED).build()));
@@ -303,7 +303,7 @@ class StoreServiceImplTest {
         class FailCase {
             @Test
             @DisplayName("매장이 존재하지 않는경우")
-            void changeStatus_Fail_NotFound() {
+            void notFound() {
                 // given
                 when(storeMapper.findById(storeId)).thenReturn(Optional.empty());
                 // when
