@@ -33,7 +33,8 @@
     <select id="findAllByStoreId" resultType="MenuGroupDto" parameterType="long">
         SELECT *
         FROM MENU_GROUP
-        WHERE id = #{storeId}
+        WHERE store_id = #{storeId}
+        ORDER BY priority ASC
     </select>
 
     <delete id="deleteById">
@@ -51,10 +52,5 @@
         </foreach>
     </update>
 
-    <update id="updatePriority2" parameterType="MenuGroupDto">
-        UPDATE MENU_GROUP
-        SET priority = #{menuGroup.priority}
-        WHERE id = #{menuGroup.id}
-    </update>
 
 </mapper>
