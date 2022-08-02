@@ -66,4 +66,36 @@ public class CategoryIntegrationTest {
                 .andExpect(jsonPath("$.data[*].name").exists())
                 .andDo(print());
     }
+
+    @Test
+    void getStoreListBy_권한_없어서_실패() throws Exception {
+        // given
+        mockHttpSession.setAttribute(AUTH_TYPE, UserType.ALL);
+
+        // when
+        // then
+        mockMvc.perform(get("/categories/1")
+                        .param("addressId", "1")
+                        .session(mockHttpSession))
+                .andExpect(jsonPath("$.status").value(HttpStatus.FORBIDDEN.value()))
+                .andExpect(jsonPath("$.message").value(HAVE_NO_AUTHORITY_MESSAGE));
+    }
+
+    @Test
+    void getStoreListBy_성공() throws Exception {
+        // given
+        // when
+        // then
+        mockMvc.perform(get("/categories/1")
+                        .param("addressId", "2")
+                        .session(mockHttpSession))
+                .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
+                .andExpect(jsonPath("$.message").value(SUCCESS_MESSAGE))
+                .andExpect(jsonPath("$.data[*].id").exists())
+                .andExpect(jsonPath("$.data[*].detailAddress").exists())
+                .andExpect(jsonPath("$.data[*].name").exists())
+                .andExpect(jsonPath("$.data[*].status").exists())
+                .andExpect(jsonPath("$.data[*].minPrice").exists())
+                .andDo(print());
+    }
 }

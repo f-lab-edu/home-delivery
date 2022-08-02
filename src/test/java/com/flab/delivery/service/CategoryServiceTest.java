@@ -44,5 +44,4 @@ class CategoryServiceTest {
     private CategoryDto makeCategory(String 치킨, long id) {
         return CategoryDto.builder().id(id).name(치킨).build();
     }
-
 }

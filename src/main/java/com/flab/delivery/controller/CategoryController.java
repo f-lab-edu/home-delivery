@@ -2,13 +2,12 @@ package com.flab.delivery.controller;
 
 import com.flab.delivery.annotation.LoginCheck;
 import com.flab.delivery.dto.category.CategoryDto;
+import com.flab.delivery.dto.store.StoreDto;
 import com.flab.delivery.enums.UserType;
 import com.flab.delivery.response.CommonResult;
 import com.flab.delivery.service.CategoryService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,6 +22,12 @@ public class CategoryController {
     @GetMapping
     public CommonResult<List<CategoryDto>> getCategories() {
         return CommonResult.getDataSuccessResult(categoryService.getCategories());
+    }
+
+    @LoginCheck(userType = UserType.USER)
+    @GetMapping("/{id}")
+    public CommonResult<List<StoreDto>> getStoreListBy(@PathVariable Long id, @RequestParam Long addressId) {
+        return CommonResult.getDataSuccessResult(categoryService.getStoreListBy(id, addressId));
     }
 
 
