@@ -77,7 +77,7 @@ class StoreIntegrationTest {
 
             @Test
             @DisplayName("매장 생성")
-            void createStore_Success() throws Exception {
+            void success() throws Exception {
                 // given
                 String json = objectMapper.writeValueAsString(getStoreRequestDto());
                 // when
