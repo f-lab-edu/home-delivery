@@ -7,10 +7,7 @@ import com.flab.delivery.response.CommonResult;
 import com.flab.delivery.service.RiderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -26,5 +23,14 @@ public class RiderController {
         riderService.registerStandByRider(userId, addressId);
 
         return CommonResult.getSimpleSuccessResult(HttpStatus.CREATED.value());
+    }
+
+    @LoginCheck(userType = UserType.RIDER)
+    @DeleteMapping("/standby")
+    public CommonResult<Void> deleteStandByRider(@SessionUserId String userId, @RequestParam Long addressId) {
+
+        riderService.deleteStandByRider(userId, addressId);
+
+        return CommonResult.getSimpleSuccessResult(HttpStatus.OK.value());
     }
 }

@@ -13,4 +13,8 @@ public class RiderService {
     public void registerStandByRider(String userId, Long addressId) {
         riderDao.registerStandByRider(userId, addressId);
     }
+
+    public void deleteStandByRider(String userId, Long addressId) {
+        riderDao.deleteStandByRider(userId, addressId);
+    }
 }

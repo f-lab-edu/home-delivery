@@ -41,7 +41,7 @@ class CategoryServiceTest {
         verify(categoryMapper).findAllCategory();
     }
 
-    private CategoryDto makeCategory(String 치킨, long id) {
-        return CategoryDto.builder().id(id).name(치킨).build();
+    private CategoryDto makeCategory(String name, long id) {
+        return CategoryDto.builder().id(id).name(name).build();
     }
 }

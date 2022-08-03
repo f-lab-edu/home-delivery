@@ -19,8 +19,8 @@ public class RiderDao {
         redisTemplate.expire(getRidersKeyBy(addressId), 1, TimeUnit.DAYS);
     }
 
-    public Set<Object> findAllStandByRidersBy(Long addressId) {
-        return redisTemplate.opsForSet().members(getRidersKeyBy(addressId));
+    public void deleteStandByRider(String userId, Long addressId) {
+        redisTemplate.opsForSet().remove(getRidersKeyBy(addressId), userId);
     }
 
     private String getRidersKeyBy(Long addressId) {
