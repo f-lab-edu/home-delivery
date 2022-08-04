@@ -17,10 +17,10 @@ import java.util.Optional;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class StoreServiceImplTest {
+class StoreServiceTest {
 
     @InjectMocks
-    StoreServiceImpl storeService;
+    StoreService storeService;
 
     @Mock
     StoreMapper storeMapper;

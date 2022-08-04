@@ -60,7 +60,6 @@ public class StoreController {
         return CommonResult.getSimpleSuccessResult(HttpStatus.OK.value());
     }
 
-    // PutMapping vs PatchMapping !!!
     @LoginCheck(userType = UserType.OWNER)
     @PatchMapping("/{id}/status")
     public CommonResult<Void> changeStatus(@PathVariable("id") Long id, @RequestBody StoreDto storeDto) {

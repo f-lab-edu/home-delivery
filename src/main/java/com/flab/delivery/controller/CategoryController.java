@@ -6,6 +6,7 @@ import com.flab.delivery.dto.store.StoreDto;
 import com.flab.delivery.enums.UserType;
 import com.flab.delivery.response.CommonResult;
 import com.flab.delivery.service.CategoryService;
+import com.flab.delivery.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +18,7 @@ import java.util.List;
 public class CategoryController {
 
     private final CategoryService categoryService;
+    private final StoreService storeService;
 
     @LoginCheck(userType = UserType.USER)
     @GetMapping
@@ -27,7 +29,7 @@ public class CategoryController {
     @LoginCheck(userType = UserType.USER)
     @GetMapping("/{id}")
     public CommonResult<List<StoreDto>> getStoreListBy(@PathVariable Long id, @RequestParam Long addressId) {
-        return CommonResult.getDataSuccessResult(categoryService.getStoreListBy(id, addressId));
+        return CommonResult.getDataSuccessResult(storeService.getStoreListBy(id, addressId));
     }
 
 
