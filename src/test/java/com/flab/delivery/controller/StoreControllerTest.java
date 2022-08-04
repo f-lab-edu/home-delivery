@@ -35,7 +35,7 @@ class StoreControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
-    private MockHttpSession mockHttpSession = new MockHttpSession();
+    private final MockHttpSession mockHttpSession = new MockHttpSession();
 
     @Nested
     @DisplayName("POST : /stores")
@@ -444,7 +444,7 @@ class StoreControllerTest {
 
         private final String ownerId = "user2";
 
-        private MockHttpSession mockHttpSession = new MockHttpSession();
+        private final MockHttpSession mockHttpSession = new MockHttpSession();
 
         private final String url = "/stores";
 
@@ -496,7 +496,7 @@ class StoreControllerTest {
 
         private final String ownerId = "user2";
 
-        private MockHttpSession mockHttpSession = new MockHttpSession();
+        private final MockHttpSession mockHttpSession = new MockHttpSession();
 
         private final String url = "/stores/1";
 
@@ -555,19 +555,19 @@ class StoreControllerTest {
     class updateStore {
 
 
-        private Long addressId = 1L;
-        private Long categoryId = 1L;
-        private String detailAddress = "상세주소201호";
-        private String name = "푸라닭";
-        private String phoneNumber = "010-1111-1111";
-        private String info = "고추마요 맛있습니다";
-        private String openTime = "오전10시";
-        private String endTime = "오후 12시";
+        private final Long addressId = 1L;
+        private final Long categoryId = 1L;
+        private final String detailAddress = "상세주소201호";
+        private final String name = "푸라닭";
+        private final String phoneNumber = "010-1111-1111";
+        private final String info = "고추마요 맛있습니다";
+        private final String openTime = "오전10시";
+        private final String endTime = "오후 12시";
         private Long minPrice = 18000L;
 
         private final String ownerId = "user2";
 
-        private MockHttpSession mockHttpSession = new MockHttpSession();
+        private final MockHttpSession mockHttpSession = new MockHttpSession();
 
         private final String url = "/stores/1";
 
@@ -664,7 +664,7 @@ class StoreControllerTest {
     class deleteStore {
         private final String ownerId = "user2";
         private final String url = "/stores/1";
-        private MockHttpSession mockHttpSession = new MockHttpSession();
+        private final MockHttpSession mockHttpSession = new MockHttpSession();
 
         @BeforeEach
         void setUp() {
@@ -724,7 +724,7 @@ class StoreControllerTest {
 
         private final String ownerId = "user2";
         private final String url = "/stores/1/status";
-        private MockHttpSession mockHttpSession = new MockHttpSession();
+        private final MockHttpSession mockHttpSession = new MockHttpSession();
         private final StoreStatus changeStatus = StoreStatus.OPEN;
 
         StoreDto getStoreDto(StoreStatus status) {

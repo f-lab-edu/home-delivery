@@ -111,7 +111,7 @@ class StoreServiceImplTest {
     @Nested
     @DisplayName("매장 상세 조회")
     class getStore {
-        private Long storeId = 1L;
+        private final Long storeId = 1L;
         private StoreDto storeDto;
 
         @BeforeEach
@@ -168,7 +168,7 @@ class StoreServiceImplTest {
     @Nested
     @DisplayName("매장 정보 업데이트")
     class updateStore {
-        private Long storeId = 1L;
+        private final Long storeId = 1L;
         private StoreRequestDto storeRequestDto;
 
         @BeforeEach
@@ -231,7 +231,7 @@ class StoreServiceImplTest {
     @DisplayName("매장 삭제")
     class deleteStore {
 
-        private Long storeId = 1L;
+        private final Long storeId = 1L;
 
         @Nested
         @DisplayName("성공")
@@ -257,7 +257,7 @@ class StoreServiceImplTest {
         @Nested
         @DisplayName("실패")
         class FailCase {
-            private Long storeId = 1L;
+            private final Long storeId = 1L;
 
             @Test
             @DisplayName("존재하지 않는 경우")
@@ -277,7 +277,7 @@ class StoreServiceImplTest {
     @Nested
     @DisplayName("매장 상태 변경")
     class changeStatus {
-        private Long storeId = 1L;
+        private final Long storeId = 1L;
 
         @Nested
         @DisplayName("성공")
