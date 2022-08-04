@@ -9,6 +9,7 @@ import java.time.Duration;
 public final class CacheConstants {
 
     public static final String CATEGORY = "CATEGORY";
+    public static final String STORE_LIST = "STORE_LIST";
 
     public static final Duration DEFAULT_EXPIRE_TIME = Duration.ofMinutes(10L);
     public static final Duration CATEGORY_EXPIRE_TIME = Duration.ofDays(1L);

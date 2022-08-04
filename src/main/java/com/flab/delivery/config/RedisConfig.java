@@ -1,11 +1,10 @@
 package com.flab.delivery.config;
 
-import com.flab.delivery.utils.CacheConstants;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -15,14 +14,13 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
-import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
 import static com.flab.delivery.utils.CacheConstants.*;
 
+@EnableCaching
 @Configuration
 public class RedisConfig {
 

@@ -49,11 +49,7 @@ public class AddressService {
         userAddressMapper.deleteById(id, userId);
     }
 
-    /**
-     * 기본적으로 UnCheckedException 은 예외가 발생하더라도 롤백되지 않습니다.
-     * 현재의 경우 잘못된 id 또는 userId 에 의해 changeAddress 로 영향을 받은 레코드가 없다면
-     * AddressException 을 발생시켜 작업을 롤백시켜 기존 선택 주소를 유지합니다.
-     */
+
     @Transactional(rollbackFor = AddressException.class)
     public void selectAddress(Long id, String userId) {
 

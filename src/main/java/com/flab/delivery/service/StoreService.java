@@ -5,13 +5,18 @@ import com.flab.delivery.dto.store.StoreRequestDto;
 import com.flab.delivery.enums.StoreStatus;
 import com.flab.delivery.exception.StoreException;
 import com.flab.delivery.mapper.StoreMapper;
+import com.flab.delivery.utils.CacheConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+
+import static com.flab.delivery.utils.CacheConstants.STORE_LIST;
 
 @Slf4j
 @Service
@@ -20,6 +25,7 @@ public class StoreService {
 
     private final StoreMapper storeMapper;
 
+    @CacheEvict(value = STORE_LIST, key = "#storeRequestDto.addressId")
     public void createStore(StoreRequestDto storeRequestDto, String userId) {
         Optional<Long> existsStore = storeMapper.existsByNameAndDetailAddress(storeRequestDto.getName(),
                 storeRequestDto.getDetailAddress());
@@ -28,7 +34,6 @@ public class StoreService {
         }
         storeMapper.save(storeRequestDto, userId);
     }
-
 
     public List<StoreDto> getOwnerStoreList(String userId) {
         return storeMapper.findAllByUserId(userId);
@@ -56,6 +61,7 @@ public class StoreService {
     }
 
 
+    @Cacheable(value = STORE_LIST, key = "#addressId")
     public List<StoreDto> getStoreListBy(Long categoryId, Long addressId) {
         return storeMapper.findStoreListBy(categoryId, addressId);
     }
