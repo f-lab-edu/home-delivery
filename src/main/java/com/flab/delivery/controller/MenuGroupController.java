@@ -1,20 +1,17 @@
 package com.flab.delivery.controller;
 
 import com.flab.delivery.annotation.LoginCheck;
-import com.flab.delivery.annotation.SessionUserId;
-import com.flab.delivery.dto.menu.MenuGroupDto;
-import com.flab.delivery.dto.menu.MenuGroupRequestDto;
+import com.flab.delivery.dto.menugroup.MenuGroupDto;
+import com.flab.delivery.dto.menugroup.MenuGroupRequestDto;
 import com.flab.delivery.enums.UserType;
 import com.flab.delivery.response.CommonResult;
 import com.flab.delivery.service.MenuGroupService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor

@@ -1,7 +1,7 @@
 package com.flab.delivery.mapper;
 
-import com.flab.delivery.dto.menu.MenuGroupDto;
-import com.flab.delivery.dto.menu.MenuGroupRequestDto;
+import com.flab.delivery.dto.menugroup.MenuGroupDto;
+import com.flab.delivery.dto.menugroup.MenuGroupRequestDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

@@ -1,4 +1,4 @@
-package com.flab.delivery.dto.menu;
+package com.flab.delivery.dto.menugroup;
 
 import lombok.*;
 

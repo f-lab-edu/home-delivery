@@ -1,7 +1,7 @@
 package com.flab.delivery.service;
 
-import com.flab.delivery.dto.menu.MenuGroupDto;
-import com.flab.delivery.dto.menu.MenuGroupRequestDto;
+import com.flab.delivery.dto.menugroup.MenuGroupDto;
+import com.flab.delivery.dto.menugroup.MenuGroupRequestDto;
 import com.flab.delivery.exception.MenuGroupException;
 import com.flab.delivery.mapper.MenuGroupMapper;
 import lombok.RequiredArgsConstructor;

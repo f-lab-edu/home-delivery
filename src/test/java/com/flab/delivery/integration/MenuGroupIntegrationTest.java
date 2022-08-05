@@ -2,8 +2,8 @@ package com.flab.delivery.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flab.delivery.annotation.EnableMockMvc;
-import com.flab.delivery.dto.menu.MenuGroupDto;
-import com.flab.delivery.dto.menu.MenuGroupRequestDto;
+import com.flab.delivery.dto.menugroup.MenuGroupDto;
+import com.flab.delivery.dto.menugroup.MenuGroupRequestDto;
 import com.flab.delivery.enums.UserType;
 import com.flab.delivery.mapper.MenuGroupMapper;
 import com.flab.delivery.utils.SessionConstants;
