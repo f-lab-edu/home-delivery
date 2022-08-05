@@ -47,8 +47,10 @@ public class MenuGroupService {
     }
 
 
-    // Question : mapper.xml에서 돌리는데 하나가 안되면 그건어떻게찾을가?
     public void updatePriority(List<MenuGroupDto> menuGroupDtoList) {
+        if (menuGroupMapper.findAllById(menuGroupDtoList).size() != menuGroupDtoList.size()) {
+            throw new MenuGroupException("업데이트 중 존재하지 않는 id가 있습니다", HttpStatus.NOT_FOUND);
+        }
         menuGroupMapper.updatePriority(menuGroupDtoList);
     }
 }

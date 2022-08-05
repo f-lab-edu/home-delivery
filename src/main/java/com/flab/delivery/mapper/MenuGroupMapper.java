@@ -24,4 +24,6 @@ public interface MenuGroupMapper {
     void deleteById(@Param("id") Long menuGroupId);
 
     void updatePriority(@Param("groupList") List<MenuGroupDto> menuGroupDtoList);
+
+    List<MenuGroupDto> findAllById(@Param("groupList") List<MenuGroupDto> menuGroupDtoList);
 }

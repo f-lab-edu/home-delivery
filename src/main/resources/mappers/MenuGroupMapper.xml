@@ -52,5 +52,13 @@
         </foreach>
     </update>
 
+    <select id="findAllById" resultType="MenuGroupDto">
+        SELECT * FROM MENU_GROUP
+        WHERE id IN
+        <foreach collection="groupList" item="menuGroup" separator="," open="(" close=")">
+            #{menuGroup.id}
+        </foreach>
+    </select>
+
 
 </mapper>
