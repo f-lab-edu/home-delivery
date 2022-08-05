@@ -2,6 +2,7 @@ package com.flab.delivery.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flab.delivery.annotation.EnableMockMvc;
+import com.flab.delivery.annotation.IntegrationTest;
 import com.flab.delivery.dto.address.AddressRequestDto;
 import com.flab.delivery.enums.UserType;
 import com.flab.delivery.fixture.TestDto;
@@ -25,10 +26,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
-@SpringBootTest
-@Transactional
-@EnableMockMvc
-@ActiveProfiles("test")
+@IntegrationTest
 class AddressIntegrationTest {
 
     @Autowired

@@ -17,10 +17,16 @@ public class RiderDao {
     public void registerStandByRider(String userId, Long addressId) {
         redisTemplate.opsForSet().add(getRidersKeyBy(addressId), userId);
         redisTemplate.expire(getRidersKeyBy(addressId), 1, TimeUnit.DAYS);
+        return;
+    }
+
+    public Set<Object> findAllRiderBy(Long addressId) {
+        return redisTemplate.opsForSet().members(getRidersKeyBy(addressId));
     }
 
     public void deleteStandByRider(String userId, Long addressId) {
         redisTemplate.opsForSet().remove(getRidersKeyBy(addressId), userId);
+        return;
     }
 
     private String getRidersKeyBy(Long addressId) {

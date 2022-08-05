@@ -3,6 +3,7 @@ package com.flab.delivery.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flab.delivery.annotation.EnableMockMvc;
+import com.flab.delivery.annotation.IntegrationTest;
 import com.flab.delivery.dto.user.PasswordDto;
 import com.flab.delivery.dto.user.SignUpDto;
 import com.flab.delivery.dto.user.UserDto;
@@ -31,10 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 
-@SpringBootTest
-@Transactional
-@EnableMockMvc
-@ActiveProfiles("test")
+@IntegrationTest
 class UserIntegrationTest {
     @Autowired
     MockMvc mockMvc;
