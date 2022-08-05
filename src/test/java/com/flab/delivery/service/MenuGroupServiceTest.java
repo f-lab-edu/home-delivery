@@ -241,10 +241,35 @@ class MenuGroupServiceTest {
     class updatePriority {
         @Test
         @DisplayName("성공")
-        void success() {
-            List<MenuGroupDto> menuGroupDtoList = new ArrayList<>();
-            menuGroupService.updatePriority(menuGroupDtoList);
-            verify(menuGroupMapper).updatePriority(menuGroupDtoList);
+        void success(@Mock List<MenuGroupDto> requestDtoList, @Mock List<MenuGroupDto> findList) {
+            int requestListSize = 2;
+            int findListSize= 2;
+            when(menuGroupMapper.findAllById(requestDtoList)).thenReturn(findList);
+            when(requestDtoList.size()).thenReturn(requestListSize);
+            when(findList.size()).thenReturn(findListSize);
+
+            menuGroupService.updatePriority(requestDtoList);
+
+            verify(menuGroupMapper).updatePriority(requestDtoList);
         }
+
+        @Test
+        @DisplayName("실패 아이디가 존재하지않는경우")
+        void fail(@Mock List<MenuGroupDto> requestList, @Mock List<MenuGroupDto> findList) {
+            int requestListSize = 2;
+            int findListSize = 3;
+
+            when(menuGroupMapper.findAllById(requestList)).thenReturn(findList);
+            when(requestList.size()).thenReturn(requestListSize);
+            when(findList.size()).thenReturn(findListSize);
+
+            MenuGroupException ex = Assertions.assertThrows(MenuGroupException.class, () -> {
+                menuGroupService.updatePriority(requestList);
+            });
+
+            Assertions.assertEquals(ex.getMessage(), "업데이트 중 존재하지 않는 id가 있습니다");
+
+        }
+
     }
 }

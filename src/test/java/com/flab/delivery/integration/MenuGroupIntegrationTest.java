@@ -127,7 +127,7 @@ class MenuGroupIntegrationTest {
                 @DisplayName("존재하지않는경우")
                 void storeIdNotExists() throws Exception {
                     // given
-                    storeId = 3L;
+                    storeId = 100L;
                     String json = objectMapper.writeValueAsString(getRequestDto());
                     mockMvc.perform(post(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
                             .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
@@ -420,7 +420,7 @@ class MenuGroupIntegrationTest {
             mockHttpSession.setAttribute(SessionConstants.SESSION_ID, ownerId);
             mockHttpSession.setAttribute(SessionConstants.AUTH_TYPE, userType);
 
-            for (int i = 1; i <= 5; i++) {
+            for (int i = 1; i <= 3; i++) {
                 list.add(getMenuGroupDto((long) i, i));
             }
         }
@@ -441,6 +441,20 @@ class MenuGroupIntegrationTest {
             String json = objectMapper.writeValueAsString(requestDto);
             mockMvc.perform(patch(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
                     .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
+                    .andDo(print());
+        }
+
+        @Test
+        @DisplayName("우선순위 변경 실패 - id존재하지않는경우")
+        void fail() throws Exception {
+            list.add(getMenuGroupDto((long) 100, 3));
+
+            MenuGroupDto requestDto = MenuGroupDto.builder()
+                    .menuGroupDtoList(list)
+                    .build();
+            String json = objectMapper.writeValueAsString(requestDto);
+            mockMvc.perform(patch(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(jsonPath("$.status").value(HttpStatus.NOT_FOUND.value()))
                     .andDo(print());
         }
     }

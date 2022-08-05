@@ -1,6 +1,7 @@
 package com.flab.delivery.dto.menu;
 
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -10,6 +11,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@JsonInclude(value = JsonInclude.Include.NON_NULL)
 public class MenuGroupDto {
 
     private Long id;
