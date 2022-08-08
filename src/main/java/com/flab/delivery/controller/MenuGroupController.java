@@ -42,7 +42,7 @@ public class MenuGroupController {
     }
 
     @LoginCheck(userType = UserType.OWNER)
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     public CommonResult<Void> deleteGroup(@PathVariable("id") Long id) {
         menuGroupService.deleteGroup(id);
         return CommonResult.getSimpleSuccessResult(HttpStatus.OK.value());
