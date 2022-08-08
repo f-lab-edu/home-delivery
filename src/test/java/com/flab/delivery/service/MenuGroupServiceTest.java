@@ -4,6 +4,7 @@ import com.flab.delivery.dto.menugroup.MenuGroupDto;
 import com.flab.delivery.dto.menugroup.MenuGroupRequestDto;
 import com.flab.delivery.exception.MenuGroupException;
 import com.flab.delivery.mapper.MenuGroupMapper;
+import com.flab.delivery.mapper.StoreMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -28,6 +29,9 @@ class MenuGroupServiceTest {
 
     @Mock
     MenuGroupMapper menuGroupMapper;
+
+    @Mock
+    StoreMapper storeMapper;
 
     @Nested
     @DisplayName("메뉴 그룹 생성")
@@ -163,6 +167,19 @@ class MenuGroupServiceTest {
             // then
             Assertions.assertEquals(size, getMenuGroupList.size());
         }
+
+        @Test
+        @DisplayName("리스트 조회 실패 - 매장존재x")
+        void fail() {
+            // given
+            Long storeId = 100L;
+            when(storeMapper.findById(storeId)).thenReturn(Optional.empty());
+            MenuGroupException ex = Assertions.assertThrows(MenuGroupException.class, () -> {
+                menuGroupService.getMenuGroupList(storeId);
+            });
+            Assertions.assertEquals(ex.getMessage(), "존재하지 않는 매장입니다");
+
+        }
     }
 
     @Nested
@@ -242,7 +259,7 @@ class MenuGroupServiceTest {
         @DisplayName("성공")
         void success(@Mock List<MenuGroupDto> requestDtoList, @Mock List<MenuGroupDto> findList) {
             int requestListSize = 2;
-            int findListSize= 2;
+            int findListSize = 2;
             when(menuGroupMapper.findAllById(requestDtoList)).thenReturn(findList);
             when(requestDtoList.size()).thenReturn(requestListSize);
             when(findList.size()).thenReturn(findListSize);

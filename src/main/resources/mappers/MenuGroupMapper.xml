@@ -45,9 +45,9 @@
 
 
     <update id="updatePriority">
-        <foreach collection="groupList" item="menuGroup" separator=";"  close=";">
+        <foreach collection="groupList" item="menuGroup" index="index" separator=";"  close=";">
             UPDATE MENU_GROUP
-            SET priority = #{menuGroup.priority}
+            SET priority = #{index}+1
             WHERE id = #{menuGroup.id}
         </foreach>
     </update>

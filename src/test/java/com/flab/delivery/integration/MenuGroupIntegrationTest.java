@@ -332,6 +332,17 @@ class MenuGroupIntegrationTest {
                     .andDo(print());
         }
 
+        @Test
+        @DisplayName("실패 - 매장아이디 존재x")
+        void fail() throws Exception {
+            // given
+            String changeUrl = "/menugroups/storeid/100";
+            mockMvc.perform(get(changeUrl).session(mockHttpSession))
+                    .andExpect(jsonPath("$.status").value(HttpStatus.NOT_FOUND.value()))
+                    .andExpect(jsonPath("$.message").value("존재하지 않는 매장입니다"))
+                    .andDo(print());
+        }
+
 
     }
 
@@ -420,25 +431,21 @@ class MenuGroupIntegrationTest {
             mockHttpSession.setAttribute(SessionConstants.SESSION_ID, ownerId);
             mockHttpSession.setAttribute(SessionConstants.AUTH_TYPE, userType);
 
-            for (int i = 1; i <= 3; i++) {
-                list.add(getMenuGroupDto((long) i, i));
-            }
+            list.add(getMenuGroupDto((long) 2));
+            list.add(getMenuGroupDto((long) 3));
+            list.add(getMenuGroupDto((long) 1));
         }
 
-        private MenuGroupDto getMenuGroupDto(Long id, Integer priority) {
+        private MenuGroupDto getMenuGroupDto(Long id) {
             return MenuGroupDto.builder()
                     .id(id)
-                    .priority(priority)
                     .build();
         }
 
         @Test
         @DisplayName("우선순위 변경 성공")
         void success() throws Exception {
-            MenuGroupDto requestDto = MenuGroupDto.builder()
-                    .menuGroupDtoList(list)
-                    .build();
-            String json = objectMapper.writeValueAsString(requestDto);
+            String json = objectMapper.writeValueAsString(list);
             mockMvc.perform(patch(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
                     .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
                     .andDo(print());
@@ -447,12 +454,8 @@ class MenuGroupIntegrationTest {
         @Test
         @DisplayName("우선순위 변경 실패 - id존재하지않는경우")
         void fail() throws Exception {
-            list.add(getMenuGroupDto((long) 100, 3));
-
-            MenuGroupDto requestDto = MenuGroupDto.builder()
-                    .menuGroupDtoList(list)
-                    .build();
-            String json = objectMapper.writeValueAsString(requestDto);
+            list.add(getMenuGroupDto((long) 100));
+            String json = objectMapper.writeValueAsString(list);
             mockMvc.perform(patch(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
                     .andExpect(jsonPath("$.status").value(HttpStatus.NOT_FOUND.value()))
                     .andDo(print());

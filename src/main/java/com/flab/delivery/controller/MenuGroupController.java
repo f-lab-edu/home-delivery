@@ -50,8 +50,8 @@ public class MenuGroupController {
 
     @LoginCheck(userType = UserType.OWNER)
     @PatchMapping("/priorities")
-    public CommonResult<Void> changePriority(@RequestBody MenuGroupDto request) {
-        menuGroupService.updatePriority(request.getMenuGroupDtoList());
+    public CommonResult<Void> changePriority(@RequestBody List<MenuGroupDto> request) {
+        menuGroupService.updatePriority(request);
         return CommonResult.getSimpleSuccessResult(HttpStatus.OK.value());
     }
 
