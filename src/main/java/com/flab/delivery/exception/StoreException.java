@@ -2,17 +2,10 @@ package com.flab.delivery.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class StoreException extends RuntimeException {
+public class StoreException extends AbstractException {
 
-    HttpStatus httpStatus;
 
     public StoreException(String message, HttpStatus httpStatus) {
-        super(message);
-        this.httpStatus = httpStatus;
+        super(message, httpStatus);
     }
-
-    public HttpStatus getHttpStatus() {
-        return this.httpStatus;
-    }
-
 }
