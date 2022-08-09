@@ -1,6 +1,6 @@
 package com.flab.delivery.dao;
 
-import com.flab.delivery.AbstractContainerBaseTest;
+import com.flab.delivery.AbstractRedisContainer;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,7 +10,7 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-class RiderDaoTest extends AbstractContainerBaseTest {
+class RiderDaoTestRedis extends AbstractRedisContainer {
 
     private static final String RIDER = "Rider1";
     public static final long ADDRESS_ID = 1L;

@@ -23,8 +23,10 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.flab.delivery.fixture.CommonTest.doAuthTest;
 import static com.flab.delivery.fixture.MessageConstants.*;
 import static com.flab.delivery.utils.SessionConstants.SESSION_ID;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -651,5 +653,9 @@ class UserIntegrationTest {
 
     private void setMockLoginUser(MockHttpSession mockHttpSession, String user1) {
         mockHttpSession.setAttribute(SESSION_ID, user1);
+    }
+
+    private void doUserAuthTest(MockHttpServletRequestBuilder requestBuilder) throws Exception {
+        doAuthTest(mockMvc, requestBuilder);
     }
 }

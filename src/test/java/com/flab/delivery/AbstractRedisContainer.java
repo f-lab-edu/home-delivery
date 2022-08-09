@@ -4,7 +4,7 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.GenericContainer;
 
-public abstract class AbstractContainerBaseTest {
+public abstract class AbstractRedisContainer {
     static final String REDIS_IMAGE = "redis";
     static final GenericContainer REDIS_CONTAINER;
 
