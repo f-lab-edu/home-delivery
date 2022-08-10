@@ -2,6 +2,7 @@ package com.flab.delivery.service;
 
 import com.flab.delivery.dto.menugroup.MenuGroupDto;
 import com.flab.delivery.dto.menugroup.MenuGroupRequestDto;
+import com.flab.delivery.dto.store.StoreDto;
 import com.flab.delivery.exception.MenuGroupException;
 import com.flab.delivery.mapper.MenuGroupMapper;
 import com.flab.delivery.mapper.StoreMapper;
@@ -160,6 +161,7 @@ class MenuGroupServiceTest {
         void success(@Mock List<MenuGroupDto> menuGroupList) {
             // given
             int size = 1;
+            when(storeMapper.findById(storeId)).thenReturn(Optional.of(StoreDto.builder().build()));
             when(menuGroupList.size()).thenReturn(size);
             when(menuGroupService.getMenuGroupList(storeId)).thenReturn(menuGroupList);
             // when

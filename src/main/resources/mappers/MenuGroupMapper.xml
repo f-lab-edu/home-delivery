@@ -31,7 +31,7 @@
 
 
     <select id="findAllByStoreId" resultType="MenuGroupDto" parameterType="long">
-        SELECT *
+        SELECT id, store_id, name, info, priority
         FROM MENU_GROUP
         WHERE store_id = #{storeId}
         ORDER BY priority ASC
