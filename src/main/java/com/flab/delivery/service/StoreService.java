@@ -3,22 +3,66 @@ package com.flab.delivery.service;
 import com.flab.delivery.dto.store.StoreDto;
 import com.flab.delivery.dto.store.StoreRequestDto;
 import com.flab.delivery.enums.StoreStatus;
+import com.flab.delivery.exception.StoreException;
+import com.flab.delivery.mapper.StoreMapper;
+import com.flab.delivery.utils.CacheConstants;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
-public interface StoreService {
+import static com.flab.delivery.utils.CacheConstants.STORE_LIST;
 
-    void createStore(StoreRequestDto storeRequestDto, String userId);
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class StoreService {
 
-    List<StoreDto> getOwnerStoreList(String userId);
+    private final StoreMapper storeMapper;
 
-    StoreDto getStore(Long id);
+    @CacheEvict(value = STORE_LIST, key = "#storeRequestDto.addressId")
+    public void createStore(StoreRequestDto storeRequestDto, String userId) {
+        Optional<Long> existsStore = storeMapper.existsByNameAndDetailAddress(storeRequestDto.getName(),
+                storeRequestDto.getDetailAddress());
+        if (existsStore.isPresent()) {
+            throw new StoreException("이미 존재하는 매장입니다", HttpStatus.BAD_REQUEST);
+        }
+        storeMapper.save(storeRequestDto, userId);
+    }
 
-    void updateStore(Long id, StoreRequestDto storeRequestDto);
+    public List<StoreDto> getOwnerStoreList(String userId) {
+        return storeMapper.findAllByUserId(userId);
+    }
 
-    void deleteStore(Long id);
+    public StoreDto getStore(Long id) {
+        return storeMapper.findById(id).orElseThrow(
+                () -> new StoreException("존재하지 않는 매장입니다", HttpStatus.NOT_FOUND)
+        );
+    }
 
-    void changeStatus(Long id, StoreStatus status);
+    public void updateStore(Long id, StoreRequestDto storeRequestDto) {
+        getStore(id);
+        storeMapper.updateById(id, storeRequestDto);
+    }
+
+    public void deleteStore(Long id) {
+        getStore(id);
+        storeMapper.deleteById(id);
+    }
+
+    public void changeStatus(Long id, StoreStatus status) {
+        getStore(id);
+        storeMapper.updateStatusById(id, status);
+    }
 
 
+    @Cacheable(value = STORE_LIST, key = "#addressId")
+    public List<StoreDto> getStoreListBy(Long categoryId, Long addressId) {
+        return storeMapper.findStoreListBy(categoryId, addressId);
+    }
 }

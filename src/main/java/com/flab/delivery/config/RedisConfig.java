@@ -1,22 +1,27 @@
 package com.flab.delivery.config;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
+import org.springframework.data.redis.cache.RedisCacheConfiguration;
+import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
-import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializationContext;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-/**
- * Profile 을 통해 실제 운영 및 로컬 환경에서는 HttpSession 대신 레디스가 지원하는 스프링 세션을 사용합니다
- * 기존 테스트 성공을 위해 스프링 세션이 아닌 기존 HttpSession 을 통한 MockHttpSession 으로 진행하여
- * 기존에 작성한 테스트에 문제 없게 하였습니다.
- */
-@Profile("local")
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.flab.delivery.utils.CacheConstants.*;
+
+@EnableCaching
 @Configuration
-@EnableRedisHttpSession
 public class RedisConfig {
 
     @Value("${spring.redis.host}")
@@ -29,4 +34,34 @@ public class RedisConfig {
     public RedisConnectionFactory redisConnectionFactory() {
         return new LettuceConnectionFactory(new RedisStandaloneConfiguration(redisHost, redisPort));
     }
+
+    @Bean
+    public RedisTemplate<String, Object> redisTemplate() {
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(redisConnectionFactory());
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+        return redisTemplate;
+    }
+
+    @Bean
+    public CacheManager redisCacheManager() {
+        RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
+                .serializeValuesWith(RedisSerializationContext
+                        .SerializationPair
+                        .fromSerializer(new GenericJackson2JsonRedisSerializer()))
+                .entryTtl(DEFAULT_EXPIRE_TIME_MIN);
+
+
+        Map<String, RedisCacheConfiguration> configurations = new HashMap<>();
+        configurations.put(CATEGORY, redisCacheConfiguration.entryTtl(CATEGORY_EXPIRE_TIME_MIN));
+
+        return RedisCacheManager
+                .RedisCacheManagerBuilder
+                .fromConnectionFactory(redisConnectionFactory())
+                .withInitialCacheConfigurations(configurations)
+                .cacheDefaults(redisCacheConfiguration)
+                .build();
+    }
+
 }

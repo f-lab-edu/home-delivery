@@ -12,8 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
+import javax.validation.Valid;
 
 
 @Slf4j
@@ -60,7 +60,6 @@ public class StoreController {
         return CommonResult.getSimpleSuccessResult(HttpStatus.OK.value());
     }
 
-    // PutMapping vs PatchMapping !!!
     @LoginCheck(userType = UserType.OWNER)
     @PatchMapping("/{id}/status")
     public CommonResult<Void> changeStatus(@PathVariable("id") Long id, @RequestBody StoreDto storeDto) {

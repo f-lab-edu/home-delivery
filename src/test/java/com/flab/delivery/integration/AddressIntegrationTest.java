@@ -1,7 +1,7 @@
 package com.flab.delivery.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.flab.delivery.annotation.EnableMockMvc;
+import com.flab.delivery.annotation.IntegrationTest;
 import com.flab.delivery.dto.address.AddressRequestDto;
 import com.flab.delivery.enums.UserType;
 import com.flab.delivery.fixture.TestDto;
@@ -9,15 +9,13 @@ import com.flab.delivery.service.AddressService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
-import static com.flab.delivery.fixture.MessageConstants.HAVE_NO_AUTHORITY_MESSAGE;
+import static com.flab.delivery.fixture.CommonTest.doAuthTest;
 import static com.flab.delivery.fixture.MessageConstants.SUCCESS_MESSAGE;
 import static com.flab.delivery.utils.SessionConstants.AUTH_TYPE;
 import static com.flab.delivery.utils.SessionConstants.SESSION_ID;
@@ -25,10 +23,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
-@SpringBootTest
-@Transactional
-@EnableMockMvc
-@ActiveProfiles("test")
+@IntegrationTest
 class AddressIntegrationTest {
 
     @Autowired
@@ -50,18 +45,11 @@ class AddressIntegrationTest {
 
     @Test
     void addAddress_권한_없는_사용자_실패() throws Exception {
-        // given
-        mockHttpSession.setAttribute(AUTH_TYPE, UserType.ALL);
         AddressRequestDto addressRequestDto = TestDto.getAddressRequestDto();
 
-        // when
-        // then
-        mockMvc.perform(post("/locations")
-                        .content(objectMapper.writeValueAsString(addressRequestDto))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .session(mockHttpSession))
-                .andExpect(jsonPath("$.status").value(HttpStatus.FORBIDDEN.value()))
-                .andExpect(jsonPath("$.message").value(HAVE_NO_AUTHORITY_MESSAGE));
+        doAddressAuthTest(post("/locations")
+                .content(objectMapper.writeValueAsString(addressRequestDto))
+                .contentType(MediaType.APPLICATION_JSON));
 
     }
 
@@ -122,15 +110,7 @@ class AddressIntegrationTest {
 
     @Test
     void getAllAddress_권한_없는_사용자_실패() throws Exception {
-        // given
-        mockHttpSession.setAttribute(AUTH_TYPE, UserType.ALL);
-
-        // when
-        // then
-        mockMvc.perform(get("/locations")
-                        .session(mockHttpSession))
-                .andExpect(jsonPath("$.status").value(HttpStatus.FORBIDDEN.value()))
-                .andExpect(jsonPath("$.message").value(HAVE_NO_AUTHORITY_MESSAGE));
+        doAddressAuthTest(get("/locations"));
     }
 
     @Test
@@ -155,15 +135,7 @@ class AddressIntegrationTest {
 
     @Test
     void deleteAddress_권한_없는_사용자_실패() throws Exception {
-        // given
-        mockHttpSession.setAttribute(AUTH_TYPE, UserType.ALL);
-
-        // when
-        // then
-        mockMvc.perform(delete("/locations/1")
-                        .session(mockHttpSession))
-                .andExpect(jsonPath("$.status").value(HttpStatus.FORBIDDEN.value()))
-                .andExpect(jsonPath("$.message").value(HAVE_NO_AUTHORITY_MESSAGE));
+        doAddressAuthTest(delete("/locations/1"));
     }
 
     @Test
@@ -193,15 +165,7 @@ class AddressIntegrationTest {
 
     @Test
     void selectAddress_권한_없는_사용자_실패() throws Exception {
-        // given
-        mockHttpSession.setAttribute(AUTH_TYPE, UserType.ALL);
-
-        // when
-        // then
-        mockMvc.perform(patch("/locations/1")
-                        .session(mockHttpSession))
-                .andExpect(jsonPath("$.status").value(HttpStatus.FORBIDDEN.value()))
-                .andExpect(jsonPath("$.message").value(HAVE_NO_AUTHORITY_MESSAGE));
+        doAddressAuthTest(patch("/locations/1"));
     }
 
     @Test
@@ -225,5 +189,9 @@ class AddressIntegrationTest {
                         .session(mockHttpSession))
                 .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
                 .andExpect(jsonPath("$.message").value(SUCCESS_MESSAGE));
+    }
+
+    private void doAddressAuthTest(MockHttpServletRequestBuilder requestBuilder) throws Exception {
+        doAuthTest(mockMvc, requestBuilder);
     }
 }
