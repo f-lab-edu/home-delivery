@@ -50,11 +50,11 @@ public class RedisConfig {
                 .serializeValuesWith(RedisSerializationContext
                         .SerializationPair
                         .fromSerializer(new GenericJackson2JsonRedisSerializer()))
-                .entryTtl(DEFAULT_EXPIRE_TIME);
+                .entryTtl(DEFAULT_EXPIRE_TIME_MIN);
 
 
         Map<String, RedisCacheConfiguration> configurations = new HashMap<>();
-        configurations.put(CATEGORY, redisCacheConfiguration.entryTtl(CATEGORY_EXPIRE_TIME));
+        configurations.put(CATEGORY, redisCacheConfiguration.entryTtl(CATEGORY_EXPIRE_TIME_MIN));
 
         return RedisCacheManager
                 .RedisCacheManagerBuilder
