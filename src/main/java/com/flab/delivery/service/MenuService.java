@@ -18,7 +18,8 @@ import java.util.*;
 public class MenuService {
 
     private final MenuMapper menuMapper;
-    private final StoreMapper storeMapper;
+    private final StoreService storeService;
+
 
     public void createMenu(MenuRequestDto menuRequestDto) {
         if (menuMapper.existsByName(menuRequestDto.getMenuGroupId(), menuRequestDto.getName()).isPresent()) {
@@ -56,12 +57,8 @@ public class MenuService {
         menuMapper.updatePriority(menuDtoList);
     }
 
-
-
     public List<MenuDto> getMenuList(Long storeId) {
-        storeMapper.findById(storeId).orElseThrow(
-                () -> new MenuException("존재하지않는 매장입니다", HttpStatus.NOT_FOUND)
-        );
+        storeService.getStore(storeId);
         return menuMapper.findAllByStoreId(storeId);
     }
 }
