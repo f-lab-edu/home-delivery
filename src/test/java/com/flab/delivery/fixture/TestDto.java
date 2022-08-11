@@ -6,8 +6,12 @@ import com.flab.delivery.dto.user.UserDto;
 import com.flab.delivery.dto.user.UserInfoUpdateDto;
 import com.flab.delivery.enums.UserType;
 import com.flab.delivery.utils.PasswordEncoder;
+import org.springframework.mock.web.MockHttpSession;
 
 import java.time.LocalDateTime;
+
+import static com.flab.delivery.utils.SessionConstants.AUTH_TYPE;
+import static com.flab.delivery.utils.SessionConstants.SESSION_ID;
 
 public class TestDto {
 
@@ -46,5 +50,12 @@ public class TestDto {
                 .detailAddress("13번길 15")
                 .alias("기타")
                 .build();
+    }
+
+    public static MockHttpSession createSessionBy(String userId, UserType userType) {
+        MockHttpSession mockHttpSession = new MockHttpSession();
+        mockHttpSession.setAttribute(SESSION_ID, userId);
+        mockHttpSession.setAttribute(AUTH_TYPE, userType);
+        return mockHttpSession;
     }
 }

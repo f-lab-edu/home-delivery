@@ -5,7 +5,7 @@
 
 
     <select id="idExists" resultType="boolean">
-        SELECT EXISTS(SELECT id FROM USER LIMIT1 WHERE id = #{id})
+        SELECT EXISTS(SELECT id FROM USER WHERE id = #{id})
     </select>
 
 

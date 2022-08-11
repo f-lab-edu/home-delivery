@@ -5,8 +5,8 @@ import com.flab.delivery.dto.menu.MenuRequestDto;
 import com.flab.delivery.dto.store.StoreDto;
 import com.flab.delivery.enums.MenuStatus;
 import com.flab.delivery.exception.MenuException;
+import com.flab.delivery.exception.StoreException;
 import com.flab.delivery.mapper.MenuMapper;
-import com.flab.delivery.mapper.StoreMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -15,8 +15,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -32,7 +34,7 @@ class MenuServiceTest {
     MenuMapper menuMapper;
 
     @Mock
-    StoreMapper storeMapper;
+    StoreService storeService;
 
     @Nested
     @DisplayName("메뉴 생성")
@@ -293,9 +295,10 @@ class MenuServiceTest {
             @DisplayName("조회 성공")
             void success() {
                 Long storeId = 1L;
-                when(storeMapper.findById(storeId)).thenReturn(Optional.of(StoreDto.builder().build()));
+                when(storeService.getStore(storeId)).thenReturn(StoreDto.builder().build());
                 menuService.getMenuList(storeId);
                 verify(menuMapper).findAllByStoreId(storeId);
+                verify(storeService).getStore(storeId);
             }
         }
 
@@ -306,9 +309,9 @@ class MenuServiceTest {
             @DisplayName("매장이 존재하지 않는 경우")
             void notExistsStore() {
                 Long storeId = 100L;
-                when(storeMapper.findById(storeId)).thenReturn(Optional.empty());
-                MenuException ex = Assertions.assertThrows(MenuException.class, () -> menuService.getMenuList(storeId));
-                Assertions.assertEquals(ex.getMessage(), "존재하지않는 매장입니다");
+                when(storeService.getStore(storeId)).thenThrow(new StoreException("존재하지 않는 매장입니다", HttpStatus.NOT_FOUND));
+                StoreException ex = Assertions.assertThrows(StoreException.class, () -> menuService.getMenuList(storeId));
+                Assertions.assertEquals(ex.getMessage(), "존재하지 않는 매장입니다");
             }
         }
     }

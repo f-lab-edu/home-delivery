@@ -57,5 +57,12 @@
         WHERE id = #{id}
     </update>
 
+    <select id="findStoreListBy" resultType="StoreDto">
+        SELECT id, detail_address, name, info, status, min_price
+        FROM Store
+        WHERE address_id = #{addressId}
+          AND category_id = #{categoryId}
+          AND status = 'OPEN';
+    </select>
 
 </mapper>

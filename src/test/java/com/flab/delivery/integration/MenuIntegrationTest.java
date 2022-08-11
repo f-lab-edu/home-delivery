@@ -621,7 +621,7 @@ class MenuIntegrationTest {
                 String changeParamValue = "10000";
                 mockMvc.perform(get(url).param(paramName, changeParamValue).session(mockHttpSession))
                         .andExpect(jsonPath("$.status").value(HttpStatus.NOT_FOUND.value()))
-                        .andExpect(jsonPath("$.message").value("존재하지않는 매장입니다"))
+                        .andExpect(jsonPath("$.message").value("존재하지 않는 매장입니다"))
                         .andDo(print());
             }
 

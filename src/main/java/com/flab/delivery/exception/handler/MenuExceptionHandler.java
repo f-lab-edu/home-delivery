@@ -9,15 +9,15 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import javax.servlet.http.HttpServletRequest;
 import java.sql.SQLIntegrityConstraintViolationException;
+import javax.servlet.http.HttpServletRequest;
 
 @Slf4j
 @RestControllerAdvice(assignableTypes = MenuController.class)
 public class MenuExceptionHandler {
 
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
-    public CommonResult<Void> handleSQLIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException ex,
+    public CommonResult<Void> handleSqlIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException ex,
                                                                              HttpServletRequest request) {
         log.info("Http Method : {}  URI : {}, msg : {}", request.getMethod(), request.getRequestURI(), ex.getMessage());
         return CommonResult.getSimpleResult(HttpStatus.BAD_REQUEST.value(), "menuGroupId가 존재하지않아 무결성 제약 조건에 위배됩니다");

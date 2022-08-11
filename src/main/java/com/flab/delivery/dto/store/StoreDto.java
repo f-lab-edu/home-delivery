@@ -1,5 +1,6 @@
 package com.flab.delivery.dto.store;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.flab.delivery.enums.StoreStatus;
 import lombok.*;
 
@@ -9,6 +10,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class StoreDto {
 
     private Long id;

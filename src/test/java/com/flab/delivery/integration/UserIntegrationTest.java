@@ -3,6 +3,7 @@ package com.flab.delivery.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flab.delivery.annotation.EnableMockMvc;
+import com.flab.delivery.annotation.IntegrationTest;
 import com.flab.delivery.dto.user.PasswordDto;
 import com.flab.delivery.dto.user.SignUpDto;
 import com.flab.delivery.dto.user.UserDto;
@@ -22,8 +23,10 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.flab.delivery.fixture.CommonTest.doAuthTest;
 import static com.flab.delivery.fixture.MessageConstants.*;
 import static com.flab.delivery.utils.SessionConstants.SESSION_ID;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -31,10 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 
-@SpringBootTest
-@Transactional
-@EnableMockMvc
-@ActiveProfiles("test")
+@IntegrationTest
 class UserIntegrationTest {
     @Autowired
     MockMvc mockMvc;
@@ -653,5 +653,9 @@ class UserIntegrationTest {
 
     private void setMockLoginUser(MockHttpSession mockHttpSession, String user1) {
         mockHttpSession.setAttribute(SESSION_ID, user1);
+    }
+
+    private void doUserAuthTest(MockHttpServletRequestBuilder requestBuilder) throws Exception {
+        doAuthTest(mockMvc, requestBuilder);
     }
 }
