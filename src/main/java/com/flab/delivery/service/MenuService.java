@@ -2,11 +2,9 @@ package com.flab.delivery.service;
 
 import com.flab.delivery.dto.menu.MenuDto;
 
-import com.flab.delivery.dto.menu.MenuListResponseDto;
 import com.flab.delivery.dto.menu.MenuRequestDto;
 import com.flab.delivery.enums.MenuStatus;
 import com.flab.delivery.exception.MenuException;
-import com.flab.delivery.mapper.MenuGroupMapper;
 import com.flab.delivery.mapper.MenuMapper;
 import com.flab.delivery.mapper.StoreMapper;
 import lombok.RequiredArgsConstructor;
@@ -59,28 +57,11 @@ public class MenuService {
     }
 
 
-    /**
-     * LinkedHashMap을 사용한 이유는 menuGroupId를 우선순위별로 정렬해서 받아오기때문에
-     * map에 넣으면서 조회한 순서대로 담기위해서 사용했습니다.
-     */
-    public List<MenuListResponseDto> getMenuList(Long storeId) {
+
+    public List<MenuDto> getMenuList(Long storeId) {
         storeMapper.findById(storeId).orElseThrow(
                 () -> new MenuException("존재하지않는 매장입니다", HttpStatus.NOT_FOUND)
         );
-
-        List<MenuDto> menuList = menuMapper.findAllByStoreId(storeId);
-
-        Map<Long, MenuListResponseDto> map = new LinkedHashMap<>();
-        for (int i = 0; i < menuList.size(); i++) {
-            MenuDto menuDto = menuList.get(i);
-            Long menuGroupId = menuDto.getMenuGroupId();
-            if (!map.containsKey(menuGroupId)) {
-                map.put(menuGroupId, new MenuListResponseDto(menuGroupId));
-            }
-            MenuListResponseDto menuListResponseDto = map.get(menuGroupId);
-            menuListResponseDto.insertMenu(menuDto);
-            map.put(menuGroupId, menuListResponseDto);
-        }
-        return new ArrayList<>(map.values());
+        return menuMapper.findAllByStoreId(storeId);
     }
 }

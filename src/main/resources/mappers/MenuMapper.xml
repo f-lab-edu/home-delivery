@@ -62,13 +62,10 @@
 
 
     <select id="findAllByStoreId" resultType="MenuDto">
-        SELECT id,menu_group_id, name, info, price, status, priority
-        FROM menu
-        WHERE menu_group_id IN(SELECT id
-                               FROM menu_group
-                               WHERE store_id = #{storeId}
-                               ORDER BY priority ASC )
-        ORDER BY priority ASC;
+        SELECT m.id, m.menu_group_id, m.name, m.info, m.price, m.status, m.priority
+        FROM menu m, menu_group mg
+        WHERE m.menu_group_id = mg.id AND mg.store_id = #{storeId}
+        ORDER BY mg.priority ASC, m.priority ASC;
     </select>
 
 </mapper>

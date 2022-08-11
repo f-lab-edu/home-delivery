@@ -589,7 +589,7 @@ class MenuIntegrationTest {
         private final UserType userType = UserType.OWNER;
         private final String url = "/menus";
         private final String paramName = "storeid";
-        private final String paramValue = "1";
+        private final String paramValue = "2";
 
         private MockHttpSession mockHttpSession = new MockHttpSession();
 
