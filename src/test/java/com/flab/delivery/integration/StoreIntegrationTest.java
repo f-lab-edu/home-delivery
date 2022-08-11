@@ -8,6 +8,7 @@ import com.flab.delivery.enums.StoreStatus;
 import com.flab.delivery.enums.UserType;
 import com.flab.delivery.mapper.StoreMapper;
 import com.flab.delivery.utils.SessionConstants;
+import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -34,6 +35,8 @@ class StoreIntegrationTest {
     @Autowired
     ObjectMapper objectMapper;
 
+    private MockHttpSession mockHttpSession = new MockHttpSession();
+
     @Nested
     @DisplayName("POST : /stores")
     class createStore {
@@ -49,8 +52,6 @@ class StoreIntegrationTest {
 
         private final String ownerId = "user2";
         private final String url = "/stores";
-
-        private MockHttpSession mockHttpSession = new MockHttpSession();
 
         private StoreRequestDto getStoreRequestDto() {
             return StoreRequestDto.builder()
@@ -69,6 +70,7 @@ class StoreIntegrationTest {
         @BeforeEach
         void setUp() {
             mockHttpSession.setAttribute(SessionConstants.SESSION_ID, ownerId);
+            mockHttpSession.setAttribute(SessionConstants.AUTH_TYPE, UserType.OWNER);
         }
 
         @Nested
@@ -103,6 +105,7 @@ class StoreIntegrationTest {
                     // given
                     String json = objectMapper.writeValueAsString(getStoreRequestDto());
                     mockHttpSession.setAttribute(SessionConstants.SESSION_ID, "user1");
+                    mockHttpSession.setAttribute(SessionConstants.AUTH_TYPE, UserType.ALL);
                     // when
                     // then
                     mockMvc.perform(post(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
@@ -448,6 +451,7 @@ class StoreIntegrationTest {
         @BeforeEach
         void setUp() {
             mockHttpSession.setAttribute(SessionConstants.SESSION_ID, ownerId);
+            mockHttpSession.setAttribute(SessionConstants.AUTH_TYPE, UserType.OWNER);
         }
 
         @Nested
@@ -473,6 +477,8 @@ class StoreIntegrationTest {
             void userType() throws Exception {
                 // given
                 mockHttpSession.setAttribute(SessionConstants.SESSION_ID, "user1");
+                mockHttpSession.setAttribute(SessionConstants.AUTH_TYPE, UserType.ALL);
+
                 // when
                 // then
                 mockMvc.perform(get(url).session(mockHttpSession))
@@ -497,6 +503,7 @@ class StoreIntegrationTest {
         @BeforeEach
         void setUp() {
             mockHttpSession.setAttribute(SessionConstants.SESSION_ID, ownerId);
+            mockHttpSession.setAttribute(SessionConstants.AUTH_TYPE, UserType.OWNER);
         }
 
         @Nested
@@ -522,6 +529,7 @@ class StoreIntegrationTest {
                 // given
                 String userId = "user1";
                 mockHttpSession.setAttribute(SessionConstants.SESSION_ID, userId);
+                mockHttpSession.setAttribute(SessionConstants.AUTH_TYPE, UserType.ALL);
                 // when
                 // then
                 mockMvc.perform(get(url).session(mockHttpSession))
@@ -580,8 +588,8 @@ class StoreIntegrationTest {
         @BeforeEach
         void setUp() {
             mockHttpSession.setAttribute(SessionConstants.SESSION_ID, ownerId);
+            mockHttpSession.setAttribute(SessionConstants.AUTH_TYPE, UserType.OWNER);
         }
-
         @Nested
         @DisplayName("성공")
         class Success {
@@ -615,6 +623,8 @@ class StoreIntegrationTest {
                 String userId = "user1";
                 String json = objectMapper.writeValueAsString(getStoreRequestDto());
                 mockHttpSession.setAttribute(SessionConstants.SESSION_ID, userId);
+                mockHttpSession.setAttribute(SessionConstants.AUTH_TYPE, UserType.ALL);
+
                 // when
                 // then
                 mockMvc.perform(patch(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
@@ -659,6 +669,7 @@ class StoreIntegrationTest {
         @BeforeEach
         void setUp() {
             mockHttpSession.setAttribute(SessionConstants.SESSION_ID, ownerId);
+            mockHttpSession.setAttribute(SessionConstants.AUTH_TYPE, UserType.OWNER);
         }
 
         @Nested
@@ -684,6 +695,8 @@ class StoreIntegrationTest {
                 // given
                 String userId = "user1";
                 mockHttpSession.setAttribute(SessionConstants.SESSION_ID, userId);
+                mockHttpSession.setAttribute(SessionConstants.AUTH_TYPE, UserType.ALL);
+
                 // when
                 // then
                 mockMvc.perform(delete(url).session(mockHttpSession))
@@ -754,6 +767,8 @@ class StoreIntegrationTest {
                 // given
                 String userId = "user1";
                 mockHttpSession.setAttribute(SessionConstants.SESSION_ID, userId);
+                mockHttpSession.setAttribute(SessionConstants.AUTH_TYPE, UserType.ALL);
+
                 String json = objectMapper.writeValueAsString(getStoreDto(changeStatus));
                 // when
                 // then
