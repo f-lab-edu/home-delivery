@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flab.delivery.mapper.MenuMapper">
+
+    <insert id="save" parameterType="MenuRequestDto">
+        INSERT INTO MENU(menu_group_id, name, info, price)
+        VALUES (#{menu.menuGroupId}, #{menu.name}, #{menu.info}, #{menu.price})
+    </insert>
+
+    <select id="existsByName" resultType="long">
+        SELECT id
+        FROM MENU
+        WHERE menu_group_id = #{groupId}
+          AND name = #{name} LIMIT 1;
+    </select>
+
+    <select id="findById" resultType="MenuDto">
+        SELECT id, menu_group_id, name, info, price, status, priority
+        FROM MENU
+        WHERE id = #{id};
+    </select>
+
+    <update id="updateById">
+        UPDATE MENU
+        SET menu_group_id = #{menu.menuGroupId},
+            name          = #{menu.name},
+            info          = #{menu.info},
+            price         = #{menu.price}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE
+        FROM MENU
+        WHERE id = #{id}
+    </delete>
+
+    <update id="updateStatus">
+        UPDATE MENU
+        SET status = #{status}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updatePriority">
+        <foreach collection="menuList" item="menu" index="index" separator=";" close=";">
+            UPDATE MENU
+            SET priority = #{index}+1
+            WHERE id = #{menu.id}
+        </foreach>
+    </update>
+
+    <select id="findAllById" resultType="MenuDto">
+        SELECT id
+        FROM MENU
+        WHERE id IN
+        <foreach collection="menuList" item="menu" separator="," open="(" close=")">
+            #{menu.id}
+        </foreach>
+    </select>
+
+
+
+    <select id="findAllByStoreId" resultType="MenuDto">
+        SELECT m.id, m.menu_group_id, m.name, m.info, m.price, m.status, m.priority
+        FROM menu m, menu_group mg
+        WHERE m.menu_group_id = mg.id AND mg.store_id = #{storeId}
+        ORDER BY mg.priority ASC, m.priority ASC;
+    </select>
+
+</mapper>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flab.delivery.mapper.MenuGroupMapper">
+
+
+    <insert id="save" parameterType="MenuGroupRequestDto">
+        INSERT INTO MENU_GROUP(store_id, name, info)
+        VALUES (#{menuGroup.storeId}, #{menuGroup.name}, #{menuGroup.info})
+    </insert>
+
+    <select id="existsByName" resultType="long">
+        SELECT id
+        FROM MENU_GROUP
+        WHERE store_id = #{storeId}
+          AND name = #{name} LIMIT 1;
+    </select>
+
+    <update id="updateById">
+        UPDATE MENU_GROUP
+        SET name = #{menuGroup.name},
+            info = #{menuGroup.info}
+        WHERE id = #{id};
+    </update>
+
+    <select id="findById" resultType="MenuGroupDto">
+        SELECT *
+        FROM MENU_GROUP
+        WHERE id = #{id};
+    </select>
+
+
+    <select id="findAllByStoreId" resultType="MenuGroupDto" parameterType="long">
+        SELECT id, store_id, name, info, priority
+        FROM MENU_GROUP
+        WHERE store_id = #{storeId}
+        ORDER BY priority ASC
+    </select>
+
+    <delete id="deleteById">
+        DELETE
+        FROM MENU_GROUP
+        WHERE id = #{id}
+    </delete>
+
+
+    <update id="updatePriority">
+        <foreach collection="groupList" item="menuGroup" index="index" separator=";"  close=";">
+            UPDATE MENU_GROUP
+            SET priority = #{index}+1
+            WHERE id = #{menuGroup.id}
+        </foreach>
+    </update>
+
+    <select id="findAllById" resultType="MenuGroupDto">
+        SELECT id FROM MENU_GROUP
+        WHERE id IN
+        <foreach collection="groupList" item="menuGroup" separator="," open="(" close=")">
+            #{menuGroup.id}
+        </foreach>
+    </select>
+
+
+</mapper>

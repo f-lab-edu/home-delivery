@@ -6,7 +6,6 @@ import com.flab.delivery.exception.AddressException;
 import com.flab.delivery.mapper.AddressMapper;
 import com.flab.delivery.mapper.UserAddressMapper;
 import lombok.RequiredArgsConstructor;
-import org.apache.ibatis.javassist.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

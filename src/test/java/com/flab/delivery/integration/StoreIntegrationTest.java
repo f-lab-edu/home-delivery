@@ -1,4 +1,4 @@
-package com.flab.delivery.controller;
+package com.flab.delivery.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flab.delivery.annotation.EnableMockMvc;
@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @Transactional
 @EnableMockMvc
-class StoreControllerTest {
+class StoreIntegrationTest {
 
     @Autowired
     MockMvc mockMvc;
@@ -79,7 +79,7 @@ class StoreControllerTest {
 
             @Test
             @DisplayName("매장 생성")
-            void createStore_Success() throws Exception {
+            void success() throws Exception {
                 // given
                 String json = objectMapper.writeValueAsString(getStoreRequestDto());
                 // when
@@ -97,7 +97,7 @@ class StoreControllerTest {
 
             @Nested
             @DisplayName("세션")
-            class fail_session {
+            class Session {
 
                 @Test
                 @DisplayName("권한")
@@ -117,7 +117,7 @@ class StoreControllerTest {
 
             @Nested
             @DisplayName("주소")
-            class fail_address {
+            class Address {
                 @Test
                 @DisplayName("Null인경우")
                 void addressNull() throws Exception {
@@ -149,7 +149,7 @@ class StoreControllerTest {
 
             @Nested
             @DisplayName("카테고리")
-            class fail_category {
+            class Category {
                 @Test
                 @DisplayName("Null인경우")
                 void categoryNull() throws Exception {
@@ -182,7 +182,7 @@ class StoreControllerTest {
 
             @Nested
             @DisplayName("상세주소")
-            class fail_detailAddress {
+            class DetailAddress {
 
                 @Test
                 @DisplayName("NULL인 경우")
@@ -215,7 +215,7 @@ class StoreControllerTest {
 
             @Nested
             @DisplayName("매장 이름")
-            class fail_name {
+            class Name {
                 @Test
                 @DisplayName("NULL인 경우")
                 void nameNull() throws Exception {
@@ -247,7 +247,7 @@ class StoreControllerTest {
 
             @Nested
             @DisplayName("핸드폰 번호")
-            class fail_phoneNumber {
+            class PhoneNumber {
                 @Test
                 @DisplayName("NULL")
                 void phoneNumberNull() throws Exception {
@@ -293,7 +293,7 @@ class StoreControllerTest {
 
             @Nested
             @DisplayName("설명")
-            class fail_info {
+            class Info {
                 @Test
                 @DisplayName("NULL인 경우")
                 void infoNull() throws Exception {
@@ -325,7 +325,7 @@ class StoreControllerTest {
 
             @Nested
             @DisplayName("오픈시간")
-            class fail_openTime {
+            class OpenTime {
                 @Test
                 @DisplayName("NULL인 경우")
                 void openTimeNull() throws Exception {
@@ -358,7 +358,7 @@ class StoreControllerTest {
 
             @Nested
             @DisplayName("마감시간")
-            class fail_endTime {
+            class EndTime {
                 @Test
                 @DisplayName("NULL인 경우")
                 void endTimeNull() throws Exception {
@@ -391,7 +391,7 @@ class StoreControllerTest {
 
             @Nested
             @DisplayName("최소 가격")
-            class fail_minPrice {
+            class MinPrice {
                 @Test
                 @DisplayName("0보다 작은경우")
                 void minPriceNegative() throws Exception {
@@ -424,7 +424,7 @@ class StoreControllerTest {
 
             @Test
             @DisplayName("중복된 경우")
-            void fail_exists() throws Exception {
+            void exists() throws Exception {
                 // given
                 name = "BBQ치킨";
                 detailAddress = "매장상세주소 101호";
@@ -459,7 +459,7 @@ class StoreControllerTest {
         class Success {
             @Test
             @DisplayName("조회 성공")
-            void getOwnerStoreList_Success() throws Exception {
+            void success() throws Exception {
                 mockMvc.perform(get(url).session(mockHttpSession))
                         .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
                         .andExpect(jsonPath("$.message").value("요청 성공하였습니다."))
@@ -511,7 +511,7 @@ class StoreControllerTest {
         class Success {
             @Test
             @DisplayName("상세 조회 성공")
-            void getStore_Success() throws Exception {
+            void success() throws Exception {
                 mockMvc.perform(get(url).session(mockHttpSession))
                         .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
                         .andExpect(jsonPath("$.message").value("요청 성공하였습니다."))
@@ -540,7 +540,7 @@ class StoreControllerTest {
 
             @Test
             @DisplayName("존재하지 않는경우")
-            void exists() throws Exception {
+            void notExists() throws Exception {
                 String changeUrl = "/stores/1000";
                 mockMvc.perform(get(changeUrl).session(mockHttpSession))
                         .andExpect(jsonPath("$.status").value(HttpStatus.NOT_FOUND.value()))
@@ -596,7 +596,7 @@ class StoreControllerTest {
 
             @Test
             @DisplayName("업데이트 성공")
-            void updateStore_Success(@Autowired StoreMapper storeMapper) throws Exception {
+            void success(@Autowired StoreMapper storeMapper) throws Exception {
                 // given
                 Long id = 1L;
                 Long beforePrice = storeMapper.findById(id).get().getMinPrice();
@@ -635,7 +635,7 @@ class StoreControllerTest {
 
             @Test
             @DisplayName("존재하지 않는경우")
-            void exists() throws Exception {
+            void notExists() throws Exception {
                 //given
                 String changeUrl = "/stores/1000";
                 String json = objectMapper.writeValueAsString(getStoreRequestDto());
@@ -677,7 +677,7 @@ class StoreControllerTest {
         class Success {
             @Test
             @DisplayName("삭제 성공")
-            void deleteStore_Success(@Autowired StoreMapper storeMapper) throws Exception {
+            void success(@Autowired StoreMapper storeMapper) throws Exception {
                 Long id = 1L;
                 mockMvc.perform(delete(url).session(mockHttpSession))
                         .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
@@ -707,7 +707,7 @@ class StoreControllerTest {
 
             @Test
             @DisplayName("존재하지 않는경우")
-            void exists() throws Exception {
+            void notExists() throws Exception {
                 //given
                 String changeUrl = "/stores/1000";
                 mockMvc.perform(delete(changeUrl).session(mockHttpSession))
@@ -743,7 +743,7 @@ class StoreControllerTest {
         class Success {
             @Test
             @DisplayName("상태 변경 CLOSED -> OPEN")
-            void changeStatus_Success(@Autowired StoreMapper storeMapper) throws Exception {
+            void success(@Autowired StoreMapper storeMapper) throws Exception {
                 // given
                 Long id = 1L;
                 StoreStatus beforeStatus = storeMapper.findById(id).get().getStatus();
@@ -780,7 +780,7 @@ class StoreControllerTest {
 
             @Test
             @DisplayName("존재하지 않는경우")
-            void exists() throws Exception {
+            void notExists() throws Exception {
                 //given
                 String changeUrl = "/stores/1000/status";
                 String json = objectMapper.writeValueAsString(getStoreDto(changeStatus));

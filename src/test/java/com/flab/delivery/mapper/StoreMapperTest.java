@@ -45,6 +45,6 @@ class StoreMapperTest {
         List<StoreDto> storeListBy = storeMapper.findStoreListBy(categoryId, addressId);
 
         // then
-        assertThat(storeListBy.size()).isGreaterThan(2);
+        assertThat(storeListBy.size()).isGreaterThanOrEqualTo(2);
     }
 }
