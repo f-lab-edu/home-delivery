@@ -26,8 +26,9 @@
     </select>
 
     <select id="findById" resultType="StoreDto">
-        SELECT *
-        FROM STORE
+        SELECT s.id, s.address_id, s.category_id, s.detail_address, s.name, s.phone_number, s.info, s.status, s.open_time,
+               s.end_time, s.min_price
+        FROM store s
         WHERE id = #{id}
     </select>
 
