@@ -583,12 +583,12 @@ class MenuIntegrationTest {
     }
 
     @Nested
-    @DisplayName("GET : /menus?storeid={storeid}")
+    @DisplayName("GET : /menus?storeId={storeId}")
     class GetMenuList {
         private final String ownerId = "user2";
         private final UserType userType = UserType.OWNER;
         private final String url = "/menus";
-        private final String paramName = "storeid";
+        private final String paramName = "storeId";
         private final String paramValue = "2";
 
         private MockHttpSession mockHttpSession = new MockHttpSession();

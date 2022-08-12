@@ -3,6 +3,7 @@ package com.flab.delivery.controller;
 import com.flab.delivery.annotation.LoginCheck;
 import com.flab.delivery.dto.menu.MenuDto;
 import com.flab.delivery.dto.menu.MenuRequestDto;
+import com.flab.delivery.dto.option.OptionDto;
 import com.flab.delivery.enums.UserType;
 import com.flab.delivery.response.CommonResult;
 import com.flab.delivery.service.MenuService;
@@ -70,7 +71,9 @@ public class MenuController {
 
     @LoginCheck(userType = UserType.OWNER)
     @GetMapping
-    public CommonResult<List<MenuDto>> getMenuList(@RequestParam(name = "storeid") Long storeId) {
+    public CommonResult<List<MenuDto>> getMenuList(@RequestParam(name = "storeId") Long storeId) {
         return CommonResult.getDataSuccessResult(menuService.getMenuList(storeId));
     }
+
+
 }
