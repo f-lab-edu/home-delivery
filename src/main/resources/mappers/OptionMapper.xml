@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flab.delivery.mapper.OptionMapper">
+
+    <insert id="save" parameterType="OptionRequestDto">
+        INSERT INTO OPTIONS(menu_id, name, price)
+        VALUES (#{option.menuId}, #{option.name}, #{option.price})
+    </insert>
+
+    <select id="existsByName" resultType="long">
+        SELECT id
+        FROM OPTIONS
+        WHERE menu_id = #{menuId}
+          AND name = #{name} LIMIT 1;
+    </select>
+
+    <update id="updateById">
+        UPDATE OPTIONS
+        SET menu_id = #{option.menuId},
+            name    = #{option.name},
+            price   = #{option.price}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE
+        FROM OPTIONS
+        WHERE id = #{id}
+    </delete>
+
+    <select id="findAllByMenuId" resultType="OptionDto">
+        SELECT *
+        FROM OPTIONS
+        WHERE menu_id = #{menuId}
+    </select>
+
+
+    <select id="findById" resultType="OptionDto">
+        SELECT *
+        FROM OPTIONS
+        WHERE id = #{id}
+    </select>
+</mapper>
