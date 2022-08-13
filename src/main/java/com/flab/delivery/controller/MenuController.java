@@ -69,11 +69,12 @@ public class MenuController {
     }
 
 
-    @LoginCheck(userType = UserType.OWNER)
+    @LoginCheck
     @GetMapping
     public CommonResult<List<MenuDto>> getMenuList(@RequestParam(name = "storeId") Long storeId) {
         return CommonResult.getDataSuccessResult(menuService.getMenuList(storeId));
     }
+
 
 
 }

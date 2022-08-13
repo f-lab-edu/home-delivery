@@ -2,6 +2,7 @@ package com.flab.delivery.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flab.delivery.annotation.EnableMockMvc;
+import com.flab.delivery.annotation.IntegrationTest;
 import com.flab.delivery.dto.menugroup.MenuGroupDto;
 import com.flab.delivery.dto.menugroup.MenuGroupRequestDto;
 import com.flab.delivery.enums.UserType;
@@ -24,9 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 
-@SpringBootTest
-@EnableMockMvc
-@Transactional
+@IntegrationTest
 class MenuGroupIntegrationTest {
 
     @Autowired
@@ -34,6 +33,8 @@ class MenuGroupIntegrationTest {
 
     @Autowired
     ObjectMapper objectMapper;
+
+    MockHttpSession mockHttpSession = new MockHttpSession();
 
     @Nested
     @DisplayName("POST : /menugroups")
@@ -56,7 +57,6 @@ class MenuGroupIntegrationTest {
                     .build();
         }
 
-        private MockHttpSession mockHttpSession = new MockHttpSession();
 
         @BeforeEach
         void setUp() {
@@ -234,7 +234,6 @@ class MenuGroupIntegrationTest {
                     .build();
         }
 
-        private MockHttpSession mockHttpSession = new MockHttpSession();
 
         @BeforeEach
         void setUp() {
@@ -308,13 +307,14 @@ class MenuGroupIntegrationTest {
     }
 
     @Nested
-    @DisplayName("GET : /menugroups/storeid/{id}")
+    @DisplayName("GET : /menugroups?storeId={storeId}")
     class getMenuGroupList {
         private final String ownerId = "user2";
         private final UserType userType = UserType.OWNER;
-        private final String url = "/menugroups/storeid/1";
+        private final String url = "/menugroups";
 
-        private MockHttpSession mockHttpSession = new MockHttpSession();
+        private final String paramName = "storeId";
+        private final String paramValue = "1";
 
         @BeforeEach
         void setUp() {
@@ -326,7 +326,7 @@ class MenuGroupIntegrationTest {
         @DisplayName("조회 성공")
         void success() throws Exception {
             // given
-            mockMvc.perform(get(url).session(mockHttpSession))
+            mockMvc.perform(get(url).session(mockHttpSession).param(paramName,paramValue))
                     .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
                     .andExpect(jsonPath("$.data").isArray())
                     .andDo(print());
@@ -336,8 +336,8 @@ class MenuGroupIntegrationTest {
         @DisplayName("실패 - 매장아이디 존재x")
         void fail() throws Exception {
             // given
-            String changeUrl = "/menugroups/storeid/100";
-            mockMvc.perform(get(changeUrl).session(mockHttpSession))
+            String changeParamValue = "100";
+            mockMvc.perform(get(url).session(mockHttpSession).param(paramName,changeParamValue))
                     .andExpect(jsonPath("$.status").value(HttpStatus.NOT_FOUND.value()))
                     .andExpect(jsonPath("$.message").value("존재하지 않는 매장입니다"))
                     .andDo(print());
@@ -353,7 +353,6 @@ class MenuGroupIntegrationTest {
         private final UserType userType = UserType.OWNER;
         private final String url = "/menugroups/1";
 
-        private MockHttpSession mockHttpSession = new MockHttpSession();
 
         @BeforeEach
         void setUp() {
@@ -421,7 +420,6 @@ class MenuGroupIntegrationTest {
         private final UserType userType = UserType.OWNER;
         private final String url = "/menugroups/priorities";
 
-        private MockHttpSession mockHttpSession = new MockHttpSession();
 
 
         private List<MenuGroupDto> list = new ArrayList<>();

@@ -88,6 +88,7 @@ class MenuServiceTest {
     }
 
     @Nested
+    @DisplayName("메뉴 한개 조회")
     class GetMenu {
         private Long id = 1L;
 
@@ -126,6 +127,7 @@ class MenuServiceTest {
     }
 
     @Nested
+    @DisplayName("메뉴 정보변경")
     class UpdateMenu {
         private Long id = 1L;
 
@@ -176,6 +178,7 @@ class MenuServiceTest {
     }
 
     @Nested
+    @DisplayName("메뉴 삭제")
     class DeleteMenu {
         private Long id = 1L;
 

@@ -2,6 +2,7 @@ package com.flab.delivery.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flab.delivery.annotation.EnableMockMvc;
+import com.flab.delivery.annotation.IntegrationTest;
 import com.flab.delivery.dto.menu.MenuDto;
 import com.flab.delivery.dto.menu.MenuRequestDto;
 import com.flab.delivery.enums.MenuStatus;
@@ -26,9 +27,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
-@SpringBootTest
-@EnableMockMvc
-@Transactional
+@IntegrationTest
 class MenuIntegrationTest {
 
     @Autowired
@@ -36,6 +35,8 @@ class MenuIntegrationTest {
 
     @Autowired
     ObjectMapper objectMapper;
+
+    MockHttpSession mockHttpSession = new MockHttpSession();
 
     @Nested
     @DisplayName("POST : /menus")
@@ -48,8 +49,6 @@ class MenuIntegrationTest {
         private String name = "민트초코치킨";
         private String info = "올리브유에 튀킨 치킨";
         private Integer price = 18000;
-
-        private MockHttpSession mockHttpSession = new MockHttpSession();
 
         private MenuRequestDto getRequestDto() {
             return MenuRequestDto.builder()
@@ -241,8 +240,6 @@ class MenuIntegrationTest {
         private final UserType userType = UserType.OWNER;
         private final String url = "/menus/1";
 
-        private MockHttpSession mockHttpSession = new MockHttpSession();
-
         @BeforeEach
         void setUp() {
             mockHttpSession.setAttribute(SessionConstants.SESSION_ID, ownerId);
@@ -303,8 +300,6 @@ class MenuIntegrationTest {
         private String name = "민트초코치킨";
         private String info = "민츠초코 좋아요";
         private Integer price = 30000;
-
-        private MockHttpSession mockHttpSession = new MockHttpSession();
 
         @BeforeEach
         void setUp() {
@@ -381,8 +376,6 @@ class MenuIntegrationTest {
         private final UserType userType = UserType.OWNER;
         private final String url = "/menus/1";
 
-        private MockHttpSession mockHttpSession = new MockHttpSession();
-
         @BeforeEach
         void setUp() {
             mockHttpSession.setAttribute(SessionConstants.SESSION_ID, ownerId);
@@ -441,8 +434,6 @@ class MenuIntegrationTest {
         private final String url = "/menus/1/status";
 
         private MenuStatus menuStatus = MenuStatus.SOLDOUT;
-
-        private MockHttpSession mockHttpSession = new MockHttpSession();
 
         @BeforeEach
         void setUp() {
@@ -512,8 +503,6 @@ class MenuIntegrationTest {
         private final String ownerId = "user2";
         private final UserType userType = UserType.OWNER;
         private final String url = "/menus/priorities";
-
-        private MockHttpSession mockHttpSession = new MockHttpSession();
 
         private List<MenuDto> list = new ArrayList<>();
 
@@ -591,8 +580,6 @@ class MenuIntegrationTest {
         private final String paramName = "storeId";
         private final String paramValue = "2";
 
-        private MockHttpSession mockHttpSession = new MockHttpSession();
-
         @BeforeEach
         void setUp() {
             mockHttpSession.setAttribute(SessionConstants.SESSION_ID, ownerId);
@@ -622,18 +609,6 @@ class MenuIntegrationTest {
                 mockMvc.perform(get(url).param(paramName, changeParamValue).session(mockHttpSession))
                         .andExpect(jsonPath("$.status").value(HttpStatus.NOT_FOUND.value()))
                         .andExpect(jsonPath("$.message").value("존재하지 않는 매장입니다"))
-                        .andDo(print());
-            }
-
-            @Test
-            @DisplayName("권한")
-            void userType() throws Exception {
-                UserType changeType = UserType.USER;
-                mockHttpSession.setAttribute(SessionConstants.AUTH_TYPE, changeType);
-
-                mockMvc.perform(get(url).param(paramName,paramValue).session(mockHttpSession))
-                        .andExpect(jsonPath("$.status").value(HttpStatus.FORBIDDEN.value()))
-                        .andExpect(jsonPath("$.message").value("권한이 없습니다"))
                         .andDo(print());
             }
         }

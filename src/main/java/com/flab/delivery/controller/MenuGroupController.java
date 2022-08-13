@@ -35,13 +35,6 @@ public class MenuGroupController {
     }
 
     @LoginCheck(userType = UserType.OWNER)
-    @GetMapping("/storeid/{id}")
-    public CommonResult<List<MenuGroupDto>> getMenuGroupList(@PathVariable("id") Long storeId) {
-        List<MenuGroupDto> menuGroupList = menuGroupService.getMenuGroupList(storeId);
-        return CommonResult.getDataSuccessResult(menuGroupList);
-    }
-
-    @LoginCheck(userType = UserType.OWNER)
     @DeleteMapping("/{id}")
     public CommonResult<Void> deleteGroup(@PathVariable("id") Long id) {
         menuGroupService.deleteGroup(id);
@@ -53,6 +46,15 @@ public class MenuGroupController {
     public CommonResult<Void> updatePriority(@RequestBody List<MenuGroupDto> request) {
         menuGroupService.updatePriority(request);
         return CommonResult.getSimpleSuccessResult(HttpStatus.OK.value());
+    }
+
+
+
+    @LoginCheck
+    @GetMapping
+    public CommonResult<List<MenuGroupDto>> getMenuGroupList(@RequestParam(name = "storeId") Long storeId) {
+        List<MenuGroupDto> menuGroupList = menuGroupService.getMenuGroupList(storeId);
+        return CommonResult.getDataSuccessResult(menuGroupList);
     }
 
 
