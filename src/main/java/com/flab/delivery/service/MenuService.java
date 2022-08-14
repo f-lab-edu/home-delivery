@@ -56,7 +56,6 @@ public class MenuService {
     }
 
     public List<MenuDto> getMenuList(Long storeId) {
-        storeService.getStore(storeId);
         return menuMapper.findAllByStoreId(storeId);
     }
 }

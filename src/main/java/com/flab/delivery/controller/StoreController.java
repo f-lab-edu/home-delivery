@@ -41,12 +41,6 @@ public class StoreController {
     }
 
     @LoginCheck(userType = UserType.OWNER)
-    @GetMapping("/{id}")
-    public CommonResult<StoreDto> getStore(@PathVariable("id") Long id) {
-        return CommonResult.getDataSuccessResult(storeService.getStore(id));
-    }
-
-    @LoginCheck(userType = UserType.OWNER)
     @PatchMapping("/{id}")
     public CommonResult<Void> updateStore(@PathVariable("id") Long id, @RequestBody @Valid StoreRequestDto storeRequestDto) {
         storeService.updateStore(id, storeRequestDto);
@@ -66,5 +60,12 @@ public class StoreController {
         storeService.changeStatus(id, storeDto.getStatus());
         return CommonResult.getSimpleSuccessResult(HttpStatus.OK.value());
     }
+
+    @LoginCheck
+    @GetMapping("/{id}")
+    public CommonResult<StoreDto> getStore(@PathVariable("id") Long id) {
+        return CommonResult.getDataSuccessResult(storeService.getStore(id));
+    }
+
 
 }

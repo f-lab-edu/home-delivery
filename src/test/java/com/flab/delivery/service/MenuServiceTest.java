@@ -304,18 +304,5 @@ class MenuServiceTest {
                 verify(storeService).getStore(storeId);
             }
         }
-
-        @Nested
-        @DisplayName("실패")
-        class Fail {
-            @Test
-            @DisplayName("매장이 존재하지 않는 경우")
-            void notExistsStore() {
-                Long storeId = 100L;
-                when(storeService.getStore(storeId)).thenThrow(new StoreException("존재하지 않는 매장입니다", HttpStatus.NOT_FOUND));
-                StoreException ex = Assertions.assertThrows(StoreException.class, () -> menuService.getMenuList(storeId));
-                Assertions.assertEquals(ex.getMessage(), "존재하지 않는 매장입니다");
-            }
-        }
     }
 }

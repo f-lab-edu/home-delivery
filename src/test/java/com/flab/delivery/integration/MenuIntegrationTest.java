@@ -273,18 +273,6 @@ class MenuIntegrationTest {
                         .andExpect(jsonPath("$.message").value("존재하지 않는 메뉴입니다"))
                         .andDo(print());
             }
-
-            @Test
-            @DisplayName("권한")
-            void userType() throws Exception {
-                UserType changeType = UserType.USER;
-
-                mockHttpSession.setAttribute(SessionConstants.AUTH_TYPE, changeType);
-                mockMvc.perform(get(url).session(mockHttpSession))
-                        .andExpect(jsonPath("$.status").value(HttpStatus.FORBIDDEN.value()))
-                        .andExpect(jsonPath("$.message").value("권한이 없습니다"))
-                        .andDo(print());
-            }
         }
     }
 
@@ -598,21 +586,6 @@ class MenuIntegrationTest {
                         .andDo(print());
             }
         }
-
-        @Nested
-        @DisplayName("실패")
-        class Fail {
-            @Test
-            @DisplayName("매장이 존재하지 않는 경우")
-            void notExistsStore() throws Exception {
-                String changeParamValue = "10000";
-                mockMvc.perform(get(url).param(paramName, changeParamValue).session(mockHttpSession))
-                        .andExpect(jsonPath("$.status").value(HttpStatus.NOT_FOUND.value()))
-                        .andExpect(jsonPath("$.message").value("존재하지 않는 매장입니다"))
-                        .andDo(print());
-            }
-        }
-
 
     }
 }
