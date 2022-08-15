@@ -16,7 +16,6 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Optional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -98,6 +97,18 @@ class OptionIntegrationTest {
                     mockMvc.perform(post(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
                             .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
                             .andExpect(jsonPath("$.message").value("메뉴아이디 정보가 올바르지 않습니다"))
+                            .andDo(print());
+                }
+
+                @Test
+                @DisplayName("존재하지않는경우")
+                void notExists() throws Exception {
+                    // given
+                    menuId = 100L;
+                    String json = objectMapper.writeValueAsString(getRequestDto());
+                    mockMvc.perform(post(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
+                            .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
+                            .andExpect(jsonPath("$.message").value("무결성 제약 조건에 위배됩니다"))
                             .andDo(print());
                 }
             }

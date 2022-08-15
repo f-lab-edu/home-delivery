@@ -131,7 +131,7 @@ class MenuGroupIntegrationTest {
                     String json = objectMapper.writeValueAsString(getRequestDto());
                     mockMvc.perform(post(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
                             .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
-                            .andExpect(jsonPath("$.message").value("StoreId가 존재하지않아 무결성 제약 조건에 위배됩니다"))
+                            .andExpect(jsonPath("$.message").value("무결성 제약 조건에 위배됩니다"))
                             .andDo(print());
                 }
             }
@@ -262,19 +262,6 @@ class MenuGroupIntegrationTest {
         @DisplayName("실패")
         class Fail {
             @Test
-            @DisplayName("존재 안하는 경우")
-            void notExists() throws Exception {
-                // given
-                String changeUrl = "/menugroups/100";
-                String json = objectMapper.writeValueAsString(getRequestDto());
-                // when
-                mockMvc.perform(patch(changeUrl).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(jsonPath("$.status").value(HttpStatus.NOT_FOUND.value()))
-                        .andExpect(jsonPath("$.message").value("존재하지 않는 메뉴 그룹입니다"))
-                        .andDo(print());
-            }
-
-            @Test
             @DisplayName("권한")
             void userType() throws Exception {
                 // given
@@ -288,10 +275,6 @@ class MenuGroupIntegrationTest {
                         .andDo(print());
             }
 
-            /**
-             * valid체크는 post요청시에도 이루어지기때문에 동일한 체크라고생각해서
-             * url만 다르기때문에 patch에서는 한가지부분만 valid가 적용되는지 체크하였습니다
-             */
             @Test
             @DisplayName("storeId valid체크")
             void storeIdNegative() throws Exception {
@@ -332,18 +315,6 @@ class MenuGroupIntegrationTest {
                     .andDo(print());
         }
 
-        @Test
-        @DisplayName("실패 - 매장아이디 존재x")
-        void fail() throws Exception {
-            // given
-            String changeParamValue = "100";
-            mockMvc.perform(get(url).session(mockHttpSession).param(paramName,changeParamValue))
-                    .andExpect(jsonPath("$.status").value(HttpStatus.NOT_FOUND.value()))
-                    .andExpect(jsonPath("$.message").value("존재하지 않는 매장입니다"))
-                    .andDo(print());
-        }
-
-
     }
 
     @Nested
@@ -381,19 +352,6 @@ class MenuGroupIntegrationTest {
         @Nested
         @DisplayName("실패")
         class Fail {
-            @Test
-            @DisplayName("존재하지 않는 경우")
-            void notExists() throws Exception {
-                // given
-                String changeUrl = "/menugroups/100";
-                // when
-                // then
-                mockMvc.perform(delete(changeUrl).session(mockHttpSession))
-                        .andExpect(jsonPath("$.status").value(HttpStatus.NOT_FOUND.value()))
-                        .andExpect(jsonPath("$.message").value("존재하지 않는 메뉴 그룹입니다"))
-                        .andDo(print());
-            }
-
             @Test
             @DisplayName("권한이 없는 경우")
             void userType() throws Exception {

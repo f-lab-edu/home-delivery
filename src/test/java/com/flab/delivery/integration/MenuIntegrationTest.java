@@ -1,7 +1,6 @@
 package com.flab.delivery.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.flab.delivery.annotation.EnableMockMvc;
 import com.flab.delivery.annotation.IntegrationTest;
 import com.flab.delivery.dto.menu.MenuDto;
 import com.flab.delivery.dto.menu.MenuRequestDto;
@@ -9,15 +8,12 @@ import com.flab.delivery.enums.MenuStatus;
 import com.flab.delivery.enums.UserType;
 import com.flab.delivery.mapper.MenuMapper;
 import com.flab.delivery.utils.SessionConstants;
-import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -125,7 +121,7 @@ class MenuIntegrationTest {
                     String json = objectMapper.writeValueAsString(getRequestDto());
                     mockMvc.perform(post(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
                             .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
-                            .andExpect(jsonPath("$.message").value("menuGroupId가 존재하지않아 무결성 제약 조건에 위배됩니다"))
+                            .andExpect(jsonPath("$.message").value("무결성 제약 조건에 위배됩니다"))
                             .andDo(print());
                 }
             }
@@ -342,18 +338,6 @@ class MenuIntegrationTest {
                         .andExpect(jsonPath("$.message").value("권한이 없습니다"))
                         .andDo(print());
             }
-
-            @Test
-            @DisplayName("존재하지 않는 경우")
-            void notExists() throws Exception {
-                String changeUrl = "/menus/1000";
-                String json = objectMapper.writeValueAsString(getRequestDto());
-
-                mockMvc.perform(patch(changeUrl).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(jsonPath("$.status").value(HttpStatus.NOT_FOUND.value()))
-                        .andExpect(jsonPath("$.message").value("존재하지 않는 메뉴입니다"))
-                        .andDo(print());
-            }
         }
     }
 
@@ -389,16 +373,6 @@ class MenuIntegrationTest {
         @Nested
         @DisplayName("실패")
         class Fail {
-            @Test
-            @DisplayName("존재하지 않는 경우")
-            void notExists() throws Exception {
-                String changeUrl = "/menus/1000";
-
-                mockMvc.perform(delete(changeUrl).session(mockHttpSession))
-                        .andExpect(jsonPath("$.status").value(HttpStatus.NOT_FOUND.value()))
-                        .andExpect(jsonPath("$.message").value("존재하지 않는 메뉴입니다"))
-                        .andDo(print());
-            }
 
             @Test
             @DisplayName("권한")
@@ -457,18 +431,6 @@ class MenuIntegrationTest {
         @Nested
         @DisplayName("실패")
         class Fail {
-            @Test
-            @DisplayName("존재하지 않는 경우")
-            void notExists() throws Exception {
-                String changeUrl = "/menus/1000/status";
-                String json = objectMapper.writeValueAsString(getRequestDto());
-
-                mockMvc.perform(patch(changeUrl).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(jsonPath("$.status").value(HttpStatus.NOT_FOUND.value()))
-                        .andExpect(jsonPath("$.message").value("존재하지 않는 메뉴입니다"))
-                        .andDo(print());
-            }
-
             @Test
             @DisplayName("권한이 없는 경우")
             void userType() throws Exception {
