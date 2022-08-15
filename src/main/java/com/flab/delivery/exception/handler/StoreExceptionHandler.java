@@ -16,13 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 @Slf4j
 public class StoreExceptionHandler {
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public CommonResult<Void> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex, HttpServletRequest request) {
-        String msg = ex.getBindingResult().getAllErrors().get(0).getDefaultMessage();
-        log.info("Http Method : {}, URI : {}, msg : {}", request.getMethod(), request.getRequestURI(), msg);
-        return CommonResult.getSimpleResult(HttpStatus.BAD_REQUEST.value(), msg);
-    }
-
     @ExceptionHandler(StoreException.class)
     public CommonResult<Void> handleStoreException(StoreException ex, HttpServletRequest request) {
         log.info("Http Method : {}  URI : {}, msg : {}", request.getMethod(), request.getRequestURI(), ex.getMessage());

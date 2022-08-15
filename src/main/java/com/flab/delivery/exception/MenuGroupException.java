@@ -2,16 +2,11 @@ package com.flab.delivery.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class MenuGroupException extends RuntimeException {
+public class MenuGroupException extends AbstractException {
 
-    HttpStatus httpStatus;
 
     public MenuGroupException(String message, HttpStatus httpStatus) {
-        super(message);
-        this.httpStatus = httpStatus;
+        super(message,httpStatus);
     }
 
-    public HttpStatus getHttpStatus() {
-        return this.httpStatus;
-    }
 }
