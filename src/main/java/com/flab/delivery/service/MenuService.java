@@ -16,7 +16,6 @@ import java.util.List;
 public class MenuService {
 
     private final MenuMapper menuMapper;
-    private final StoreService storeService;
 
 
     public void createMenu(MenuRequestDto menuRequestDto) {
@@ -34,17 +33,14 @@ public class MenuService {
     }
 
     public void updateMenu(Long id, MenuRequestDto menuRequestDto) {
-        getMenu(id);
         menuMapper.updateById(id, menuRequestDto);
     }
 
     public void deleteMenu(Long id) {
-        getMenu(id);
         menuMapper.deleteById(id);
     }
 
     public void updateStatus(Long id, MenuStatus status) {
-        getMenu(id);
         menuMapper.updateStatus(id, status);
     }
 
