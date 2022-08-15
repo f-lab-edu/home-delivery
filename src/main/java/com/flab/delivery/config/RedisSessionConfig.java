@@ -19,7 +19,7 @@ public class RedisSessionConfig {
 
     @Primary
     @Bean
-    public RedisConnectionFactory RedisConnectionFactory() {
+    public RedisConnectionFactory redisConnectionFactory() {
         return new LettuceConnectionFactory(new RedisStandaloneConfiguration(redisHost, redisPort));
     }
 }
