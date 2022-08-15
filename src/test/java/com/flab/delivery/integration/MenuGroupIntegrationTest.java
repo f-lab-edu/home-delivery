@@ -2,6 +2,7 @@ package com.flab.delivery.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flab.delivery.annotation.EnableMockMvc;
+import com.flab.delivery.annotation.IntegrationTest;
 import com.flab.delivery.dto.menugroup.MenuGroupDto;
 import com.flab.delivery.dto.menugroup.MenuGroupRequestDto;
 import com.flab.delivery.enums.UserType;
@@ -24,9 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 
-@SpringBootTest
-@EnableMockMvc
-@Transactional
+@IntegrationTest
 class MenuGroupIntegrationTest {
 
     @Autowired
@@ -34,6 +33,8 @@ class MenuGroupIntegrationTest {
 
     @Autowired
     ObjectMapper objectMapper;
+
+    MockHttpSession mockHttpSession = new MockHttpSession();
 
     @Nested
     @DisplayName("POST : /menugroups")
@@ -56,7 +57,6 @@ class MenuGroupIntegrationTest {
                     .build();
         }
 
-        private MockHttpSession mockHttpSession = new MockHttpSession();
 
         @BeforeEach
         void setUp() {
@@ -131,7 +131,7 @@ class MenuGroupIntegrationTest {
                     String json = objectMapper.writeValueAsString(getRequestDto());
                     mockMvc.perform(post(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
                             .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
-                            .andExpect(jsonPath("$.message").value("StoreId가 존재하지않아 무결성 제약 조건에 위배됩니다"))
+                            .andExpect(jsonPath("$.message").value("무결성 제약 조건에 위배됩니다"))
                             .andDo(print());
                 }
             }
@@ -234,7 +234,6 @@ class MenuGroupIntegrationTest {
                     .build();
         }
 
-        private MockHttpSession mockHttpSession = new MockHttpSession();
 
         @BeforeEach
         void setUp() {
@@ -263,19 +262,6 @@ class MenuGroupIntegrationTest {
         @DisplayName("실패")
         class Fail {
             @Test
-            @DisplayName("존재 안하는 경우")
-            void notExists() throws Exception {
-                // given
-                String changeUrl = "/menugroups/100";
-                String json = objectMapper.writeValueAsString(getRequestDto());
-                // when
-                mockMvc.perform(patch(changeUrl).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(jsonPath("$.status").value(HttpStatus.NOT_FOUND.value()))
-                        .andExpect(jsonPath("$.message").value("존재하지 않는 메뉴 그룹입니다"))
-                        .andDo(print());
-            }
-
-            @Test
             @DisplayName("권한")
             void userType() throws Exception {
                 // given
@@ -289,10 +275,6 @@ class MenuGroupIntegrationTest {
                         .andDo(print());
             }
 
-            /**
-             * valid체크는 post요청시에도 이루어지기때문에 동일한 체크라고생각해서
-             * url만 다르기때문에 patch에서는 한가지부분만 valid가 적용되는지 체크하였습니다
-             */
             @Test
             @DisplayName("storeId valid체크")
             void storeIdNegative() throws Exception {
@@ -308,13 +290,14 @@ class MenuGroupIntegrationTest {
     }
 
     @Nested
-    @DisplayName("GET : /menugroups/storeid/{id}")
+    @DisplayName("GET : /menugroups?storeId={storeId}")
     class getMenuGroupList {
         private final String ownerId = "user2";
         private final UserType userType = UserType.OWNER;
-        private final String url = "/menugroups/storeid/1";
+        private final String url = "/menugroups";
 
-        private MockHttpSession mockHttpSession = new MockHttpSession();
+        private final String paramName = "storeId";
+        private final String paramValue = "1";
 
         @BeforeEach
         void setUp() {
@@ -326,23 +309,11 @@ class MenuGroupIntegrationTest {
         @DisplayName("조회 성공")
         void success() throws Exception {
             // given
-            mockMvc.perform(get(url).session(mockHttpSession))
+            mockMvc.perform(get(url).session(mockHttpSession).param(paramName,paramValue))
                     .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
                     .andExpect(jsonPath("$.data").isArray())
                     .andDo(print());
         }
-
-        @Test
-        @DisplayName("실패 - 매장아이디 존재x")
-        void fail() throws Exception {
-            // given
-            String changeUrl = "/menugroups/storeid/100";
-            mockMvc.perform(get(changeUrl).session(mockHttpSession))
-                    .andExpect(jsonPath("$.status").value(HttpStatus.NOT_FOUND.value()))
-                    .andExpect(jsonPath("$.message").value("존재하지 않는 매장입니다"))
-                    .andDo(print());
-        }
-
 
     }
 
@@ -353,7 +324,6 @@ class MenuGroupIntegrationTest {
         private final UserType userType = UserType.OWNER;
         private final String url = "/menugroups/1";
 
-        private MockHttpSession mockHttpSession = new MockHttpSession();
 
         @BeforeEach
         void setUp() {
@@ -383,19 +353,6 @@ class MenuGroupIntegrationTest {
         @DisplayName("실패")
         class Fail {
             @Test
-            @DisplayName("존재하지 않는 경우")
-            void notExists() throws Exception {
-                // given
-                String changeUrl = "/menugroups/100";
-                // when
-                // then
-                mockMvc.perform(delete(changeUrl).session(mockHttpSession))
-                        .andExpect(jsonPath("$.status").value(HttpStatus.NOT_FOUND.value()))
-                        .andExpect(jsonPath("$.message").value("존재하지 않는 메뉴 그룹입니다"))
-                        .andDo(print());
-            }
-
-            @Test
             @DisplayName("권한이 없는 경우")
             void userType() throws Exception {
                 // given
@@ -421,7 +378,6 @@ class MenuGroupIntegrationTest {
         private final UserType userType = UserType.OWNER;
         private final String url = "/menugroups/priorities";
 
-        private MockHttpSession mockHttpSession = new MockHttpSession();
 
 
         private List<MenuGroupDto> list = new ArrayList<>();

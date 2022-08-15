@@ -1,22 +1,19 @@
 package com.flab.delivery.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.flab.delivery.annotation.EnableMockMvc;
+import com.flab.delivery.annotation.IntegrationTest;
 import com.flab.delivery.dto.menu.MenuDto;
 import com.flab.delivery.dto.menu.MenuRequestDto;
 import com.flab.delivery.enums.MenuStatus;
 import com.flab.delivery.enums.UserType;
 import com.flab.delivery.mapper.MenuMapper;
 import com.flab.delivery.utils.SessionConstants;
-import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,9 +23,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
-@SpringBootTest
-@EnableMockMvc
-@Transactional
+@IntegrationTest
 class MenuIntegrationTest {
 
     @Autowired
@@ -36,6 +31,8 @@ class MenuIntegrationTest {
 
     @Autowired
     ObjectMapper objectMapper;
+
+    MockHttpSession mockHttpSession = new MockHttpSession();
 
     @Nested
     @DisplayName("POST : /menus")
@@ -48,8 +45,6 @@ class MenuIntegrationTest {
         private String name = "민트초코치킨";
         private String info = "올리브유에 튀킨 치킨";
         private Integer price = 18000;
-
-        private MockHttpSession mockHttpSession = new MockHttpSession();
 
         private MenuRequestDto getRequestDto() {
             return MenuRequestDto.builder()
@@ -126,7 +121,7 @@ class MenuIntegrationTest {
                     String json = objectMapper.writeValueAsString(getRequestDto());
                     mockMvc.perform(post(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
                             .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
-                            .andExpect(jsonPath("$.message").value("menuGroupId가 존재하지않아 무결성 제약 조건에 위배됩니다"))
+                            .andExpect(jsonPath("$.message").value("무결성 제약 조건에 위배됩니다"))
                             .andDo(print());
                 }
             }
@@ -241,8 +236,6 @@ class MenuIntegrationTest {
         private final UserType userType = UserType.OWNER;
         private final String url = "/menus/1";
 
-        private MockHttpSession mockHttpSession = new MockHttpSession();
-
         @BeforeEach
         void setUp() {
             mockHttpSession.setAttribute(SessionConstants.SESSION_ID, ownerId);
@@ -276,18 +269,6 @@ class MenuIntegrationTest {
                         .andExpect(jsonPath("$.message").value("존재하지 않는 메뉴입니다"))
                         .andDo(print());
             }
-
-            @Test
-            @DisplayName("권한")
-            void userType() throws Exception {
-                UserType changeType = UserType.USER;
-
-                mockHttpSession.setAttribute(SessionConstants.AUTH_TYPE, changeType);
-                mockMvc.perform(get(url).session(mockHttpSession))
-                        .andExpect(jsonPath("$.status").value(HttpStatus.FORBIDDEN.value()))
-                        .andExpect(jsonPath("$.message").value("권한이 없습니다"))
-                        .andDo(print());
-            }
         }
     }
 
@@ -303,8 +284,6 @@ class MenuIntegrationTest {
         private String name = "민트초코치킨";
         private String info = "민츠초코 좋아요";
         private Integer price = 30000;
-
-        private MockHttpSession mockHttpSession = new MockHttpSession();
 
         @BeforeEach
         void setUp() {
@@ -359,18 +338,6 @@ class MenuIntegrationTest {
                         .andExpect(jsonPath("$.message").value("권한이 없습니다"))
                         .andDo(print());
             }
-
-            @Test
-            @DisplayName("존재하지 않는 경우")
-            void notExists() throws Exception {
-                String changeUrl = "/menus/1000";
-                String json = objectMapper.writeValueAsString(getRequestDto());
-
-                mockMvc.perform(patch(changeUrl).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(jsonPath("$.status").value(HttpStatus.NOT_FOUND.value()))
-                        .andExpect(jsonPath("$.message").value("존재하지 않는 메뉴입니다"))
-                        .andDo(print());
-            }
         }
     }
 
@@ -380,8 +347,6 @@ class MenuIntegrationTest {
         private final String ownerId = "user2";
         private final UserType userType = UserType.OWNER;
         private final String url = "/menus/1";
-
-        private MockHttpSession mockHttpSession = new MockHttpSession();
 
         @BeforeEach
         void setUp() {
@@ -408,16 +373,6 @@ class MenuIntegrationTest {
         @Nested
         @DisplayName("실패")
         class Fail {
-            @Test
-            @DisplayName("존재하지 않는 경우")
-            void notExists() throws Exception {
-                String changeUrl = "/menus/1000";
-
-                mockMvc.perform(delete(changeUrl).session(mockHttpSession))
-                        .andExpect(jsonPath("$.status").value(HttpStatus.NOT_FOUND.value()))
-                        .andExpect(jsonPath("$.message").value("존재하지 않는 메뉴입니다"))
-                        .andDo(print());
-            }
 
             @Test
             @DisplayName("권한")
@@ -441,8 +396,6 @@ class MenuIntegrationTest {
         private final String url = "/menus/1/status";
 
         private MenuStatus menuStatus = MenuStatus.SOLDOUT;
-
-        private MockHttpSession mockHttpSession = new MockHttpSession();
 
         @BeforeEach
         void setUp() {
@@ -479,18 +432,6 @@ class MenuIntegrationTest {
         @DisplayName("실패")
         class Fail {
             @Test
-            @DisplayName("존재하지 않는 경우")
-            void notExists() throws Exception {
-                String changeUrl = "/menus/1000/status";
-                String json = objectMapper.writeValueAsString(getRequestDto());
-
-                mockMvc.perform(patch(changeUrl).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(jsonPath("$.status").value(HttpStatus.NOT_FOUND.value()))
-                        .andExpect(jsonPath("$.message").value("존재하지 않는 메뉴입니다"))
-                        .andDo(print());
-            }
-
-            @Test
             @DisplayName("권한이 없는 경우")
             void userType() throws Exception {
                 UserType changeType = UserType.USER;
@@ -512,8 +453,6 @@ class MenuIntegrationTest {
         private final String ownerId = "user2";
         private final UserType userType = UserType.OWNER;
         private final String url = "/menus/priorities";
-
-        private MockHttpSession mockHttpSession = new MockHttpSession();
 
         private List<MenuDto> list = new ArrayList<>();
 
@@ -583,15 +522,13 @@ class MenuIntegrationTest {
     }
 
     @Nested
-    @DisplayName("GET : /menus?storeid={storeid}")
+    @DisplayName("GET : /menus?storeId={storeId}")
     class GetMenuList {
         private final String ownerId = "user2";
         private final UserType userType = UserType.OWNER;
         private final String url = "/menus";
-        private final String paramName = "storeid";
+        private final String paramName = "storeId";
         private final String paramValue = "2";
-
-        private MockHttpSession mockHttpSession = new MockHttpSession();
 
         @BeforeEach
         void setUp() {
@@ -611,33 +548,6 @@ class MenuIntegrationTest {
                         .andDo(print());
             }
         }
-
-        @Nested
-        @DisplayName("실패")
-        class Fail {
-            @Test
-            @DisplayName("매장이 존재하지 않는 경우")
-            void notExistsStore() throws Exception {
-                String changeParamValue = "10000";
-                mockMvc.perform(get(url).param(paramName, changeParamValue).session(mockHttpSession))
-                        .andExpect(jsonPath("$.status").value(HttpStatus.NOT_FOUND.value()))
-                        .andExpect(jsonPath("$.message").value("존재하지 않는 매장입니다"))
-                        .andDo(print());
-            }
-
-            @Test
-            @DisplayName("권한")
-            void userType() throws Exception {
-                UserType changeType = UserType.USER;
-                mockHttpSession.setAttribute(SessionConstants.AUTH_TYPE, changeType);
-
-                mockMvc.perform(get(url).param(paramName,paramValue).session(mockHttpSession))
-                        .andExpect(jsonPath("$.status").value(HttpStatus.FORBIDDEN.value()))
-                        .andExpect(jsonPath("$.message").value("권한이 없습니다"))
-                        .andDo(print());
-            }
-        }
-
 
     }
 }

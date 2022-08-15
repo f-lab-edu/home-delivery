@@ -2,6 +2,7 @@ package com.flab.delivery.controller;
 
 import com.flab.delivery.annotation.LoginCheck;
 import com.flab.delivery.annotation.SessionUserId;
+import com.flab.delivery.annotation.SessionUserType;
 import com.flab.delivery.dto.store.StoreDto;
 import com.flab.delivery.dto.store.StoreRequestDto;
 import com.flab.delivery.enums.UserType;
@@ -41,12 +42,6 @@ public class StoreController {
     }
 
     @LoginCheck(userType = UserType.OWNER)
-    @GetMapping("/{id}")
-    public CommonResult<StoreDto> getStore(@PathVariable("id") Long id) {
-        return CommonResult.getDataSuccessResult(storeService.getStore(id));
-    }
-
-    @LoginCheck(userType = UserType.OWNER)
     @PatchMapping("/{id}")
     public CommonResult<Void> updateStore(@PathVariable("id") Long id, @RequestBody @Valid StoreRequestDto storeRequestDto) {
         storeService.updateStore(id, storeRequestDto);
@@ -66,5 +61,17 @@ public class StoreController {
         storeService.changeStatus(id, storeDto.getStatus());
         return CommonResult.getSimpleSuccessResult(HttpStatus.OK.value());
     }
+
+    @LoginCheck
+    @GetMapping("/{id}")
+    public CommonResult<StoreDto> getStore(@PathVariable("id") Long id, @SessionUserType UserType userType) {
+        switch (userType) {
+            case OWNER:
+                return CommonResult.getDataSuccessResult(storeService.getStore(id));
+            default:
+                return CommonResult.getDataSuccessResult(storeService.getStoreAndMenuAndMenuGroup(id));
+        }
+    }
+
 
 }

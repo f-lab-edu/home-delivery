@@ -2,6 +2,7 @@ package com.flab.delivery.service;
 
 import com.flab.delivery.dto.store.StoreDto;
 import com.flab.delivery.dto.store.StoreRequestDto;
+import com.flab.delivery.dto.store.StoreResponseDto;
 import com.flab.delivery.enums.StoreStatus;
 import com.flab.delivery.exception.StoreException;
 import com.flab.delivery.mapper.StoreMapper;
@@ -23,6 +24,8 @@ import static com.flab.delivery.utils.CacheConstants.STORE_LIST;
 public class StoreService {
 
     private final StoreMapper storeMapper;
+    private final MenuService menuService;
+    private final MenuGroupService menuGroupService;
 
     @CacheEvict(value = STORE_LIST, key = "#storeRequestDto.addressId")
     public void createStore(StoreRequestDto storeRequestDto, String userId) {
@@ -63,5 +66,13 @@ public class StoreService {
     @Cacheable(value = STORE_LIST, key = "#addressId")
     public List<StoreDto> getStoreListBy(Long categoryId, Long addressId) {
         return storeMapper.findStoreListBy(categoryId, addressId);
+    }
+
+    public StoreResponseDto getStoreAndMenuAndMenuGroup(Long id) {
+        return StoreResponseDto.builder()
+                .storeDto(getStore(id))
+                .menuGroupDtoList(menuGroupService.getMenuGroupList(id))
+                .menuDtoList(menuService.getMenuList(id))
+                .build();
     }
 }

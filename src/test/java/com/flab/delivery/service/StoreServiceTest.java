@@ -14,7 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class StoreServiceTest {
@@ -24,6 +24,12 @@ class StoreServiceTest {
 
     @Mock
     StoreMapper storeMapper;
+
+    @Mock
+    MenuGroupService menuGroupService;
+
+    @Mock
+    MenuService menuService;
 
     @Nested
     @DisplayName("매장 생성")
@@ -313,6 +319,33 @@ class StoreServiceTest {
                 // then
                 Assertions.assertEquals(ex.getMessage(), "존재하지 않는 매장입니다");
             }
+        }
+    }
+
+    @Nested
+    @DisplayName("매장 정보 + 메뉴 + 메뉴 그룹 조회")
+    class GetStoreAndMenuAndMenuGroup {
+
+        private Long id = 1L;
+
+        @Test
+        @DisplayName("성공")
+        void success() {
+            when(storeMapper.findById(id)).thenReturn(Optional.of(StoreDto.builder().id(id).build()));
+            storeService.getStoreAndMenuAndMenuGroup(id);
+            verify(storeMapper, times(1)).findById(id);
+            verify(menuGroupService, times(1)).getMenuGroupList(id);
+            verify(menuService, times(1)).getMenuList(id);
+        }
+
+        @Test
+        @DisplayName("실패 - 존재안하는경우")
+        void fail() {
+            when(storeMapper.findById(id)).thenReturn(Optional.empty());
+            StoreException ex = Assertions.assertThrows(StoreException.class,
+                    () -> storeService.getStoreAndMenuAndMenuGroup(id)
+            );
+            Assertions.assertEquals(ex.getMessage(), "존재하지 않는 매장입니다");
         }
     }
 
