@@ -31,8 +31,6 @@ class MenuGroupServiceTest {
     @Mock
     MenuGroupMapper menuGroupMapper;
 
-    @Mock
-    StoreMapper storeMapper;
 
     @Nested
     @DisplayName("메뉴 그룹 생성")
@@ -110,44 +108,25 @@ class MenuGroupServiceTest {
                     .build();
         }
 
-        @Nested
-        @DisplayName("성공")
-        class Success {
-            @Test
-            @DisplayName("정보 변경성공")
-            void success() {
-                // given
-                String beforeName = "치킨";
-                name = "족발";
+        @Test
+        @DisplayName("정보 변경성공")
+        void success() {
+            // given
+            String beforeName = "치킨";
+            name = "족발";
 
-                when(menuGroupMapper.findById(id)).thenReturn(Optional.of(MenuGroupDto.builder()
-                        .name(beforeName)
-                        .build()));
-                // when
-                menuGroupService.updateMenuGroup(id, getRequestDto());
-                when(menuGroupMapper.findById(id)).thenReturn(Optional.of(MenuGroupDto.builder()
-                        .name(name)
-                        .build()));
-                MenuGroupDto after = menuGroupMapper.findById(id).get();
-                Assertions.assertNotEquals(beforeName, after.getName());
-            }
+            when(menuGroupMapper.findById(id)).thenReturn(Optional.of(MenuGroupDto.builder()
+                    .name(beforeName)
+                    .build()));
+            // when
+            menuGroupService.updateMenuGroup(id, getRequestDto());
+            when(menuGroupMapper.findById(id)).thenReturn(Optional.of(MenuGroupDto.builder()
+                    .name(name)
+                    .build()));
+            MenuGroupDto after = menuGroupMapper.findById(id).get();
+            Assertions.assertNotEquals(beforeName, after.getName());
         }
 
-        @Nested
-        @DisplayName("실패")
-        class Fail {
-            @Test
-            @DisplayName("존재하지 않는 경우")
-            void notFound() {
-                // given
-                when(menuGroupMapper.findById(id)).thenReturn(Optional.empty());
-                MenuGroupException ex = Assertions.assertThrows(MenuGroupException.class, () -> {
-                    menuGroupService.updateMenuGroup(id, getRequestDto());
-                });
-                Assertions.assertEquals(ex.getMessage(), "존재하지 않는 메뉴 그룹입니다");
-            }
-
-        }
     }
 
     @Nested
@@ -161,7 +140,6 @@ class MenuGroupServiceTest {
         void success(@Mock List<MenuGroupDto> menuGroupList) {
             // given
             int size = 1;
-            when(storeMapper.findById(storeId)).thenReturn(Optional.of(StoreDto.builder().build()));
             when(menuGroupList.size()).thenReturn(size);
             when(menuGroupService.getMenuGroupList(storeId)).thenReturn(menuGroupList);
             // when
@@ -170,18 +148,6 @@ class MenuGroupServiceTest {
             Assertions.assertEquals(size, getMenuGroupList.size());
         }
 
-        @Test
-        @DisplayName("리스트 조회 실패 - 매장존재x")
-        void fail() {
-            // given
-            Long storeId = 100L;
-            when(storeMapper.findById(storeId)).thenReturn(Optional.empty());
-            MenuGroupException ex = Assertions.assertThrows(MenuGroupException.class, () -> {
-                menuGroupService.getMenuGroupList(storeId);
-            });
-            Assertions.assertEquals(ex.getMessage(), "존재하지 않는 매장입니다");
-
-        }
     }
 
     @Nested
@@ -190,68 +156,17 @@ class MenuGroupServiceTest {
 
         private Long id = 1L;
 
-        @Nested
-        @DisplayName("성공")
-        class Success {
-            @Test
-            @DisplayName("삭제 성공")
-            void success() {
-                // given
-                when(menuGroupMapper.findById(id)).thenReturn(Optional.of(MenuGroupDto.builder()
-                        .id(id)
-                        .build()));
-                // when
-                menuGroupService.deleteGroup(id);
-                when(menuGroupMapper.findById(id)).thenReturn(Optional.empty());
-                MenuGroupException ex = Assertions.assertThrows(MenuGroupException.class, () -> {
-                    menuGroupService.deleteGroup(id);
-                });
-                // then
-                Assertions.assertEquals(ex.getMessage(), "존재하지 않는 메뉴 그룹입니다");
-            }
-        }
-
-        @Nested
-        @DisplayName("실패")
-        class Fail {
-            @Test
-            @DisplayName("존재하지 않는경우")
-            void notFound() {
-                // given
-                when(menuGroupMapper.findById(id)).thenReturn(Optional.empty());
-                MenuGroupException ex = Assertions.assertThrows(MenuGroupException.class, () -> {
-                    menuGroupService.deleteGroup(id);
-                });
-                Assertions.assertEquals(ex.getMessage(), "존재하지 않는 메뉴 그룹입니다");
-            }
-        }
-    }
-
-    @Nested
-    @DisplayName("그룹 한개 조회")
-    class getMenuGroup {
-
-        private Long id = 1L;
-
         @Test
-        @DisplayName("성공")
+        @DisplayName("삭제 성공")
         void success() {
-            when(menuGroupMapper.findById(id)).thenReturn(Optional.of(MenuGroupDto.builder()
-                    .id(id)
-                    .build()));
-            MenuGroupDto findMenuGroup = menuGroupService.getMenuGroup(id);
-            Assertions.assertEquals(id, findMenuGroup.getId());
+            // given
+            // when
+            menuGroupService.deleteGroup(id);
+            when(menuGroupMapper.findById(id)).thenReturn(Optional.empty());
+            // then
+            Assertions.assertFalse(menuGroupMapper.findById(id).isPresent());
         }
 
-        @Test
-        @DisplayName("존재하지않아 실패")
-        void fail() {
-            when(menuGroupMapper.findById(id)).thenReturn(Optional.empty());
-            MenuGroupException ex = Assertions.assertThrows(MenuGroupException.class, () -> {
-                menuGroupService.getMenuGroup(id);
-            });
-            Assertions.assertEquals(ex.getMessage(), "존재하지 않는 메뉴 그룹입니다");
-        }
     }
 
     @Nested

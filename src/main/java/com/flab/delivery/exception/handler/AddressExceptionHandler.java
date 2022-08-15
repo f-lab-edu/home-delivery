@@ -16,13 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 @Slf4j
 public class AddressExceptionHandler {
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public CommonResult<Void> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex, HttpServletRequest request) {
-        String msg = ex.getBindingResult().getAllErrors().get(0).getDefaultMessage();
-        log.info("Http Method : {}, URI : {}, msg : {}", request.getMethod(), request.getRequestURI(), msg);
-        return getBadResponse(msg);
-    }
-
     @ExceptionHandler(AddressException.class)
     public CommonResult<Void> handleAddressException(AddressException ex, HttpServletRequest request) {
         log.info("Http Method : {}  URI : {}, msg : {}", request.getMethod(), request.getRequestURI(), ex.getMessage());

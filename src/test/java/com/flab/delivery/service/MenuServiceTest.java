@@ -2,10 +2,8 @@ package com.flab.delivery.service;
 
 import com.flab.delivery.dto.menu.MenuDto;
 import com.flab.delivery.dto.menu.MenuRequestDto;
-import com.flab.delivery.dto.store.StoreDto;
 import com.flab.delivery.enums.MenuStatus;
 import com.flab.delivery.exception.MenuException;
-import com.flab.delivery.exception.StoreException;
 import com.flab.delivery.mapper.MenuMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -15,7 +13,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,8 +30,6 @@ class MenuServiceTest {
     @Mock
     MenuMapper menuMapper;
 
-    @Mock
-    StoreService storeService;
 
     @Nested
     @DisplayName("메뉴 생성")
@@ -88,6 +83,7 @@ class MenuServiceTest {
     }
 
     @Nested
+    @DisplayName("메뉴 한개 조회")
     class GetMenu {
         private Long id = 1L;
 
@@ -126,6 +122,7 @@ class MenuServiceTest {
     }
 
     @Nested
+    @DisplayName("메뉴 정보변경")
     class UpdateMenu {
         private Long id = 1L;
 
@@ -143,66 +140,34 @@ class MenuServiceTest {
                     .build();
         }
 
-
-        @Nested
-        @DisplayName("성공")
-        class Success {
-            @Test
-            @DisplayName("업데이트 성공")
-            void success() {
-                // given
-                String beforeName = "후라이드치킨1";
-                when(menuMapper.findById(id)).thenReturn(Optional.of(MenuDto.builder().id(id).name(beforeName).build()));
-                // when
-                menuService.updateMenu(id, getMenuRequestDto());
-                when(menuMapper.findById(id)).thenReturn(Optional.of(MenuDto.builder().id(id).name(name).build()));
-                MenuDto findMenu = menuService.getMenu(id);
-                // then
-                Assertions.assertNotEquals(beforeName, findMenu.getName());
-            }
+        @Test
+        @DisplayName("업데이트 성공")
+        void success() {
+            // given
+            String beforeName = "후라이드치킨1";
+            when(menuMapper.findById(id)).thenReturn(Optional.of(MenuDto.builder().id(id).name(beforeName).build()));
+            // when
+            menuService.updateMenu(id, getMenuRequestDto());
+            when(menuMapper.findById(id)).thenReturn(Optional.of(MenuDto.builder().id(id).name(name).build()));
+            MenuDto findMenu = menuService.getMenu(id);
+            // then
+            Assertions.assertNotEquals(beforeName, findMenu.getName());
         }
 
-        @Nested
-        @DisplayName("실패")
-        class Fail {
-            @Test
-            @DisplayName("메뉴 존재하지 않는 경우")
-            void notExists() {
-                when(menuMapper.findById(id)).thenReturn(Optional.empty());
-                MenuException ex = Assertions.assertThrows(MenuException.class, () -> menuService.updateMenu(id, getMenuRequestDto()));
-                Assertions.assertEquals(ex.getMessage(), "존재하지 않는 메뉴입니다");
-            }
-        }
     }
 
     @Nested
+    @DisplayName("메뉴 삭제")
     class DeleteMenu {
         private Long id = 1L;
 
-        @Nested
-        @DisplayName("성공")
-        class Success {
-
-            @Test
-            @DisplayName("삭제 성공")
-            void success() {
-                when(menuMapper.findById(id)).thenReturn(Optional.of(MenuDto.builder().id(id).build()));
-                menuService.deleteMenu(id);
-                when(menuMapper.findById(id)).thenReturn(Optional.empty());
-                Assertions.assertThrows(MenuException.class, () -> menuService.deleteMenu(id));
-            }
-        }
-
-        @Nested
-        @DisplayName("실패")
-        class Fail {
-            @Test
-            @DisplayName("존재하지 않는경우")
-            void notExits() {
-                when(menuMapper.findById(id)).thenReturn(Optional.empty());
-                MenuException ex = Assertions.assertThrows(MenuException.class, () -> menuService.deleteMenu(id));
-                Assertions.assertEquals(ex.getMessage(), "존재하지 않는 메뉴입니다");
-            }
+        @Test
+        @DisplayName("삭제 성공")
+        void success() {
+            when(menuMapper.findById(id)).thenReturn(Optional.of(MenuDto.builder().id(id).build()));
+            menuService.deleteMenu(id);
+            when(menuMapper.findById(id)).thenReturn(Optional.empty());
+            Assertions.assertThrows(MenuException.class, () -> menuService.getMenu(id));
         }
     }
 
@@ -213,33 +178,18 @@ class MenuServiceTest {
         private Long id = 1L;
         private MenuStatus menuStatus = MenuStatus.SOLDOUT;
 
-        @Nested
-        @DisplayName("성공")
-        class Success {
-            @Test
-            @DisplayName("상태 변경 성공 - ONSALE -> SOLDOUT")
-            void success() {
-                when(menuMapper.findById(id)).thenReturn(Optional.of(MenuDto.builder().id(id).status(MenuStatus.ONSALE).build()));
-                MenuDto before = menuMapper.findById(id).get();
-                menuService.updateStatus(id, menuStatus);
-                when(menuMapper.findById(id)).thenReturn(Optional.of(MenuDto.builder().id(id).status(menuStatus).build()));
-                MenuDto after = menuMapper.findById(id).get();
+        @Test
+        @DisplayName("상태 변경 성공 - ONSALE -> SOLDOUT")
+        void success() {
+            when(menuMapper.findById(id)).thenReturn(Optional.of(MenuDto.builder().id(id).status(MenuStatus.ONSALE).build()));
+            MenuDto before = menuMapper.findById(id).get();
+            menuService.updateStatus(id, menuStatus);
+            when(menuMapper.findById(id)).thenReturn(Optional.of(MenuDto.builder().id(id).status(menuStatus).build()));
+            MenuDto after = menuMapper.findById(id).get();
 
-                Assertions.assertNotEquals(before.getStatus(), after.getStatus());
-            }
+            Assertions.assertNotEquals(before.getStatus(), after.getStatus());
         }
 
-        @Nested
-        @DisplayName("실패")
-        class Fail {
-            @Test
-            @DisplayName("존재하지 않는 경우")
-            void notExists() {
-                when(menuMapper.findById(id)).thenReturn(Optional.empty());
-                MenuException ex = Assertions.assertThrows(MenuException.class, () -> menuService.updateStatus(id, menuStatus));
-                Assertions.assertEquals(ex.getMessage(), "존재하지 않는 메뉴입니다");
-            }
-        }
     }
 
     @Nested
@@ -288,31 +238,12 @@ class MenuServiceTest {
     @Nested
     @DisplayName("메뉴 조회 - 그룹정렬, 메뉴정렬")
     class GetMenuList {
-        @Nested
-        @DisplayName("성공")
-        class Success {
-            @Test
-            @DisplayName("조회 성공")
-            void success() {
-                Long storeId = 1L;
-                when(storeService.getStore(storeId)).thenReturn(StoreDto.builder().build());
-                menuService.getMenuList(storeId);
-                verify(menuMapper).findAllByStoreId(storeId);
-                verify(storeService).getStore(storeId);
-            }
-        }
-
-        @Nested
-        @DisplayName("실패")
-        class Fail {
-            @Test
-            @DisplayName("매장이 존재하지 않는 경우")
-            void notExistsStore() {
-                Long storeId = 100L;
-                when(storeService.getStore(storeId)).thenThrow(new StoreException("존재하지 않는 매장입니다", HttpStatus.NOT_FOUND));
-                StoreException ex = Assertions.assertThrows(StoreException.class, () -> menuService.getMenuList(storeId));
-                Assertions.assertEquals(ex.getMessage(), "존재하지 않는 매장입니다");
-            }
+        @Test
+        @DisplayName("조회 성공")
+        void success() {
+            Long storeId = 1L;
+            menuService.getMenuList(storeId);
+            verify(menuMapper).findAllByStoreId(storeId);
         }
     }
 }

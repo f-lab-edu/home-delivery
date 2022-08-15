@@ -23,6 +23,4 @@ public class MenuDto {
     private Integer priority;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
-
-    private List<MenuDto> menuDtoList;
 }

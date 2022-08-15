@@ -16,7 +16,6 @@ import java.util.List;
 public class MenuGroupService {
 
     private final MenuGroupMapper menuGroupMapper;
-    private final StoreMapper storeMapper;
 
     public void createMenuGroup(MenuGroupRequestDto requestDto) {
         if (menuGroupMapper.existsByName(requestDto.getStoreId(), requestDto.getName()).isPresent()) {
@@ -27,26 +26,15 @@ public class MenuGroupService {
 
 
     public void updateMenuGroup(Long id, MenuGroupRequestDto requestDto) {
-        getMenuGroup(id);
         menuGroupMapper.updateById(id, requestDto);
     }
 
     public List<MenuGroupDto> getMenuGroupList(Long storeId) {
-        storeMapper.findById(storeId).orElseThrow(
-                () -> new MenuGroupException("존재하지 않는 매장입니다", HttpStatus.NOT_FOUND)
-        );
         return menuGroupMapper.findAllByStoreId(storeId);
     }
 
     public void deleteGroup(Long id) {
-        getMenuGroup(id);
         menuGroupMapper.deleteById(id);
-    }
-
-    public MenuGroupDto getMenuGroup(Long id) {
-        return menuGroupMapper.findById(id).orElseThrow(
-                () -> new MenuGroupException("존재하지 않는 메뉴 그룹입니다", HttpStatus.NOT_FOUND)
-        );
     }
 
     public void updatePriority(List<MenuGroupDto> menuGroupDtoList) {
