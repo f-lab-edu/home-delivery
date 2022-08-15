@@ -494,58 +494,93 @@ class StoreIntegrationTest {
     class getStore {
 
         private final String ownerId = "user2";
-
         private final MockHttpSession mockHttpSession = new MockHttpSession();
 
         private final String url = "/stores/1";
 
+
         @BeforeEach
         void setUp() {
             mockHttpSession.setAttribute(SessionConstants.SESSION_ID, ownerId);
-            mockHttpSession.setAttribute(SessionConstants.AUTH_TYPE, UserType.OWNER);
         }
 
         @Nested
         @DisplayName("성공")
         class Success {
             @Test
-            @DisplayName("상세 조회 성공")
-            void success() throws Exception {
+            @DisplayName("UserType.OWNER")
+            void userTypeOWNER() throws Exception {
+                mockHttpSession.setAttribute(SessionConstants.AUTH_TYPE, UserType.OWNER);
                 mockMvc.perform(get(url).session(mockHttpSession))
                         .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
                         .andExpect(jsonPath("$.message").value("요청 성공하였습니다."))
-                        .andExpect(jsonPath("$.data").exists())
+                        .andExpect(jsonPath("$.data.menuDtoList").doesNotExist())
+                        .andExpect(jsonPath("$.data.menuGroupDtoList").doesNotExist())
                         .andDo(print());
             }
+
+            @Test
+            @DisplayName("UserType.USER")
+            void userTypeUSER() throws Exception {
+                mockHttpSession.setAttribute(SessionConstants.AUTH_TYPE, UserType.USER);
+                mockMvc.perform(get(url).session(mockHttpSession))
+                        .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
+                        .andExpect(jsonPath("$.message").value("요청 성공하였습니다."))
+                        .andExpect(jsonPath("$.data.menuDtoList").exists())
+                        .andExpect(jsonPath("$.data.menuGroupDtoList").exists())
+                        .andDo(print());
+            }
+
+            @Test
+            @DisplayName("UserType.RIDER")
+            void userTypeRIDER() throws Exception {
+                mockHttpSession.setAttribute(SessionConstants.AUTH_TYPE, UserType.RIDER);
+                mockMvc.perform(get(url).session(mockHttpSession))
+                        .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
+                        .andExpect(jsonPath("$.message").value("요청 성공하였습니다."))
+                        .andExpect(jsonPath("$.data.menuDtoList").exists())
+                        .andExpect(jsonPath("$.data.menuGroupDtoList").exists())
+                        .andDo(print());
+            }
+
         }
 
         @Nested
         @DisplayName("실패")
         class Fail {
             @Test
-            @DisplayName("권한")
-            void userType() throws Exception {
-                // given
-                String userId = "user1";
-                mockHttpSession.setAttribute(SessionConstants.SESSION_ID, userId);
-                mockHttpSession.setAttribute(SessionConstants.AUTH_TYPE, UserType.ALL);
-                // when
-                // then
-                mockMvc.perform(get(url).session(mockHttpSession))
-                        .andExpect(jsonPath("$.status").value(HttpStatus.FORBIDDEN.value()))
-                        .andExpect(jsonPath("$.message").value("권한이 없습니다"))
-                        .andDo(print());
-            }
-
-            @Test
-            @DisplayName("존재하지 않는경우")
-            void notExists() throws Exception {
+            @DisplayName("UserType.OWNER")
+            void notExistsOWNER() throws Exception {
+                mockHttpSession.setAttribute(SessionConstants.AUTH_TYPE, UserType.OWNER);
                 String changeUrl = "/stores/1000";
                 mockMvc.perform(get(changeUrl).session(mockHttpSession))
                         .andExpect(jsonPath("$.status").value(HttpStatus.NOT_FOUND.value()))
                         .andExpect(jsonPath("$.message").value("존재하지 않는 매장입니다"))
                         .andDo(print());
             }
+
+            @Test
+            @DisplayName("UserType.USER")
+            void notExistsUSER() throws Exception {
+                mockHttpSession.setAttribute(SessionConstants.AUTH_TYPE, UserType.USER);
+                String changeUrl = "/stores/1000";
+                mockMvc.perform(get(changeUrl).session(mockHttpSession))
+                        .andExpect(jsonPath("$.status").value(HttpStatus.NOT_FOUND.value()))
+                        .andExpect(jsonPath("$.message").value("존재하지 않는 매장입니다"))
+                        .andDo(print());
+            }
+
+            @Test
+            @DisplayName("UserType.RIDER")
+            void notExistsRIDER() throws Exception {
+                mockHttpSession.setAttribute(SessionConstants.AUTH_TYPE, UserType.RIDER);
+                String changeUrl = "/stores/1000";
+                mockMvc.perform(get(changeUrl).session(mockHttpSession))
+                        .andExpect(jsonPath("$.status").value(HttpStatus.NOT_FOUND.value()))
+                        .andExpect(jsonPath("$.message").value("존재하지 않는 매장입니다"))
+                        .andDo(print());
+            }
+
         }
     }
 
