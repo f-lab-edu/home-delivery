@@ -14,20 +14,17 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderService {
 
     private final PayService mockPayService;
+    private final AddressService addressService;
     private final OrderMapper orderMapper;
 
     @Transactional
     public void createOrder(String userId, OrderRequestDto orderRequestDto) {
 
         // 주문 생성
-        OrderDto orderDto = OrderDto.from(orderRequestDto);
+        OrderDto orderDto = OrderDto.from(orderRequestDto, addressService.getDeliveryAddress(userId));
         orderMapper.save(userId, orderDto);
 
         Long orderId = orderDto.getId();
-
-        //TODO 옵션 저장
-
-        //TODO 주문 옵션 History 생성
 
         // 걸제 진행
         mockPayService.pay(orderId, orderRequestDto.getPayType());

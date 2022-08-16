@@ -10,19 +10,19 @@ import java.util.List;
 @Getter
 public class OrderDto {
 
-    private long id;
-    private int deliveryPrice;
+    private Long id;
     private int totalPrice;
     private OrderStatus orderStatus;
     private List<OrderHistoryDto> orderHistoryList;
+    private String deliveryAddress;
 
 
-    public static OrderDto from(OrderRequestDto orderRequestDto) {
+    public static OrderDto from(OrderRequestDto orderRequestDto, String deliveryAddress) {
         return OrderDto.builder()
-                .deliveryPrice(orderRequestDto.getDeliveryPrice())
                 .totalPrice(orderRequestDto.getTotalPrice())
                 .orderStatus(OrderStatus.BEFORE_PAYMENT)
                 .orderHistoryList(OrderHistoryDto.createHistory(orderRequestDto.getMenuList()))
+                .deliveryAddress(deliveryAddress)
                 .build();
     }
 }

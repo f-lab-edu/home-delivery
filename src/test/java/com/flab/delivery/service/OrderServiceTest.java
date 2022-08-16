@@ -1,22 +1,21 @@
 package com.flab.delivery.service;
 
-import com.flab.delivery.dto.menu.MenuDto;
+import com.flab.delivery.dto.order.OrderDto;
 import com.flab.delivery.dto.order.OrderRequestDto;
-import com.flab.delivery.enums.PayType;
+import com.flab.delivery.exception.AddressException;
+import com.flab.delivery.fixture.TestDto;
 import com.flab.delivery.mapper.OrderMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -29,23 +28,37 @@ class OrderServiceTest {
     private MockPayService payService;
 
     @Mock
+    private AddressService addressService;
+
+    @Mock
     private OrderMapper orderMapper;
 
+    @Test
+    void createOrder_대표주소_없어서_실패() {
+        // given
+        String userId = "wrongUser";
+        OrderRequestDto requestDto = TestDto.getOrderRequestDto();
+
+        doThrow(AddressException.class)
+                .when(addressService)
+                .getDeliveryAddress(eq(userId));
+
+        // when
+        assertThatThrownBy(() -> orderService.createOrder(userId, requestDto))
+                .isInstanceOf(AddressException.class);
+
+        // then
+        verify(orderMapper, never()).save(eq(userId), any());
+        verify(orderMapper, never()).changeStatus(anyLong(), any());
+        verify(payService, never()).pay(anyLong(), any());
+    }
     @Test
     void createOrder_잘못된_유저_실패() {
         // given
         String userId = "wrongUser";
-        OrderRequestDto requestDto = OrderRequestDto
-                .builder()
-                .payType(PayType.CARD)
-                .deliveryPrice(3000)
-                .storeId(1L)
-                .menuList(
-                        Arrays.asList(
-                                createMenu(1L, "치킨", "오븐 치킨", 13000),
-                                createMenu(2L, "피자", "고구마 피자", 15000)
-                        )
-                ).build();
+        OrderRequestDto requestDto = TestDto.getOrderRequestDto();
+
+        given(addressService.getDeliveryAddress(eq(userId))).willReturn("운암동 15번길 13");
 
         doThrow(RuntimeException.class)
                 .when(orderMapper)
@@ -61,13 +74,22 @@ class OrderServiceTest {
         verify(payService, never()).pay(anyLong(), any());
     }
 
-    private MenuDto createMenu(long id, String name, String info, int price) {
-        return MenuDto.builder()
-                .id(id)
-                .name(name)
-                .info(info)
-                .price(price)
-                .build();
-    }
+    @Test
+    void createOrder_성공() {
+        // given
+        String userId = "user1";
+        OrderRequestDto requestDto = TestDto.getOrderRequestDto();
 
+        ArgumentCaptor<OrderDto> valueCapture = ArgumentCaptor.forClass(OrderDto.class);
+
+        given(addressService.getDeliveryAddress(eq(userId))).willReturn("운암동 15번길 13");
+        // when
+        orderService.createOrder(userId, requestDto);
+
+        // then
+        verify(orderMapper).save(eq(userId), valueCapture.capture());
+        Long id = valueCapture.getValue().getId();
+        verify(orderMapper).changeStatus(eq(id), any());
+        verify(payService).pay(eq(id), any());
+    }
 }

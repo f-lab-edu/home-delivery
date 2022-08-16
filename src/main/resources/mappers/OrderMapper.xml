@@ -4,8 +4,9 @@
 <mapper namespace="com.flab.delivery.mapper.OrderMapper">
 
     <insert id="save" useGeneratedKeys="true" keyProperty="order.id">
-        INSERT INTO ORDERS(user_id, delivery_price, order_price, status, history)
-        VALUES (#{userId}, #{order.deliveryPrice}, #{order.totalPrice}, #{order.orderStatus},
+        INSERT INTO ORDERS(user_id, order_price, status, delivery_address, history)
+        VALUES (#{userId}, #{order.totalPrice}, #{order.orderStatus},
+                #{order.deliveryAddress},
                 #{order.orderHistoryList , typeHandler = com.flab.delivery.mapper.handler.JsonTypeHandler})
     </insert>
 

@@ -1,7 +1,7 @@
 package com.flab.delivery.dto.order;
 
 
-import com.flab.delivery.dto.menu.MenuDto;
+import com.flab.delivery.dto.option.OptionDto;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -19,43 +19,54 @@ public class OrderHistoryDto {
     private int quantity;
     private List<OptionHistoryDto> optionHistoryList;
 
-    public static List<OrderHistoryDto> createHistory(List<MenuDto> menuList) {
+    public static List<OrderHistoryDto> createHistory(List<OrderMenuDto> menuList) {
 
         HashMap<Long, OrderHistoryDto> historyMap = new HashMap<>();
 
-        for (MenuDto menuDto : menuList) {
-            if (!historyMap.containsKey(menuDto.getId())) {
-                historyMap.put(menuDto.getId(), createNewOrderHistoryDto(menuDto));
-            } else {
-                OrderHistoryDto historyDto = historyMap.get(menuDto.getId());
-                historyDto.addPriceAndQuantity(menuDto);
-                historyMap.put(menuDto.getId(), historyDto);
-            }
-        }
-
-        //TODO 옵션 추가
+        createMenuHistory(menuList, historyMap);
 
         return new ArrayList<>(historyMap.values());
     }
 
-    private void addPriceAndQuantity(MenuDto menuDto) {
-        this.price += menuDto.getPrice();
-        this.quantity += 1;
+    private static void createMenuHistory(List<OrderMenuDto> menuList, HashMap<Long, OrderHistoryDto> historyMap) {
+        for (OrderMenuDto orderMenuDto : menuList) {
+            OrderHistoryDto historyDto = from(orderMenuDto);
+            createOptionHistory(orderMenuDto, historyDto);
+            historyMap.put(orderMenuDto.getMenuDto().getId(), historyDto);
+        }
+    }
+
+    private static void createOptionHistory(OrderMenuDto orderMenuDto, OrderHistoryDto historyDto) {
+        for (OptionDto optionDto : orderMenuDto.getOptionList()) {
+            historyDto.getOptionHistoryList().add(OptionHistoryDto.from(optionDto));
+        }
     }
 
 
-    private static OrderHistoryDto createNewOrderHistoryDto(MenuDto menuDto) {
+    private static OrderHistoryDto from(OrderMenuDto orderMenuDto) {
         return OrderHistoryDto.builder()
-                .menuName(menuDto.getName())
-                .price(menuDto.getPrice())
-                .quantity(1).build();
+                .menuName(orderMenuDto.getMenuDto().getName())
+                .price(orderMenuDto.getMenuDto().getPrice() * orderMenuDto.getQuantity())
+                .quantity(orderMenuDto.getQuantity())
+                .optionHistoryList(new ArrayList<>())
+                .build();
     }
 
 
-    private class OptionHistoryDto {
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    @Builder
+    @Getter
+    private static class OptionHistoryDto {
 
         private String optionName;
         private int price;
-        private int quantity;
+
+        public static OptionHistoryDto from(OptionDto optionDto) {
+            return OptionHistoryDto.builder()
+                    .optionName(optionDto.getName())
+                    .price(optionDto.getPrice())
+                    .build();
+        }
     }
 }

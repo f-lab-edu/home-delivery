@@ -64,4 +64,11 @@ public class AddressService {
     private boolean isExistsById(Long id) {
         return userAddressMapper.existsById(id);
     }
+
+    public String getDeliveryAddress(String userId) {
+        AddressDto addressDto = userAddressMapper.findDeliveryAddressByUserId(userId)
+                .orElseThrow(() -> new AddressException("배달할 주소를 선택해주세요."));
+
+        return addressDto.getDeliveryAddress();
+    }
 }

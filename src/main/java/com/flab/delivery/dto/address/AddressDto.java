@@ -14,4 +14,8 @@ public class AddressDto {
     private String alias;
     private boolean selected;
 
+    public String getDeliveryAddress() {
+        return townName + " " + detailAddress;
+    }
+
 }

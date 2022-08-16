@@ -1,18 +1,23 @@
 package com.flab.delivery.fixture;
 
 import com.flab.delivery.dto.address.AddressRequestDto;
+import com.flab.delivery.dto.menu.MenuDto;
+import com.flab.delivery.dto.option.OptionDto;
 import com.flab.delivery.dto.order.OrderDto;
 import com.flab.delivery.dto.order.OrderHistoryDto;
+import com.flab.delivery.dto.order.OrderMenuDto;
+import com.flab.delivery.dto.order.OrderRequestDto;
 import com.flab.delivery.dto.user.PasswordDto;
 import com.flab.delivery.dto.user.UserDto;
 import com.flab.delivery.dto.user.UserInfoUpdateDto;
 import com.flab.delivery.enums.OrderStatus;
+import com.flab.delivery.enums.PayType;
 import com.flab.delivery.enums.UserType;
 import com.flab.delivery.utils.PasswordEncoder;
 import org.springframework.mock.web.MockHttpSession;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.flab.delivery.utils.SessionConstants.AUTH_TYPE;
@@ -61,11 +66,41 @@ public class TestDto {
         return OrderDto.builder()
                 .totalPrice(30000)
                 .orderStatus(OrderStatus.ORDER_REQUEST)
-                .deliveryPrice(3000)
-                .orderHistoryList(Arrays.asList(
-                        OrderHistoryDto.builder().menuName("치킨").price(10000).quantity(1).build(),
-                        OrderHistoryDto.builder().menuName("피자").price(20000).quantity(2).build()
-                )).build();
+                .orderHistoryList(OrderHistoryDto.createHistory(getMenuList()))
+                .deliveryAddress("운암동 13번길 15")
+                .build();
+    }
+
+    private static List<OptionDto> getOptionList() {
+        List<OptionDto> list = new ArrayList<>();
+
+        for (int i = 0; i < 5; i++) {
+
+            list.add(OptionDto.builder()
+                    .menuId((long) i)
+                    .price(100 * i)
+                    .name("무추가" + i)
+                    .build());
+        }
+        return list;
+    }
+
+    private static List<OrderMenuDto> getMenuList() {
+        List<OrderMenuDto> list = new ArrayList<>();
+
+        for (int i = 0; i < 5; i++) {
+            list.add(OrderMenuDto.builder()
+                    .menuDto(MenuDto.builder()
+                            .id((long) i)
+                            .name("치킨" + i)
+                            .price(10000 * i)
+                            .build())
+                    .quantity(i + 1)
+                    .optionList(getOptionList())
+                    .build());
+        }
+
+        return list;
     }
 
     public static MockHttpSession createSessionBy(String userId, UserType userType) {
@@ -73,5 +108,14 @@ public class TestDto {
         mockHttpSession.setAttribute(SESSION_ID, userId);
         mockHttpSession.setAttribute(AUTH_TYPE, userType);
         return mockHttpSession;
+    }
+
+    public static OrderRequestDto getOrderRequestDto() {
+        return OrderRequestDto
+                .builder()
+                .payType(PayType.CARD)
+                .storeId(1L)
+                .menuList(getMenuList())
+                .build();
     }
 }

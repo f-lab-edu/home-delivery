@@ -1,6 +1,7 @@
 package com.flab.delivery.dto.menu;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.flab.delivery.dto.option.OptionDto;
 import com.flab.delivery.enums.MenuStatus;
 import lombok.*;
 
@@ -21,6 +22,7 @@ public class MenuDto {
     private Integer price;
     private MenuStatus status;
     private Integer priority;
+
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 }
