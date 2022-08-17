@@ -9,26 +9,27 @@ import com.flab.delivery.dto.order.OrderRequestDto;
 import com.flab.delivery.enums.PayType;
 import com.flab.delivery.enums.UserType;
 import com.flab.delivery.fixture.MessageConstants;
+import com.flab.delivery.fixture.TestDto;
 import com.flab.delivery.mapper.MenuMapper;
 import com.flab.delivery.mapper.OptionMapper;
+import com.flab.delivery.mapper.OrderMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static com.flab.delivery.fixture.CommonTest.doAuthTest;
 import static com.flab.delivery.utils.SessionConstants.AUTH_TYPE;
 import static com.flab.delivery.utils.SessionConstants.SESSION_ID;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -37,24 +38,28 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class OrderIntegrationTest {
 
     @Autowired
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
 
     @Autowired
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
 
-    MockHttpSession session = new MockHttpSession();
-
-    @Autowired
-    MenuMapper menuMapper;
+    private MockHttpSession session = new MockHttpSession();
 
     @Autowired
-    OptionMapper optionMapper;
+    private MenuMapper menuMapper;
+
+    @Autowired
+    private OptionMapper optionMapper;
+
+    @Autowired
+    private OrderMapper orderMapper;
 
 
     @BeforeEach
     void init() {
         session.setAttribute(SESSION_ID, "user1");
         session.setAttribute(AUTH_TYPE, UserType.USER);
+        orderMapper.save("user1", TestDto.getOrderDto());
     }
 
     @Test
@@ -198,6 +203,31 @@ public class OrderIntegrationTest {
                         .session(session))
                 .andExpect(jsonPath("$.status").value(HttpStatus.CREATED.value()))
                 .andExpect(jsonPath("$.message").value(MessageConstants.SUCCESS_MESSAGE))
+                .andDo(print());
+    }
+
+
+    @Test
+    void getUserOrderList_권한_없어서_실패() throws Exception {
+        doOrderAuthTest(get("/orders/user").param("startId", "0"));
+    }
+
+    @Test
+    void getUserOrderList_성공() throws Exception {
+        // given
+        // when
+        // then
+        mockMvc.perform(get("/orders/user")
+                        .param("startId", "0")
+                        .session(session))
+                .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
+                .andExpect(jsonPath("$.message").value(MessageConstants.SUCCESS_MESSAGE))
+                .andExpect(jsonPath("$.data[*].storeId").exists())
+                .andExpect(jsonPath("$.data[*].menuCount").exists())
+                .andExpect(jsonPath("$.data[*].menuName").exists())
+                .andExpect(jsonPath("$.data[*].status").exists())
+                .andExpect(jsonPath("$.data[*].orderPrice").exists())
+                .andExpect(jsonPath("$.data[*].createdAt").exists())
                 .andDo(print());
     }
 

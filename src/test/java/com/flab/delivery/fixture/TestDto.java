@@ -115,4 +115,16 @@ public class TestDto {
                 .menuList(getMenuList())
                 .build();
     }
+
+    public static OrderSimpleResponseDto getOrderSimpleResponseDto(String menuName, int orderPrice) {
+        return OrderSimpleResponseDto.builder()
+                .storeId(1L)
+                .orderPrice(orderPrice)
+                .createdAt(LocalDateTime.now())
+                .menuName(menuName)
+                .menuCount(1)
+                .status(OrderStatus.ORDER_APPROVED)
+                .build();
+
+    }
 }
