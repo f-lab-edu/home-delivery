@@ -3,6 +3,7 @@ package com.flab.delivery.controller;
 import com.flab.delivery.annotation.LoginCheck;
 import com.flab.delivery.annotation.SessionUserId;
 import com.flab.delivery.controller.validator.OrderValidator;
+import com.flab.delivery.dto.order.OrderDetailResponseDto;
 import com.flab.delivery.dto.order.OrderRequestDto;
 import com.flab.delivery.dto.order.OrderSimpleResponseDto;
 import com.flab.delivery.enums.UserType;
@@ -45,7 +46,14 @@ public class OrderController {
     public CommonResult<List<OrderSimpleResponseDto>> getUserOrderList(@SessionUserId String userId,
                                                                        @RequestParam Integer startId) {
 
-        return CommonResult.getDataSuccessResult(orderService.getOrderList(userId, startId));
+        return CommonResult.getDataSuccessResult(orderService.getUserOrderList(userId, startId));
+    }
+
+    @LoginCheck(userType = UserType.USER)
+    @GetMapping("/{orderId}/user")
+    public CommonResult<OrderDetailResponseDto> getUserDetailOrder(@SessionUserId String userId,
+                                                                   @PathVariable Long orderId) {
+        return CommonResult.getDataSuccessResult(orderService.getUserDetailOrder(userId, orderId));
     }
 
 }

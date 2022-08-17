@@ -25,17 +25,38 @@
 
     <select id="findAllByPageIds" resultType="OrderSimpleResponseDto">
         SELECT status,
-               order_price,
-               created_at,
-               json_extract(history, '$.storeId')              AS store_id,
-               json_extract(history, '$.menuCount')            AS menu_count,
-               json_extract(history, '$.menuList[0].menuName') AS menu_name
+        order_price,
+        created_at,
+        json_extract(history, '$.storeId') AS store_id,
+        json_extract(history, '$.menuCount') AS menu_count,
+        json_extract(history, '$.menuList[0].menuName') AS menu_name
         FROM ORDERS
         WHERE id IN
         <foreach collection="list" item="id" separator="," open="(" close=")">
             #{id}
         </foreach>
         ORDER BY created_at DESC LIMIT 10;
+    </select>
+
+    <resultMap id="orderDetail" type="OrderDetailResponseDto">
+        <result property="orderPrice" column="order_price"/>
+        <result property="status" column="status"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="deliveryAddress" column="delivery_address"/>
+        <result property="history" column="history" typeHandler="com.flab.delivery.mapper.handler.JsonTypeHandler"/>
+        <result property="payType" column="type"/>
+    </resultMap>
+
+
+    <select id="findByIdAndUserId" resultMap="orderDetail">
+        SELECT o.order_price,
+               o.status,
+               o.created_at,
+               o.history,
+               o.delivery_address,
+               p.type
+        FROM ORDERS o
+                 JOIN PAY p ON o.id = #{id} AND o.user_id = #{userId} AND p.orders_id = o.id
     </select>
 
 </mapper>

@@ -4,8 +4,6 @@ import com.flab.delivery.enums.OrderStatus;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.util.List;
-
 @Builder
 @Getter
 public class OrderDto {
@@ -23,7 +21,7 @@ public class OrderDto {
         return OrderDto.builder()
                 .orderStatus(OrderStatus.BEFORE_PAYMENT)
                 .orderHistoryDto(historyDto)
-                .totalPrice(historyDto.getTotalPrice())
+                .totalPrice(historyDto.calculateTotalPrice())
                 .deliveryAddress(deliveryAddress)
                 .build();
     }

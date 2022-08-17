@@ -9,34 +9,40 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class JsonTypeHandler extends BaseTypeHandler<Object> {
+public class JsonTypeHandler<T extends Object> extends BaseTypeHandler<T> {
 
     private static final ObjectMapper mapper = new ObjectMapper();
+    private Class<T> clazz;
+
+    public JsonTypeHandler(Class<T> clazz) {
+
+        if (clazz == null) {
+            throw new IllegalArgumentException("변환할 타입 값이 없습니다.");
+        }
+        this.clazz = clazz;
+    }
 
     @Override
-    public void setNonNullParameter(PreparedStatement ps, int i, Object parameter, JdbcType jdbcType) throws SQLException {
+    public void setNonNullParameter(PreparedStatement ps, int i, T parameter, JdbcType jdbcType) throws SQLException {
         ps.setString(i, this.toJson(parameter));
     }
 
     @Override
-    public Object getNullableResult(ResultSet rs, String columnName) throws SQLException {
-
-        return this.toObject(rs.getString(columnName));
+    public T getNullableResult(ResultSet rs, String columnName) throws SQLException {
+        return this.toObject(rs.getString(columnName), clazz);
     }
 
     @Override
-    public Object getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
-
-        return this.toObject(rs.getString(columnIndex));
+    public T getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
+        return this.toObject(rs.getString(columnIndex), clazz);
     }
 
     @Override
-    public Object getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
-
-        return this.toObject(cs.getString(columnIndex));
+    public T getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
+        return this.toObject(cs.getString(columnIndex), clazz);
     }
 
-    private String toJson(Object object) {
+    private String toJson(T object) {
         try {
             return mapper.writeValueAsString(object);
         } catch (Exception e) {
@@ -44,10 +50,11 @@ public class JsonTypeHandler extends BaseTypeHandler<Object> {
         }
     }
 
-    private Object toObject(String content) {
+    private T toObject(String content, Class<?> clazz) {
+
         if (content != null && !content.isEmpty()) {
             try {
-                return mapper.readValue(content, Object.class);
+                return (T) mapper.readValue(content, clazz);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

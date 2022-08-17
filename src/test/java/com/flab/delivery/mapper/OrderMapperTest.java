@@ -1,9 +1,13 @@
 package com.flab.delivery.mapper;
 
 import com.flab.delivery.config.DatabaseConfig;
+import com.flab.delivery.dto.order.OrderDetailResponseDto;
 import com.flab.delivery.dto.order.OrderDto;
 import com.flab.delivery.dto.order.OrderSimpleResponseDto;
+import com.flab.delivery.dto.pay.PayDto;
 import com.flab.delivery.enums.OrderStatus;
+import com.flab.delivery.enums.PayStatus;
+import com.flab.delivery.enums.PayType;
 import com.flab.delivery.fixture.TestDto;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
@@ -11,14 +15,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.context.annotation.Import;
 import org.springframework.dao.DataAccessException;
-import org.springframework.test.annotation.Rollback;
 
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @MybatisTest
 @Import({DatabaseConfig.class})
@@ -28,6 +32,8 @@ class OrderMapperTest {
     @Autowired
     private OrderMapper orderMapper;
 
+    @Autowired
+    private PayMapper payMapper;
 
     @Test
     void save_확인() {
@@ -98,5 +104,24 @@ class OrderMapperTest {
         }
     }
 
+
+    @Test
+    void findByIdAndUserId_확인() {
+        // given
+        OrderDto dto = TestDto.getOrderDto();
+        String userId = "user1";
+        orderMapper.save(userId, dto);
+        payMapper.save(PayDto.builder().type(PayType.CARD).orderId(dto.getId()).status(PayStatus.COMPLETE).build());
+
+        // when
+        OrderDetailResponseDto findOrder = orderMapper.findByIdAndUserId(dto.getId(), userId);
+
+        // then
+        assertThat(findOrder.getOrderPrice()).isEqualTo(dto.getTotalPrice());
+        assertThat(findOrder.getDeliveryAddress()).isEqualTo(dto.getDeliveryAddress());
+        assertThat(findOrder.getCreatedAt()).isBefore(LocalDateTime.now());
+        assertThat(findOrder.getHistory()).usingRecursiveComparison().isEqualTo(dto.getOrderHistoryDto());
+        assertThat(findOrder.getPayType()).isNotNull();
+    }
 
 }

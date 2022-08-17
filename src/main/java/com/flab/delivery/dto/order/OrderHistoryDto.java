@@ -27,11 +27,11 @@ public class OrderHistoryDto {
                 .build();
     }
 
-    public int getTotalPrice() {
+    public int calculateTotalPrice() {
         int price = 0;
 
         for (OrderMenuHistoryDto menuHistoryDto : menuList) {
-            price += menuHistoryDto.getTotalPrice();
+            price += menuHistoryDto.calculateTotalPrice();
         }
 
         return price;

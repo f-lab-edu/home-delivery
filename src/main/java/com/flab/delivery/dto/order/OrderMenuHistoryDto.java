@@ -65,7 +65,7 @@ public class OrderMenuHistoryDto {
                 .build();
     }
 
-    public int getTotalPrice() {
+    public int calculateTotalPrice() {
         int price = getPrice();
 
         for (OrderOptionHistoryDto optionHistoryDto : optionList) {

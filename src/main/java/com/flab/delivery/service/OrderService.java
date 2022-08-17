@@ -1,5 +1,6 @@
 package com.flab.delivery.service;
 
+import com.flab.delivery.dto.order.OrderDetailResponseDto;
 import com.flab.delivery.dto.order.OrderDto;
 import com.flab.delivery.dto.order.OrderRequestDto;
 import com.flab.delivery.dto.order.OrderSimpleResponseDto;
@@ -8,8 +9,6 @@ import com.flab.delivery.mapper.OrderMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionSynchronization;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +41,8 @@ public class OrderService {
 
         // TODO 메시지큐 OR 구현
     }
-    public List<OrderSimpleResponseDto> getOrderList(String userId, int startId) {
+
+    public List<OrderSimpleResponseDto> getUserOrderList(String userId, int startId) {
 
         List<Long> pageIds = orderMapper.findPageIds(userId, startId);
 
@@ -53,4 +53,7 @@ public class OrderService {
         return orderMapper.findAllByPageIds(pageIds);
     }
 
+    public OrderDetailResponseDto getUserDetailOrder(String userId, Long orderId) {
+        return orderMapper.findByIdAndUserId(orderId, userId);
+    }
 }
