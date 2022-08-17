@@ -13,15 +13,15 @@ public class OrderDto {
     private Long id;
     private int totalPrice;
     private OrderStatus orderStatus;
-    private List<OrderHistoryDto> orderHistoryList;
     private String deliveryAddress;
+    private OrderHistoryDto orderHistoryDto;
 
 
     public static OrderDto from(OrderRequestDto orderRequestDto, String deliveryAddress) {
         return OrderDto.builder()
                 .totalPrice(orderRequestDto.getTotalPrice())
                 .orderStatus(OrderStatus.BEFORE_PAYMENT)
-                .orderHistoryList(OrderHistoryDto.createHistory(orderRequestDto.getMenuList()))
+                .orderHistoryDto(OrderHistoryDto.from(orderRequestDto))
                 .deliveryAddress(deliveryAddress)
                 .build();
     }

@@ -3,10 +3,7 @@ package com.flab.delivery.fixture;
 import com.flab.delivery.dto.address.AddressRequestDto;
 import com.flab.delivery.dto.menu.MenuDto;
 import com.flab.delivery.dto.option.OptionDto;
-import com.flab.delivery.dto.order.OrderDto;
-import com.flab.delivery.dto.order.OrderHistoryDto;
-import com.flab.delivery.dto.order.OrderMenuDto;
-import com.flab.delivery.dto.order.OrderRequestDto;
+import com.flab.delivery.dto.order.*;
 import com.flab.delivery.dto.user.PasswordDto;
 import com.flab.delivery.dto.user.UserDto;
 import com.flab.delivery.dto.user.UserInfoUpdateDto;
@@ -66,7 +63,7 @@ public class TestDto {
         return OrderDto.builder()
                 .totalPrice(30000)
                 .orderStatus(OrderStatus.ORDER_REQUEST)
-                .orderHistoryList(OrderHistoryDto.createHistory(getMenuList()))
+                .orderHistoryDto(OrderHistoryDto.from(getOrderRequestDto()))
                 .deliveryAddress("운암동 13번길 15")
                 .build();
     }

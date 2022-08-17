@@ -2,11 +2,17 @@ package com.flab.delivery.service;
 
 import com.flab.delivery.dto.order.OrderDto;
 import com.flab.delivery.dto.order.OrderRequestDto;
+import com.flab.delivery.dto.order.OrderSimpleResponseDto;
 import com.flab.delivery.enums.OrderStatus;
 import com.flab.delivery.mapper.OrderMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Service
@@ -33,5 +39,18 @@ public class OrderService {
         orderMapper.changeStatus(orderId, OrderStatus.ORDER_REQUEST);
 
         // TODO 사장님 알람
+
+        // TODO 메시지큐 OR 구현
     }
+    public List<OrderSimpleResponseDto> getOrderList(String userId, int startId) {
+
+        List<Long> pageIds = orderMapper.findPageIds(userId, startId);
+
+        if (pageIds.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        return orderMapper.findAllByPageIds(pageIds);
+    }
+
 }

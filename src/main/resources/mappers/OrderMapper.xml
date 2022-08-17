@@ -7,7 +7,7 @@
         INSERT INTO ORDERS(user_id, order_price, status, delivery_address, history)
         VALUES (#{userId}, #{order.totalPrice}, #{order.orderStatus},
                 #{order.deliveryAddress},
-                #{order.orderHistoryList , typeHandler = com.flab.delivery.mapper.handler.JsonTypeHandler})
+                #{order.orderHistoryDto , typeHandler = com.flab.delivery.mapper.handler.JsonTypeHandler})
     </insert>
 
     <update id="changeStatus">
@@ -16,5 +16,26 @@
         WHERE id = #{orderId};
     </update>
 
+    <select id="findPageIds" resultType="Long">
+        SELECT id
+        FROM ORDERS
+        WHERE id &gt;= #{startId}
+          AND user_id = #{userId}
+    </select>
+
+    <select id="findAllByPageIds" resultType="OrderSimpleResponseDto">
+        SELECT status,
+               order_price,
+               created_at,
+               json_extract(history, '$.storeId')              AS store_id,
+               json_extract(history, '$.menuCount')            AS menu_count,
+               json_extract(history, '$.menuList[0].menuName') AS menu_name
+        FROM ORDERS
+        WHERE id IN
+        <foreach collection="list" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+        ORDER BY created_at DESC LIMIT 10;
+    </select>
 
 </mapper>

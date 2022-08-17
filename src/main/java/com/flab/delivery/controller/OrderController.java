@@ -4,6 +4,7 @@ import com.flab.delivery.annotation.LoginCheck;
 import com.flab.delivery.annotation.SessionUserId;
 import com.flab.delivery.controller.validator.OrderValidator;
 import com.flab.delivery.dto.order.OrderRequestDto;
+import com.flab.delivery.dto.order.OrderSimpleResponseDto;
 import com.flab.delivery.enums.UserType;
 import com.flab.delivery.response.CommonResult;
 import com.flab.delivery.service.OrderService;
@@ -12,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import javax.validation.Valid;
 
 @RestController
@@ -36,6 +38,14 @@ public class OrderController {
         orderService.createOrder(userId, orderRequestDto);
 
         return CommonResult.getSimpleSuccessResult(HttpStatus.CREATED.value());
+    }
+
+    @LoginCheck(userType = UserType.USER)
+    @GetMapping("/user")
+    public CommonResult<List<OrderSimpleResponseDto>> getUserOrderList(@SessionUserId String userId,
+                                                                       @RequestParam Integer startId) {
+
+        return CommonResult.getDataSuccessResult(orderService.getOrderList(userId, startId));
     }
 
 }

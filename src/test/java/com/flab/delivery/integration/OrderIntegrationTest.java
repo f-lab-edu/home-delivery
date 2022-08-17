@@ -9,7 +9,6 @@ import com.flab.delivery.dto.order.OrderRequestDto;
 import com.flab.delivery.enums.PayType;
 import com.flab.delivery.enums.UserType;
 import com.flab.delivery.fixture.MessageConstants;
-import com.flab.delivery.fixture.TestDto;
 import com.flab.delivery.mapper.MenuMapper;
 import com.flab.delivery.mapper.OptionMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
@@ -173,9 +173,6 @@ public class OrderIntegrationTest {
                 .andDo(print());
     }
 
-    //TODO
-
-
     @Test
     void createOrder_성공() throws Exception {
         // given
@@ -198,15 +195,15 @@ public class OrderIntegrationTest {
         List<OptionDto> optionList = optionMapper.findAllByMenuId(menu.getId());
 
         OrderMenuDto orderMenuDto = OrderMenuDto.builder()
-                        .menuDto(menu)
-                        .quantity(1)
-                        .optionList(optionList)
-                        .build();
+                .menuDto(menu)
+                .quantity(1)
+                .optionList(optionList)
+                .build();
 
 
         OrderRequestDto requestDto = OrderRequestDto.builder()
                 .storeId(2L)
-                .menuList(Arrays.asList(orderMenuDto))
+                .menuList(Arrays.asList(orderMenuDto, orderMenuDto))
                 .payType(PayType.CARD)
                 .build();
         return requestDto;
