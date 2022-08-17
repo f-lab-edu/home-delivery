@@ -18,10 +18,12 @@ public class OrderDto {
 
 
     public static OrderDto from(OrderRequestDto orderRequestDto, String deliveryAddress) {
+        OrderHistoryDto historyDto = OrderHistoryDto.from(orderRequestDto);
+
         return OrderDto.builder()
-                .totalPrice(orderRequestDto.getTotalPrice())
                 .orderStatus(OrderStatus.BEFORE_PAYMENT)
-                .orderHistoryDto(OrderHistoryDto.from(orderRequestDto))
+                .orderHistoryDto(historyDto)
+                .totalPrice(historyDto.getTotalPrice())
                 .deliveryAddress(deliveryAddress)
                 .build();
     }

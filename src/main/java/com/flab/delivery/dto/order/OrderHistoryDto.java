@@ -19,10 +19,22 @@ public class OrderHistoryDto {
 
     public static OrderHistoryDto from(OrderRequestDto orderRequestDto) {
 
+        List<OrderMenuHistoryDto> menuHistory = createHistory(orderRequestDto.getMenuList());
         return OrderHistoryDto.builder()
-                .menuCount(orderRequestDto.getMenuList().size())
                 .storeId(orderRequestDto.getStoreId())
-                .menuList(createHistory(orderRequestDto.getMenuList()))
+                .menuList(menuHistory)
+                .menuCount(menuHistory.size())
                 .build();
     }
+
+    public int getTotalPrice() {
+        int price = 0;
+
+        for (OrderMenuHistoryDto menuHistoryDto : menuList) {
+            price += menuHistoryDto.getTotalPrice();
+        }
+
+        return price;
+    }
+
 }

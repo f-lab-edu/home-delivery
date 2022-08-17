@@ -23,6 +23,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static com.flab.delivery.fixture.CommonTest.doAuthTest;
@@ -90,11 +91,7 @@ public class OrderIntegrationTest {
         MenuDto menu = menuMapper.findByName("후라이드 치킨").get();
         List<OptionDto> optionList = optionMapper.findAllByMenuId(menu.getId());
 
-        OrderMenuDto orderMenuDto = OrderMenuDto.builder()
-                .menuDto(menu)
-                .quantity(1)
-                .optionList(optionList)
-                .build();
+        OrderMenuDto orderMenuDto = createMenuDto(menu, optionList);
 
         OrderRequestDto wrongDto = OrderRequestDto.builder()
                 .storeId(2L)
@@ -119,11 +116,7 @@ public class OrderIntegrationTest {
         MenuDto menu = menuMapper.findByName("후라이드 치킨").get();
         List<OptionDto> optionList = optionMapper.findAllByMenuId(menu.getId());
 
-        OrderMenuDto orderMenuDto = OrderMenuDto.builder()
-                .menuDto(menu)
-                .quantity(1)
-                .optionList(optionList)
-                .build();
+        OrderMenuDto orderMenuDto = createMenuDto(menu, optionList);
 
 
         OrderRequestDto wrongDto = OrderRequestDto.builder()
@@ -150,11 +143,7 @@ public class OrderIntegrationTest {
         MenuDto menu = menuMapper.findByName("후라이드 치킨").get();
         List<OptionDto> optionList = optionMapper.findAllByMenuId(menu.getId());
 
-        OrderMenuDto orderMenuDto = OrderMenuDto.builder()
-                .menuDto(menu)
-                .quantity(1)
-                .optionList(optionList)
-                .build();
+        OrderMenuDto orderMenuDto = createMenuDto(menu, optionList);
 
         OrderRequestDto wrongDto = OrderRequestDto.builder()
                 .storeId(1L)
@@ -176,8 +165,11 @@ public class OrderIntegrationTest {
     @Test
     void createOrder_성공() throws Exception {
         // given
+        MenuDto menu = menuMapper.findByName("후라이드 치킨").get();
+        List<OptionDto> optionList = optionMapper.findAllByMenuId(menu.getId());
 
-        OrderRequestDto requestDto = getOrderRequestDto();
+        OrderRequestDto requestDto = getOrderRequestDto(createMenuDto(menu, optionList));
+
 
         // when
         // then
@@ -190,20 +182,39 @@ public class OrderIntegrationTest {
                 .andDo(print());
     }
 
-    private OrderRequestDto getOrderRequestDto() {
+    @Test
+    void createOrder_같은메뉴_다른옵션_성공() throws Exception {
+        // given
         MenuDto menu = menuMapper.findByName("후라이드 치킨").get();
-        List<OptionDto> optionList = optionMapper.findAllByMenuId(menu.getId());
+        List<OptionDto> option = optionMapper.findAllByMenuId(menu.getId());
 
-        OrderMenuDto orderMenuDto = OrderMenuDto.builder()
+        OrderRequestDto requestDto = getOrderRequestDto(createMenuDto(menu, option), createMenuDto(menu, Arrays.asList(option.get(0))));
+
+        // when
+        // then
+        mockMvc.perform(post("/orders")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDto))
+                        .session(session))
+                .andExpect(jsonPath("$.status").value(HttpStatus.CREATED.value()))
+                .andExpect(jsonPath("$.message").value(MessageConstants.SUCCESS_MESSAGE))
+                .andDo(print());
+    }
+
+    private OrderMenuDto createMenuDto(MenuDto menu, List<OptionDto> optionList) {
+        return OrderMenuDto.builder()
                 .menuDto(menu)
                 .quantity(1)
                 .optionList(optionList)
                 .build();
+    }
 
+
+    private OrderRequestDto getOrderRequestDto(OrderMenuDto... orderMenuDtos) {
 
         OrderRequestDto requestDto = OrderRequestDto.builder()
                 .storeId(2L)
-                .menuList(Arrays.asList(orderMenuDto, orderMenuDto))
+                .menuList(Arrays.asList(orderMenuDtos))
                 .payType(PayType.CARD)
                 .build();
         return requestDto;
