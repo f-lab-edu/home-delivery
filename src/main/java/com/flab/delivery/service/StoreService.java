@@ -75,4 +75,8 @@ public class StoreService {
                 .menuDtoList(menuService.getMenuList(id))
                 .build();
     }
+
+    public boolean existsStoreByUserIdAndStoreId(String userId, Long storeId) {
+        return storeMapper.existsByUserIdAndStoreId(userId, storeId);
+    }
 }

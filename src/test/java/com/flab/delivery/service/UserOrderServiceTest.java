@@ -1,8 +1,8 @@
 package com.flab.delivery.service;
 
-import com.flab.delivery.dto.order.OrderDto;
-import com.flab.delivery.dto.order.OrderRequestDto;
-import com.flab.delivery.dto.order.OrderSimpleResponseDto;
+import com.flab.delivery.dto.order.user.OrderDto;
+import com.flab.delivery.dto.order.user.OrderRequestDto;
+import com.flab.delivery.dto.order.user.OrderSimpleResponseDto;
 import com.flab.delivery.exception.AddressException;
 import com.flab.delivery.fixture.TestDto;
 import com.flab.delivery.mapper.OrderMapper;
@@ -26,11 +26,11 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class OrderServiceTest {
+class UserOrderServiceTest {
 
     public static final String USER_ID = "user1";
     @InjectMocks
-    private OrderService orderService;
+    private UserOrderService userOrderService;
 
     @Mock
     private MockPayService payService;
@@ -52,7 +52,7 @@ class OrderServiceTest {
                 .getDeliveryAddress(eq(userId));
 
         // when
-        assertThatThrownBy(() -> orderService.createOrder(userId, requestDto))
+        assertThatThrownBy(() -> userOrderService.createOrder(userId, requestDto))
                 .isInstanceOf(AddressException.class);
 
         // then
@@ -74,7 +74,7 @@ class OrderServiceTest {
                 .save(anyString(), any());
 
         // when
-        assertThatThrownBy(() -> orderService.createOrder(userId, requestDto))
+        assertThatThrownBy(() -> userOrderService.createOrder(userId, requestDto))
                 .isInstanceOf(RuntimeException.class);
 
         // then
@@ -93,7 +93,7 @@ class OrderServiceTest {
 
         given(addressService.getDeliveryAddress(eq(userId))).willReturn("운암동 15번길 13");
         // when
-        orderService.createOrder(userId, requestDto);
+        userOrderService.createOrder(userId, requestDto);
 
         // then
         verify(orderMapper).save(eq(userId), valueCapture.capture());
@@ -109,7 +109,7 @@ class OrderServiceTest {
         given(orderMapper.findPageIds(any(), eq(0))).willReturn(new ArrayList<>());
 
         // when
-        List<OrderSimpleResponseDto> userOrderList = orderService.getUserOrderList(USER_ID, 0);
+        List<OrderSimpleResponseDto> userOrderList = userOrderService.getUserOrderList(USER_ID, 0);
 
         // then
         assertThat(userOrderList.size()).isEqualTo(0);
@@ -131,7 +131,7 @@ class OrderServiceTest {
         given(orderMapper.findAllByPageIds(idList)).willReturn(responseDtoList);
 
         // when
-        List<OrderSimpleResponseDto> userOrderList = orderService.getUserOrderList(USER_ID, 0);
+        List<OrderSimpleResponseDto> userOrderList = userOrderService.getUserOrderList(USER_ID, 0);
 
         // then
         assertThat(userOrderList).usingFieldByFieldElementComparator().containsAll(responseDtoList);

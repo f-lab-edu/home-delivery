@@ -1,6 +1,8 @@
-package com.flab.delivery.dto.order;
+package com.flab.delivery.dto.order.user;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.flab.delivery.dto.option.OptionDto;
 import lombok.*;
 import org.assertj.core.util.Strings;
@@ -14,6 +16,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 @Getter
+@JsonInclude(JsonInclude.Include.NON_DEFAULT)
 public class OrderMenuHistoryDto {
 
     private String menuName;
@@ -76,6 +79,7 @@ public class OrderMenuHistoryDto {
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     @Builder
     @Getter
     private static class OrderOptionHistoryDto {

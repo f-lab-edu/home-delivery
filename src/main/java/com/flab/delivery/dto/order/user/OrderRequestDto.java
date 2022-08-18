@@ -1,4 +1,4 @@
-package com.flab.delivery.dto.order;
+package com.flab.delivery.dto.order.user;
 
 import com.flab.delivery.annotation.ValidEnum;
 import com.flab.delivery.dto.option.OptionDto;

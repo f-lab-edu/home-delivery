@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flab.delivery.annotation.IntegrationTest;
 import com.flab.delivery.dto.menu.MenuDto;
 import com.flab.delivery.dto.option.OptionDto;
-import com.flab.delivery.dto.order.OrderMenuDto;
-import com.flab.delivery.dto.order.OrderRequestDto;
+import com.flab.delivery.dto.order.user.OrderMenuDto;
+import com.flab.delivery.dto.order.user.OrderRequestDto;
 import com.flab.delivery.enums.PayType;
 import com.flab.delivery.enums.UserType;
 import com.flab.delivery.fixture.MessageConstants;
@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
@@ -64,8 +65,10 @@ public class OrderIntegrationTest {
 
     @Test
     void createOrder_권한_없어서_실패() throws Exception {
+        MenuDto menu = menuMapper.findByName("후라이드 치킨").get();
+
         doOrderAuthTest(post("/orders")
-                .content(objectMapper.writeValueAsString(getOrderRequestDto()))
+                .content(objectMapper.writeValueAsString(getOrderRequestDto(createMenuDto(menu, new ArrayList<>()))))
                 .contentType(MediaType.APPLICATION_JSON));
     }
 

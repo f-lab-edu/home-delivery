@@ -1,8 +1,10 @@
 package com.flab.delivery.mapper;
 
 import com.flab.delivery.config.DatabaseConfig;
+import com.flab.delivery.dto.order.user.OrderDto;
 import com.flab.delivery.dto.pay.PayDto;
 import com.flab.delivery.enums.PayType;
+import com.flab.delivery.fixture.TestDto;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +17,18 @@ import org.springframework.context.annotation.Import;
 class PayMapperTest {
 
     @Autowired
+    private OrderMapper orderMapper;
+    @Autowired
     private PayMapper payMapper;
 
     @Test
     void save_확인() {
         // given
-        PayDto payDto = PayDto.completePay(1L, PayType.CARD);
+        OrderDto orderDto = TestDto.getOrderDto();
+        orderMapper.save("user1", orderDto);
+
+
+        PayDto payDto = PayDto.completePay(orderDto.getId(), PayType.CARD);
 
         // when
         // then

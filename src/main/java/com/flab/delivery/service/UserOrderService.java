@@ -1,9 +1,9 @@
 package com.flab.delivery.service;
 
-import com.flab.delivery.dto.order.OrderDetailResponseDto;
-import com.flab.delivery.dto.order.OrderDto;
-import com.flab.delivery.dto.order.OrderRequestDto;
-import com.flab.delivery.dto.order.OrderSimpleResponseDto;
+import com.flab.delivery.dto.order.user.OrderDetailResponseDto;
+import com.flab.delivery.dto.order.user.OrderDto;
+import com.flab.delivery.dto.order.user.OrderRequestDto;
+import com.flab.delivery.dto.order.user.OrderSimpleResponseDto;
 import com.flab.delivery.enums.OrderStatus;
 import com.flab.delivery.mapper.OrderMapper;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class OrderService {
+public class UserOrderService {
 
     private final PayService mockPayService;
     private final AddressService addressService;

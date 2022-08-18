@@ -28,4 +28,7 @@ public interface StoreMapper {
     void updateStatusById(@Param("id") Long id, @Param("status") StoreStatus status);
 
     List<StoreDto> findStoreListBy(@Param("categoryId") Long categoryId, @Param("addressId") Long addressId);
+
+    boolean existsByUserIdAndStoreId(@Param("userId") String userId, @Param("storeId") Long storeId);
+
 }

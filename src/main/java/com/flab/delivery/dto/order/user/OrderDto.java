@@ -1,4 +1,4 @@
-package com.flab.delivery.dto.order;
+package com.flab.delivery.dto.order.user;
 
 import com.flab.delivery.enums.OrderStatus;
 import lombok.Builder;
@@ -9,6 +9,7 @@ import lombok.Getter;
 public class OrderDto {
 
     private Long id;
+    private Long storeId;
     private int totalPrice;
     private OrderStatus orderStatus;
     private String deliveryAddress;
@@ -19,6 +20,7 @@ public class OrderDto {
         OrderHistoryDto historyDto = OrderHistoryDto.from(orderRequestDto);
 
         return OrderDto.builder()
+                .storeId(orderRequestDto.getStoreId())
                 .orderStatus(OrderStatus.BEFORE_PAYMENT)
                 .orderHistoryDto(historyDto)
                 .totalPrice(historyDto.calculateTotalPrice())

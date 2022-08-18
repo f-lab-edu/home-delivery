@@ -1,9 +1,10 @@
 package com.flab.delivery.mapper;
 
 import com.flab.delivery.config.DatabaseConfig;
-import com.flab.delivery.dto.order.OrderDetailResponseDto;
-import com.flab.delivery.dto.order.OrderDto;
-import com.flab.delivery.dto.order.OrderSimpleResponseDto;
+import com.flab.delivery.dto.order.owner.OwnerOrderResponseDto;
+import com.flab.delivery.dto.order.user.OrderDetailResponseDto;
+import com.flab.delivery.dto.order.user.OrderDto;
+import com.flab.delivery.dto.order.user.OrderSimpleResponseDto;
 import com.flab.delivery.dto.pay.PayDto;
 import com.flab.delivery.enums.OrderStatus;
 import com.flab.delivery.enums.PayStatus;
@@ -96,6 +97,7 @@ class OrderMapperTest {
         for (int i = 0; i < 10; i++) {
             OrderSimpleResponseDto simpleResponseDto = allByPageIds.get(i);
             assertThat(simpleResponseDto.getOrderPrice()).isEqualTo(orderDto.getTotalPrice());
+            assertThat(simpleResponseDto.getStoreId()).isEqualTo(orderDto.getStoreId());
             assertThat(simpleResponseDto.getCreatedAt()).isBefore(LocalDateTime.now());
             assertThat(simpleResponseDto.getMenuName()).isEqualTo(orderDto.getOrderHistoryDto().getMenuList().get(0).getMenuName());
             assertThat(simpleResponseDto.getMenuCount()).isEqualTo(orderDto.getOrderHistoryDto().getMenuCount());
@@ -122,6 +124,24 @@ class OrderMapperTest {
         assertThat(findOrder.getCreatedAt()).isBefore(LocalDateTime.now());
         assertThat(findOrder.getHistory()).usingRecursiveComparison().isEqualTo(dto.getOrderHistoryDto());
         assertThat(findOrder.getPayType()).isNotNull();
+    }
+
+
+    @Test
+    void findAllOwnerOrder_확인() {
+        // given
+        orderMapper.save("user1", TestDto.getOrderDto());
+        orderMapper.save("user2", TestDto.getOrderDto());
+
+
+
+        // when
+        List<OwnerOrderResponseDto> responseDtoList = orderMapper.findAllOwnerOrderLimit100(1L);
+
+        // then
+        for (OwnerOrderResponseDto dto : responseDtoList) {
+            assertThat(dto).usingRecursiveComparison().isNotNull();
+        }
     }
 
 }

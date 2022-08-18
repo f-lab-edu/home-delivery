@@ -66,4 +66,8 @@
           AND status = 'OPEN';
     </select>
 
+    <select id="existsByUserIdAndStoreId" resultType="boolean">
+        SELECT EXISTS(SELECT id FROM STORE WHERE user_id = #{userId} AND id =#{storeId})
+    </select>
+
 </mapper>

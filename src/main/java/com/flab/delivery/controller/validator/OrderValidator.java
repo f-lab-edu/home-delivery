@@ -2,8 +2,8 @@ package com.flab.delivery.controller.validator;
 
 import com.flab.delivery.dto.menu.MenuDto;
 import com.flab.delivery.dto.option.OptionDto;
-import com.flab.delivery.dto.order.OrderMenuDto;
-import com.flab.delivery.dto.order.OrderRequestDto;
+import com.flab.delivery.dto.order.user.OrderMenuDto;
+import com.flab.delivery.dto.order.user.OrderRequestDto;
 import com.flab.delivery.dto.store.StoreDto;
 import com.flab.delivery.enums.MenuStatus;
 import com.flab.delivery.enums.StoreStatus;
