@@ -8,10 +8,8 @@ import com.flab.delivery.enums.UserType;
 import com.flab.delivery.response.CommonResult;
 import com.flab.delivery.service.OwnerOrderService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -32,5 +30,23 @@ public class OwnerOrderController {
         return CommonResult.getDataSuccessResult(ownerOrderList);
     }
 
+
+    @LoginCheck(userType = UserType.OWNER)
+    @PatchMapping("/{orderId}/owner/approve")
+    public CommonResult<Void> approveOrder(@SessionUserId String userId,
+                                           @PathVariable Long orderId) {
+
+        ownerOrderService.approveOrder(userId, orderId);
+        return CommonResult.getSimpleSuccessResult(HttpStatus.OK.value());
+    }
+
+    @LoginCheck(userType = UserType.OWNER)
+    @PatchMapping("/{orderId}/owner/cancel")
+    public CommonResult<Void> cancelOrder(@SessionUserId String userId,
+                                           @PathVariable Long orderId) {
+
+        ownerOrderService.cancelOrder(userId, orderId);
+        return CommonResult.getSimpleSuccessResult(HttpStatus.OK.value());
+    }
 
 }
