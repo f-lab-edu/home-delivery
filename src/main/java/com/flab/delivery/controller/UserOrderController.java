@@ -31,6 +31,7 @@ public class UserOrderController {
         webDataBinder.addValidators(orderValidator);
     }
 
+    //TODO 테스트 케이스 추가 작성
     @LoginCheck(userType = UserType.USER)
     @PostMapping
     public CommonResult<Void> createOrder(@RequestBody @Valid OrderRequestDto orderRequestDto,

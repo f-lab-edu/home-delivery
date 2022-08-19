@@ -1,12 +1,10 @@
 package com.flab.delivery.dto.menu;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.flab.delivery.dto.option.OptionDto;
 import com.flab.delivery.enums.MenuStatus;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Builder
 @Getter

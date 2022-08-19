@@ -1,8 +1,6 @@
 package com.flab.delivery.dto.order.user;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.flab.delivery.dto.option.OptionDto;
 import lombok.*;
 import org.assertj.core.util.Strings;

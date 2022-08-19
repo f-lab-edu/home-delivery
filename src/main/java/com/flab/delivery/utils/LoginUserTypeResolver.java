@@ -1,6 +1,5 @@
 package com.flab.delivery.utils;
 
-import com.flab.delivery.annotation.SessionUserId;
 import com.flab.delivery.annotation.SessionUserType;
 import com.flab.delivery.service.LoginService;
 import lombok.RequiredArgsConstructor;

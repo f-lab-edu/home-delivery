@@ -4,7 +4,6 @@ import com.flab.delivery.dto.order.OrderDto;
 import com.flab.delivery.dto.order.owner.OwnerOrderResponseDto;
 import com.flab.delivery.enums.OrderStatus;
 import com.flab.delivery.exception.OrderException;
-import com.flab.delivery.exception.message.ErrorMessageConstants;
 import com.flab.delivery.mapper.OrderMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,7 +24,6 @@ public class OwnerOrderService {
 
     private final StoreService storeService;
 
-    // TODO 테스트 케이스 작성
     public List<OwnerOrderResponseDto> getOwnerOrderList(String userId, Long storeId) {
 
         if (!storeService.existsStoreByUserIdAndStoreId(userId, storeId)) {

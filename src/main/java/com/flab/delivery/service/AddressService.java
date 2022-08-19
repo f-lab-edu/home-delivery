@@ -3,7 +3,6 @@ package com.flab.delivery.service;
 import com.flab.delivery.dto.address.AddressDto;
 import com.flab.delivery.dto.address.AddressRequestDto;
 import com.flab.delivery.exception.AddressException;
-import com.flab.delivery.exception.message.ErrorMessageConstants;
 import com.flab.delivery.mapper.AddressMapper;
 import com.flab.delivery.mapper.UserAddressMapper;
 import lombok.RequiredArgsConstructor;

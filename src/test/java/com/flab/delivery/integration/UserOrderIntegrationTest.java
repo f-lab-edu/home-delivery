@@ -19,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
@@ -36,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @IntegrationTest
-public class OrderIntegrationTest {
+public class UserOrderIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -233,7 +232,6 @@ public class OrderIntegrationTest {
                 .andExpect(jsonPath("$.data[*].createdAt").exists())
                 .andDo(print());
     }
-
     private OrderMenuDto createMenuDto(MenuDto menu, List<OptionDto> optionList) {
         return OrderMenuDto.builder()
                 .menuDto(menu)

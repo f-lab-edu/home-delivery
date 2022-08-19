@@ -3,7 +3,6 @@ package com.flab.delivery.controller;
 import com.flab.delivery.annotation.LoginCheck;
 import com.flab.delivery.annotation.SessionUserId;
 import com.flab.delivery.dto.order.owner.OwnerOrderResponseDto;
-import com.flab.delivery.dto.order.user.OrderSimpleResponseDto;
 import com.flab.delivery.enums.UserType;
 import com.flab.delivery.response.CommonResult;
 import com.flab.delivery.service.OwnerOrderService;
@@ -20,11 +19,10 @@ public class OwnerOrderController {
 
     private final OwnerOrderService ownerOrderService;
 
-    // TODO 테스트 케이스 작성
 
     @LoginCheck(userType = UserType.OWNER)
     @GetMapping("/owner/{storeId}")
-    public CommonResult<List<OrderSimpleResponseDto>> getOwnerOrderList(@SessionUserId String userId,
+    public CommonResult<List<OwnerOrderResponseDto>> getOwnerOrderList(@SessionUserId String userId,
                                                                          @PathVariable Long storeId) {
         List<OwnerOrderResponseDto> ownerOrderList = ownerOrderService.getOwnerOrderList(userId, storeId);
         return CommonResult.getDataSuccessResult(ownerOrderList);
