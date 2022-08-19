@@ -5,9 +5,9 @@
 
     <insert id="save" useGeneratedKeys="true" keyProperty="order.id">
         INSERT INTO ORDERS(user_id, store_id, order_price, status, delivery_address, history)
-        VALUES (#{userId}, #{order.storeId}, #{order.totalPrice}, #{order.orderStatus},
+        VALUES (#{userId}, #{order.storeId}, #{order.orderPrice}, #{order.status},
                 #{order.deliveryAddress},
-                #{order.orderHistoryDto , typeHandler = com.flab.delivery.mapper.handler.JsonTypeHandler})
+                #{order.history , typeHandler = com.flab.delivery.mapper.handler.JsonTypeHandler})
     </insert>
 
     <update id="changeStatus">
@@ -38,7 +38,7 @@
         ORDER BY created_at DESC LIMIT 10;
     </select>
 
-    <resultMap id="orderDetail" type="OrderDetailResponseDto">
+    <resultMap id="orderDetail" type="OrderDto">
         <result property="orderPrice" column="order_price"/>
         <result property="status" column="status"/>
         <result property="createdAt" column="created_at"/>

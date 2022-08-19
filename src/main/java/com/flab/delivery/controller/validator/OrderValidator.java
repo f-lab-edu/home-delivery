@@ -18,6 +18,8 @@ import org.springframework.validation.Validator;
 import java.util.Objects;
 import java.util.Optional;
 
+import static com.flab.delivery.exception.message.ErrorMessageConstants.BAD_INPUT_MESSAGE;
+
 @Component
 @RequiredArgsConstructor
 public class OrderValidator implements Validator {
@@ -39,7 +41,7 @@ public class OrderValidator implements Validator {
         Optional<StoreDto> findOptionalStore = storeMapper.findById(orderRequestDto.getStoreId());
 
         if (!findOptionalStore.isPresent()) {
-            errors.rejectValue("storeId", "worng.value", "잘못된 요청 입니다.");
+            errors.rejectValue("storeId", "worng.value", BAD_INPUT_MESSAGE);
         }
         StoreDto findStore = findOptionalStore.get();
 
@@ -49,7 +51,7 @@ public class OrderValidator implements Validator {
         }
 
         if (!validateMenu(orderRequestDto)) {
-            errors.rejectValue("menuList", "worng.value", "잘못된 요청 입니다.");
+            errors.rejectValue("menuList", "worng.value", BAD_INPUT_MESSAGE);
             return;
         }
 

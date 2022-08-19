@@ -1,6 +1,6 @@
 package com.flab.delivery.service;
 
-import com.flab.delivery.dto.order.user.OrderDto;
+import com.flab.delivery.dto.order.OrderDto;
 import com.flab.delivery.dto.order.user.OrderRequestDto;
 import com.flab.delivery.dto.order.user.OrderSimpleResponseDto;
 import com.flab.delivery.exception.AddressException;

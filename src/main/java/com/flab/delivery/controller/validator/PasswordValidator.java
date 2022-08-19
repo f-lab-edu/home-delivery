@@ -14,6 +14,8 @@ import org.springframework.validation.Validator;
 
 import javax.servlet.http.HttpSession;
 
+import static com.flab.delivery.exception.message.ErrorMessageConstants.UNAUTHORIZED_MESSAGE;
+
 @Component
 @RequiredArgsConstructor
 public class PasswordValidator implements Validator {
@@ -33,7 +35,7 @@ public class PasswordValidator implements Validator {
         String userId = (String) httpSession.getAttribute(SessionConstants.SESSION_ID);
 
         if (userId == null) {
-            throw new SessionLoginException("세션 아이디가 존재하지 않습니다", HttpStatus.UNAUTHORIZED);
+            throw new SessionLoginException(UNAUTHORIZED_MESSAGE, HttpStatus.UNAUTHORIZED);
         }
 
         UserDto findUser = userMapper.findById(userId);

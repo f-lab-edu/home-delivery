@@ -1,7 +1,6 @@
 package com.flab.delivery.service;
 
-import com.flab.delivery.dto.order.user.OrderDetailResponseDto;
-import com.flab.delivery.dto.order.user.OrderDto;
+import com.flab.delivery.dto.order.OrderDto;
 import com.flab.delivery.dto.order.user.OrderRequestDto;
 import com.flab.delivery.dto.order.user.OrderSimpleResponseDto;
 import com.flab.delivery.enums.OrderStatus;
@@ -53,7 +52,7 @@ public class UserOrderService {
         return orderMapper.findAllByPageIds(pageIds);
     }
 
-    public OrderDetailResponseDto getUserDetailOrder(String userId, Long orderId) {
+    public OrderDto getUserDetailOrder(String userId, Long orderId) {
         return orderMapper.findByIdAndUserId(orderId, userId);
     }
 }

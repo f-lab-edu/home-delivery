@@ -2,8 +2,7 @@ package com.flab.delivery.mapper;
 
 import com.flab.delivery.config.DatabaseConfig;
 import com.flab.delivery.dto.order.owner.OwnerOrderResponseDto;
-import com.flab.delivery.dto.order.user.OrderDetailResponseDto;
-import com.flab.delivery.dto.order.user.OrderDto;
+import com.flab.delivery.dto.order.OrderDto;
 import com.flab.delivery.dto.order.user.OrderSimpleResponseDto;
 import com.flab.delivery.dto.pay.PayDto;
 import com.flab.delivery.enums.OrderStatus;
@@ -96,12 +95,12 @@ class OrderMapperTest {
 
         for (int i = 0; i < 10; i++) {
             OrderSimpleResponseDto simpleResponseDto = allByPageIds.get(i);
-            assertThat(simpleResponseDto.getOrderPrice()).isEqualTo(orderDto.getTotalPrice());
+            assertThat(simpleResponseDto.getOrderPrice()).isEqualTo(orderDto.getOrderPrice());
             assertThat(simpleResponseDto.getStoreId()).isEqualTo(orderDto.getStoreId());
             assertThat(simpleResponseDto.getCreatedAt()).isBefore(LocalDateTime.now());
-            assertThat(simpleResponseDto.getMenuName()).isEqualTo(orderDto.getOrderHistoryDto().getMenuList().get(0).getMenuName());
-            assertThat(simpleResponseDto.getMenuCount()).isEqualTo(orderDto.getOrderHistoryDto().getMenuCount());
-            assertThat(simpleResponseDto.getStatus()).isEqualTo(orderDto.getOrderStatus());
+            assertThat(simpleResponseDto.getMenuName()).isEqualTo(orderDto.getHistory().getMenuList().get(0).getMenuName());
+            assertThat(simpleResponseDto.getMenuCount()).isEqualTo(orderDto.getHistory().getMenuCount());
+            assertThat(simpleResponseDto.getStatus()).isEqualTo(orderDto.getStatus());
 
         }
     }
@@ -116,13 +115,13 @@ class OrderMapperTest {
         payMapper.save(PayDto.builder().type(PayType.CARD).orderId(dto.getId()).status(PayStatus.COMPLETE).build());
 
         // when
-        OrderDetailResponseDto findOrder = orderMapper.findByIdAndUserId(dto.getId(), userId);
+        OrderDto findOrder = orderMapper.findByIdAndUserId(dto.getId(), userId);
 
         // then
-        assertThat(findOrder.getOrderPrice()).isEqualTo(dto.getTotalPrice());
+        assertThat(findOrder.getOrderPrice()).isEqualTo(dto.getOrderPrice());
         assertThat(findOrder.getDeliveryAddress()).isEqualTo(dto.getDeliveryAddress());
         assertThat(findOrder.getCreatedAt()).isBefore(LocalDateTime.now());
-        assertThat(findOrder.getHistory()).usingRecursiveComparison().isEqualTo(dto.getOrderHistoryDto());
+        assertThat(findOrder.getHistory()).usingRecursiveComparison().isEqualTo(dto.getHistory());
         assertThat(findOrder.getPayType()).isNotNull();
     }
 

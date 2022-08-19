@@ -9,6 +9,7 @@ import com.flab.delivery.dto.user.SignUpDto;
 import com.flab.delivery.dto.user.UserDto;
 import com.flab.delivery.dto.user.UserInfoUpdateDto;
 import com.flab.delivery.enums.UserType;
+import com.flab.delivery.exception.message.ErrorMessageConstants;
 import com.flab.delivery.fixture.TestDto;
 import com.flab.delivery.mapper.UserMapper;
 import com.flab.delivery.utils.SessionConstants;
@@ -26,6 +27,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.flab.delivery.exception.message.ErrorMessageConstants.FORBIDDEN_MESSAGE;
+import static com.flab.delivery.exception.message.ErrorMessageConstants.UNAUTHORIZED_MESSAGE;
 import static com.flab.delivery.fixture.CommonTest.doAuthTest;
 import static com.flab.delivery.fixture.MessageConstants.*;
 import static com.flab.delivery.utils.SessionConstants.SESSION_ID;
@@ -436,7 +439,7 @@ class UserIntegrationTest {
             void session() throws Exception {
                 mockMvc.perform(delete("/users/logout"))
                         .andExpect(jsonPath("$.status").value(HttpStatus.UNAUTHORIZED.value()))
-                        .andExpect(jsonPath("$.message").value(NOT_EXISTS_SESSION_MESSAGE))
+                        .andExpect(jsonPath("$.message").value(UNAUTHORIZED_MESSAGE))
                         .andDo(print());
 
             }
@@ -475,7 +478,7 @@ class UserIntegrationTest {
         // when
         // then
         mockMvc.perform(get("/users").session(mockHttpSession))
-                .andExpect(jsonPath("$.message").value(NOT_EXISTS_SESSION_MESSAGE))
+                .andExpect(jsonPath("$.message").value(UNAUTHORIZED_MESSAGE))
                 .andExpect(jsonPath("$.status").value(401))
                 .andExpect(jsonPath("$.data").isEmpty())
                 .andDo(print());
@@ -491,7 +494,7 @@ class UserIntegrationTest {
         mockMvc.perform(patch("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userInfoUpdateDto)))
-                .andExpect(jsonPath("$.message").value(NOT_EXISTS_SESSION_MESSAGE))
+                .andExpect(jsonPath("$.message").value(UNAUTHORIZED_MESSAGE))
                 .andExpect(jsonPath("$.status").value(HttpStatus.UNAUTHORIZED.value()));
 
     }
@@ -508,7 +511,7 @@ class UserIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userInfoUpdateDto))
                         .session(mockHttpSession))
-                .andExpect(jsonPath("$.message").value(HAVE_NO_AUTHORITY_MESSAGE))
+                .andExpect(jsonPath("$.message").value(FORBIDDEN_MESSAGE))
                 .andExpect(jsonPath("$.status").value(HttpStatus.FORBIDDEN.value()));
 
     }
@@ -560,7 +563,7 @@ class UserIntegrationTest {
         // when
         // then
         mockMvc.perform(delete("/users"))
-                .andExpect(jsonPath("$.message").value(NOT_EXISTS_SESSION_MESSAGE))
+                .andExpect(jsonPath("$.message").value(UNAUTHORIZED_MESSAGE))
                 .andExpect(jsonPath("$.status").value(HttpStatus.UNAUTHORIZED.value()));
     }
 
@@ -587,7 +590,7 @@ class UserIntegrationTest {
         mockMvc.perform(patch("/users/password")
                         .content(objectMapper.writeValueAsString(wrongPasswordDto))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.message").value(NOT_EXISTS_SESSION_MESSAGE))
+                .andExpect(jsonPath("$.message").value(UNAUTHORIZED_MESSAGE))
                 .andExpect(jsonPath("$.status").value(HttpStatus.UNAUTHORIZED.value()));
 
     }

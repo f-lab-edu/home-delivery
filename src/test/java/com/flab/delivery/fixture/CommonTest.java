@@ -1,12 +1,13 @@
 package com.flab.delivery.fixture;
 
 import com.flab.delivery.enums.UserType;
+import com.flab.delivery.exception.message.ErrorMessageConstants;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
-import static com.flab.delivery.fixture.MessageConstants.HAVE_NO_AUTHORITY_MESSAGE;
+import static com.flab.delivery.exception.message.ErrorMessageConstants.FORBIDDEN_MESSAGE;
 import static com.flab.delivery.utils.SessionConstants.AUTH_TYPE;
 import static com.flab.delivery.utils.SessionConstants.SESSION_ID;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -24,6 +25,6 @@ public final class CommonTest {
         // then
         mockMvc.perform(requestBuilder.session(MOCK_HTTP_SESSION))
                 .andExpect(jsonPath("$.status").value(HttpStatus.FORBIDDEN.value()))
-                .andExpect(jsonPath("$.message").value(HAVE_NO_AUTHORITY_MESSAGE));
+                .andExpect(jsonPath("$.message").value(FORBIDDEN_MESSAGE));
     }
 }

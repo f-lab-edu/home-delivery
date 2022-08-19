@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import static com.flab.delivery.exception.message.ErrorMessageConstants.FORBIDDEN_MESSAGE;
+
 
 @Service
 @RequiredArgsConstructor
@@ -55,7 +57,7 @@ public class UserService {
     public void updateUserInfo(String userId, UserInfoUpdateDto userInfoUpdateDto) {
 
         if (!userId.equals(userInfoUpdateDto.getId())) {
-            throw new SessionLoginException("권한이 없습니다", HttpStatus.FORBIDDEN);
+            throw new SessionLoginException(FORBIDDEN_MESSAGE, HttpStatus.FORBIDDEN);
         }
 
         userMapper.updateInfo(userInfoUpdateDto);

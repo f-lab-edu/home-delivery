@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 @Getter
-@JsonInclude(JsonInclude.Include.NON_DEFAULT)
 public class OrderMenuHistoryDto {
 
     private String menuName;
@@ -79,7 +78,6 @@ public class OrderMenuHistoryDto {
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
-    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     @Builder
     @Getter
     private static class OrderOptionHistoryDto {

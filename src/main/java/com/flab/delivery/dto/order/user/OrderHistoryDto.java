@@ -11,7 +11,6 @@ import static com.flab.delivery.dto.order.user.OrderMenuHistoryDto.createHistory
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-@JsonInclude(JsonInclude.Include.NON_DEFAULT)
 public class OrderHistoryDto {
 
     private int menuCount;

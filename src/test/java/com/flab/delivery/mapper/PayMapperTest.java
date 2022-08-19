@@ -1,7 +1,7 @@
 package com.flab.delivery.mapper;
 
 import com.flab.delivery.config.DatabaseConfig;
-import com.flab.delivery.dto.order.user.OrderDto;
+import com.flab.delivery.dto.order.OrderDto;
 import com.flab.delivery.dto.pay.PayDto;
 import com.flab.delivery.enums.PayType;
 import com.flab.delivery.fixture.TestDto;
