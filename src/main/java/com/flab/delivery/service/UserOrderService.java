@@ -53,6 +53,6 @@ public class UserOrderService {
     }
 
     public OrderDto getUserDetailOrder(String userId, Long orderId) {
-        return orderMapper.findByIdAndUserId(orderId, userId);
+        return orderMapper.findByOrderId(orderId);
     }
 }

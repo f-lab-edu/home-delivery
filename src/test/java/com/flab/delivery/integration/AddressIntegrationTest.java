@@ -15,7 +15,7 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
-import static com.flab.delivery.exception.message.ErrorMessageConstants.BAD_INPUT_MESSAGE;
+import static com.flab.delivery.exception.message.ErrorMessageConstants.BAD_REQUEST_MESSAGE;
 import static com.flab.delivery.fixture.CommonTest.doAuthTest;
 import static com.flab.delivery.fixture.MessageConstants.SUCCESS_MESSAGE;
 import static com.flab.delivery.utils.SessionConstants.AUTH_TYPE;
@@ -178,7 +178,7 @@ class AddressIntegrationTest {
         mockMvc.perform(patch("/locations/15")
                         .session(mockHttpSession))
                 .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
-                .andExpect(jsonPath("$.message").value(BAD_INPUT_MESSAGE));
+                .andExpect(jsonPath("$.message").value(BAD_REQUEST_MESSAGE));
     }
 
     @Test

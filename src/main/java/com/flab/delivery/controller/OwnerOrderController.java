@@ -23,7 +23,7 @@ public class OwnerOrderController {
     @LoginCheck(userType = UserType.OWNER)
     @GetMapping("/owner/{storeId}")
     public CommonResult<List<OwnerOrderResponseDto>> getOwnerOrderList(@SessionUserId String userId,
-                                                                         @PathVariable Long storeId) {
+                                                                       @PathVariable Long storeId) {
         List<OwnerOrderResponseDto> ownerOrderList = ownerOrderService.getOwnerOrderList(userId, storeId);
         return CommonResult.getDataSuccessResult(ownerOrderList);
     }
@@ -41,10 +41,9 @@ public class OwnerOrderController {
     @LoginCheck(userType = UserType.OWNER)
     @PatchMapping("/{orderId}/owner/cancel")
     public CommonResult<Void> cancelOrder(@SessionUserId String userId,
-                                           @PathVariable Long orderId) {
+                                          @PathVariable Long orderId) {
 
         ownerOrderService.cancelOrder(userId, orderId);
         return CommonResult.getSimpleSuccessResult(HttpStatus.OK.value());
     }
-
 }

@@ -20,7 +20,7 @@ public interface OrderMapper {
 
     List<OrderSimpleResponseDto> findAllByPageIds(List<Long> ids);
 
-    OrderDto findByIdAndUserId(@Param("id") Long orderId, @Param("userId") String userId);
+    OrderDto findByOrderId(Long orderId);
 
     List<OwnerOrderResponseDto> findAllOwnerOrderLimit100(Long storeId);
 }

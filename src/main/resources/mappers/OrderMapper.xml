@@ -41,6 +41,7 @@
     <resultMap id="orderDetail" type="OrderDto">
         <result property="orderPrice" column="order_price"/>
         <result property="status" column="status"/>
+        <result property="storeId" column="store_id"/>
         <result property="createdAt" column="created_at"/>
         <result property="deliveryAddress" column="delivery_address"/>
         <result property="history" column="history" typeHandler="com.flab.delivery.mapper.handler.JsonTypeHandler"/>
@@ -48,15 +49,16 @@
     </resultMap>
 
 
-    <select id="findByIdAndUserId" resultMap="orderDetail">
+    <select id="findByOrderId" resultMap="orderDetail">
         SELECT o.order_price,
                o.status,
+               o.store_id,
                o.created_at,
                o.history,
                o.delivery_address,
                p.type
         FROM ORDERS o
-                 JOIN PAY p ON o.id = #{id} AND o.user_id = #{userId} AND p.orders_id = o.id
+                 JOIN PAY p ON o.id = #{orderId} AND p.orders_id = o.id
     </select>
 
 

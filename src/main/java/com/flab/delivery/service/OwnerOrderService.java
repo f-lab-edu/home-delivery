@@ -1,5 +1,6 @@
 package com.flab.delivery.service;
 
+import com.flab.delivery.dao.RiderDao;
 import com.flab.delivery.dto.order.OrderDto;
 import com.flab.delivery.dto.order.owner.OwnerOrderResponseDto;
 import com.flab.delivery.enums.OrderStatus;
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.flab.delivery.exception.message.ErrorMessageConstants.BAD_INPUT_MESSAGE;
+import static com.flab.delivery.exception.message.ErrorMessageConstants.BAD_REQUEST_MESSAGE;
 
 @Service
 @RequiredArgsConstructor
@@ -24,9 +25,11 @@ public class OwnerOrderService {
 
     private final StoreService storeService;
 
+    private final RiderDao riderDao;
+
     public List<OwnerOrderResponseDto> getOwnerOrderList(String userId, Long storeId) {
 
-        if (!storeService.existsStoreByUserIdAndStoreId(userId, storeId)) {
+        if (!hasStoreBy(userId, storeId)) {
             return new ArrayList<>();
         }
 
@@ -39,22 +42,29 @@ public class OwnerOrderService {
     }
 
     public void approveOrder(String userId, Long orderId) {
-        OrderDto findOrder = orderMapper.findByIdAndUserId(orderId, userId);
-
-        if (findOrder == null) {
-            throw new OrderException(BAD_INPUT_MESSAGE, HttpStatus.BAD_REQUEST);
-        }
-
-        orderMapper.changeStatus(findOrder.getId(), OrderStatus.ORDER_APPROVED);
+        changeOrderStatus(orderId, userId, OrderStatus.ORDER_APPROVED);
     }
 
     public void cancelOrder(String userId, Long orderId) {
-        OrderDto findOrder = orderMapper.findByIdAndUserId(orderId, userId);
+        changeOrderStatus(orderId, userId, OrderStatus.ORDER_CANCELED);
+    }
+
+    private void changeOrderStatus(Long orderId, String userId, OrderStatus orderCanceled) {
+        OrderDto findOrder = orderMapper.findByOrderId(orderId);
 
         if (findOrder == null) {
-            throw new OrderException(BAD_INPUT_MESSAGE, HttpStatus.BAD_REQUEST);
+            throw new OrderException(BAD_REQUEST_MESSAGE, HttpStatus.BAD_REQUEST);
         }
 
-        orderMapper.changeStatus(findOrder.getId(), OrderStatus.ORDER_CANCELED);
+        if (!hasStoreBy(userId, findOrder.getStoreId())) {
+            throw new OrderException(BAD_REQUEST_MESSAGE, HttpStatus.NOT_ACCEPTABLE);
+        }
+
+
+        orderMapper.changeStatus(findOrder.getId(), orderCanceled);
+    }
+
+    private boolean hasStoreBy(String userId, Long storeId) {
+        return storeService.existsStoreByUserIdAndStoreId(userId, storeId);
     }
 }

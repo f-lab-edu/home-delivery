@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.flab.delivery.exception.message.ErrorMessageConstants.BAD_INPUT_MESSAGE;
+import static com.flab.delivery.exception.message.ErrorMessageConstants.BAD_REQUEST_MESSAGE;
 
 @Service
 @RequiredArgsConstructor
@@ -57,7 +57,7 @@ public class AddressService {
         int updateCount = userAddressMapper.changeAddress(id, userId);
 
         if (updateCount == 0) {
-            throw new AddressException(BAD_INPUT_MESSAGE);
+            throw new AddressException(BAD_REQUEST_MESSAGE);
         }
 
         userAddressMapper.resetSelection(userId);

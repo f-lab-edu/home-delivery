@@ -1,21 +1,11 @@
 package com.flab.delivery.integration;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flab.delivery.annotation.IntegrationTest;
-import com.flab.delivery.dto.menu.MenuDto;
-import com.flab.delivery.dto.option.OptionDto;
 import com.flab.delivery.dto.order.OrderDto;
-import com.flab.delivery.dto.order.user.OrderMenuDto;
-import com.flab.delivery.dto.order.user.OrderMenuHistoryDto;
-import com.flab.delivery.dto.order.user.OrderRequestDto;
 import com.flab.delivery.dto.pay.PayDto;
 import com.flab.delivery.enums.PayType;
 import com.flab.delivery.enums.UserType;
-import com.flab.delivery.exception.message.ErrorMessageConstants;
-import com.flab.delivery.fixture.MessageConstants;
 import com.flab.delivery.fixture.TestDto;
-import com.flab.delivery.mapper.MenuMapper;
-import com.flab.delivery.mapper.OptionMapper;
 import com.flab.delivery.mapper.OrderMapper;
 import com.flab.delivery.mapper.PayMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,10 +16,7 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
-import java.util.Arrays;
-import java.util.List;
-
-import static com.flab.delivery.exception.message.ErrorMessageConstants.BAD_INPUT_MESSAGE;
+import static com.flab.delivery.exception.message.ErrorMessageConstants.BAD_REQUEST_MESSAGE;
 import static com.flab.delivery.fixture.CommonTest.doAuthTest;
 import static com.flab.delivery.fixture.MessageConstants.SUCCESS_MESSAGE;
 import static com.flab.delivery.utils.SessionConstants.AUTH_TYPE;
@@ -126,7 +113,7 @@ public class OwnerOrderIntegrationTest {
         mockMvc.perform(patch("/orders/99999/owner/approve")
                         .session(session))
                 .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
-                .andExpect(jsonPath("$.message").value(BAD_INPUT_MESSAGE));
+                .andExpect(jsonPath("$.message").value(BAD_REQUEST_MESSAGE));
     }
 
     @Test
@@ -169,7 +156,7 @@ public class OwnerOrderIntegrationTest {
         mockMvc.perform(patch("/orders/99999/owner/cancel")
                         .session(session))
                 .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
-                .andExpect(jsonPath("$.message").value(BAD_INPUT_MESSAGE));
+                .andExpect(jsonPath("$.message").value(BAD_REQUEST_MESSAGE));
     }
 
     @Test

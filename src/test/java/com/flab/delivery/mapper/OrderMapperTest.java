@@ -115,7 +115,7 @@ class OrderMapperTest {
         payMapper.save(PayDto.builder().type(PayType.CARD).orderId(dto.getId()).status(PayStatus.COMPLETE).build());
 
         // when
-        OrderDto findOrder = orderMapper.findByIdAndUserId(dto.getId(), userId);
+        OrderDto findOrder = orderMapper.findByOrderId(dto.getId());
 
         // then
         assertThat(findOrder.getOrderPrice()).isEqualTo(dto.getOrderPrice());

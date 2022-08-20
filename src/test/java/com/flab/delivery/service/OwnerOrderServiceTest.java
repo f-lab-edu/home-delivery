@@ -77,7 +77,21 @@ class OwnerOrderServiceTest {
     @Test
     void approveOrder_잘못된_입력값으로_예외_반환() {
         // given
-        given(orderMapper.findByIdAndUserId(anyLong(), anyString())).willReturn(null);
+        given(orderMapper.findByOrderId(anyLong())).willReturn(null);
+
+        // when
+        assertThatThrownBy(() -> ownerOrderService.approveOrder(OWNER_ID, STORE_ID)).isInstanceOf(OrderException.class);
+
+        // then
+        verify(orderMapper, never()).changeStatus(anyLong(), any());
+    }
+
+    @Test
+    void approveOrder_주문에_대한_매장이_존재하지_않아서_예외_반환() {
+        // given
+        OrderDto orderDto = OrderDto.builder().id(1L).storeId(1L).status(OrderStatus.ORDER_REQUEST).build();
+        given(orderMapper.findByOrderId(anyLong())).willReturn(orderDto);
+        given(storeService.existsStoreByUserIdAndStoreId(eq(OWNER_ID), eq(1L))).willReturn(false);
 
         // when
         assertThatThrownBy(() -> ownerOrderService.approveOrder(OWNER_ID, STORE_ID)).isInstanceOf(OrderException.class);
@@ -89,8 +103,9 @@ class OwnerOrderServiceTest {
     @Test
     void approveOrder_성공() {
         // given
-        OrderDto orderDto = OrderDto.builder().id(1L).status(OrderStatus.ORDER_REQUEST).build();
-        given(orderMapper.findByIdAndUserId(anyLong(), anyString())).willReturn(orderDto);
+        OrderDto orderDto = OrderDto.builder().id(1L).storeId(1L).status(OrderStatus.ORDER_REQUEST).build();
+        given(orderMapper.findByOrderId(anyLong())).willReturn(orderDto);
+        given(storeService.existsStoreByUserIdAndStoreId(eq(OWNER_ID), eq(1L))).willReturn(true);
 
         // when
         ownerOrderService.approveOrder(OWNER_ID, STORE_ID);
@@ -102,7 +117,7 @@ class OwnerOrderServiceTest {
     @Test
     void cancelOrder_잘못된_입력값으로_예외_반환() {
         // given
-        given(orderMapper.findByIdAndUserId(anyLong(), anyString())).willReturn(null);
+        given(orderMapper.findByOrderId(anyLong())).willReturn(null);
 
         // when
         assertThatThrownBy(() -> ownerOrderService.cancelOrder(OWNER_ID, STORE_ID)).isInstanceOf(OrderException.class);
@@ -112,10 +127,26 @@ class OwnerOrderServiceTest {
     }
 
     @Test
+    void cancelOrder_주문에_대한_매장이_존재하지_않아서_예외_반환() {
+        // given
+        OrderDto orderDto = OrderDto.builder().id(1L).storeId(1L).status(OrderStatus.ORDER_REQUEST).build();
+        given(orderMapper.findByOrderId(anyLong())).willReturn(orderDto);
+        given(storeService.existsStoreByUserIdAndStoreId(eq(OWNER_ID), eq(1L))).willReturn(false);
+
+        // when
+        assertThatThrownBy(() -> ownerOrderService.cancelOrder(OWNER_ID, STORE_ID)).isInstanceOf(OrderException.class);
+
+        // then
+        verify(orderMapper, never()).changeStatus(anyLong(), any());
+    }
+
+
+    @Test
     void cancelOrder_성공() {
         // given
-        OrderDto orderDto = OrderDto.builder().id(1L).status(OrderStatus.ORDER_REQUEST).build();
-        given(orderMapper.findByIdAndUserId(anyLong(), anyString())).willReturn(orderDto);
+        OrderDto orderDto = OrderDto.builder().id(1L).storeId(1L).status(OrderStatus.ORDER_REQUEST).build();
+        given(orderMapper.findByOrderId(anyLong())).willReturn(orderDto);
+        given(storeService.existsStoreByUserIdAndStoreId(eq(OWNER_ID), eq(1L))).willReturn(true);
 
         // when
         ownerOrderService.cancelOrder(OWNER_ID, STORE_ID);
