@@ -19,7 +19,6 @@ import java.util.Map;
 
 import static com.flab.delivery.utils.CacheConstants.*;
 
-@EnableCaching
 @Configuration
 public class RedisCacheConfig {
 
