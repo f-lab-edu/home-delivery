@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.flab.delivery.exception.message.ErrorMessageConstants.FORBIDDEN_MESSAGE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -220,7 +221,7 @@ class MenuIntegrationTest {
 
                     mockMvc.perform(post(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
                             .andExpect(jsonPath("$.status").value(HttpStatus.FORBIDDEN.value()))
-                            .andExpect(jsonPath("$.message").value("권한이 없습니다"))
+                            .andExpect(jsonPath("$.message").value(FORBIDDEN_MESSAGE))
                             .andDo(print());
                 }
             }
@@ -335,7 +336,7 @@ class MenuIntegrationTest {
                 mockHttpSession.setAttribute(SessionConstants.AUTH_TYPE, changeType);
                 mockMvc.perform(patch(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
                         .andExpect(jsonPath("$.status").value(HttpStatus.FORBIDDEN.value()))
-                        .andExpect(jsonPath("$.message").value("권한이 없습니다"))
+                        .andExpect(jsonPath("$.message").value(FORBIDDEN_MESSAGE))
                         .andDo(print());
             }
         }
@@ -382,7 +383,7 @@ class MenuIntegrationTest {
                 mockHttpSession.setAttribute(SessionConstants.AUTH_TYPE, changeType);
                 mockMvc.perform(delete(url).session(mockHttpSession))
                         .andExpect(jsonPath("$.status").value(HttpStatus.FORBIDDEN.value()))
-                        .andExpect(jsonPath("$.message").value("권한이 없습니다"))
+                        .andExpect(jsonPath("$.message").value(FORBIDDEN_MESSAGE))
                         .andDo(print());
             }
         }
@@ -441,7 +442,7 @@ class MenuIntegrationTest {
 
                 mockMvc.perform(patch(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
                         .andExpect(jsonPath("$.status").value(HttpStatus.FORBIDDEN.value()))
-                        .andExpect(jsonPath("$.message").value("권한이 없습니다"))
+                        .andExpect(jsonPath("$.message").value(FORBIDDEN_MESSAGE))
                         .andDo(print());
             }
         }
@@ -513,7 +514,7 @@ class MenuIntegrationTest {
 
                 mockMvc.perform(patch(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
                         .andExpect(jsonPath("$.status").value(HttpStatus.FORBIDDEN.value()))
-                        .andExpect(jsonPath("$.message").value("권한이 없습니다"))
+                        .andExpect(jsonPath("$.message").value(FORBIDDEN_MESSAGE))
                         .andDo(print());
             }
         }

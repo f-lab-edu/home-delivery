@@ -5,6 +5,7 @@ import com.flab.delivery.dto.menu.MenuRequestDto;
 import com.flab.delivery.enums.MenuStatus;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +22,7 @@ public interface MenuMapper {
     void updateById(@Param("id") Long id, @Param("menu") MenuRequestDto menuRequestDto);
 
     void deleteById(Long id);
-    
+
     void updateStatus(@Param("id") Long id, @Param("status") MenuStatus menuStatus);
 
     List<MenuDto> findAllByStoreId(Long storeId);
@@ -29,4 +30,8 @@ public interface MenuMapper {
     List<MenuDto> findAllById(@Param("menuList") List<MenuDto> menuDtoList);
 
     void updatePriority(@Param("menuList") List<MenuDto> menuDtoList);
+
+    @Select("SELECT * FROM MENU WHERE name = #{name}")
+    Optional<MenuDto> findByName(String name);
+
 }

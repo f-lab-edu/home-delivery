@@ -7,6 +7,7 @@ import com.flab.delivery.dto.store.StoreDto;
 import com.flab.delivery.dto.store.StoreRequestDto;
 import com.flab.delivery.enums.StoreStatus;
 import com.flab.delivery.enums.UserType;
+import com.flab.delivery.exception.message.ErrorMessageConstants;
 import com.flab.delivery.mapper.StoreMapper;
 import com.flab.delivery.utils.SessionConstants;
 import org.aspectj.lang.annotation.Before;
@@ -20,6 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import static com.flab.delivery.exception.message.ErrorMessageConstants.FORBIDDEN_MESSAGE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -109,7 +111,7 @@ class StoreIntegrationTest {
                     // then
                     mockMvc.perform(post(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
                             .andExpect(jsonPath("$.status").value(HttpStatus.FORBIDDEN.value()))
-                            .andExpect(jsonPath("$.message").value("권한이 없습니다"))
+                            .andExpect(jsonPath("$.message").value(FORBIDDEN_MESSAGE))
                             .andDo(print());
                 }
             }
@@ -482,7 +484,7 @@ class StoreIntegrationTest {
                 // then
                 mockMvc.perform(get(url).session(mockHttpSession))
                         .andExpect(jsonPath("$.status").value(HttpStatus.FORBIDDEN.value()))
-                        .andExpect(jsonPath("$.message").value("권한이 없습니다"))
+                        .andExpect(jsonPath("$.message").value(FORBIDDEN_MESSAGE))
                         .andDo(print());
             }
 
@@ -663,7 +665,7 @@ class StoreIntegrationTest {
                 // then
                 mockMvc.perform(patch(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
                         .andExpect(jsonPath("$.status").value(HttpStatus.FORBIDDEN.value()))
-                        .andExpect(jsonPath("$.message").value("권한이 없습니다"))
+                        .andExpect(jsonPath("$.message").value(FORBIDDEN_MESSAGE))
                         .andDo(print());
             }
 
@@ -735,7 +737,7 @@ class StoreIntegrationTest {
                 // then
                 mockMvc.perform(delete(url).session(mockHttpSession))
                         .andExpect(jsonPath("$.status").value(HttpStatus.FORBIDDEN.value()))
-                        .andExpect(jsonPath("$.message").value("권한이 없습니다"))
+                        .andExpect(jsonPath("$.message").value(FORBIDDEN_MESSAGE))
                         .andDo(print());
             }
 
@@ -808,7 +810,7 @@ class StoreIntegrationTest {
                 // then
                 mockMvc.perform(patch(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
                         .andExpect(jsonPath("$.status").value(HttpStatus.FORBIDDEN.value()))
-                        .andExpect(jsonPath("$.message").value("권한이 없습니다"))
+                        .andExpect(jsonPath("$.message").value(FORBIDDEN_MESSAGE))
                         .andDo(print());
             }
 

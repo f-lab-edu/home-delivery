@@ -1,5 +1,6 @@
 package com.flab.delivery.service;
 
+import com.flab.delivery.dto.address.AddressDto;
 import com.flab.delivery.dto.address.AddressRequestDto;
 import com.flab.delivery.exception.AddressException;
 import com.flab.delivery.fixture.TestDto;
@@ -11,6 +12,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -139,5 +142,40 @@ class AddressServiceTest {
         // then
         verify(userAddressMapper).changeAddress(eq(id), eq(SESSION_USER_ID));
         verify(userAddressMapper, never()).resetSelection(eq(SESSION_USER_ID));
+    }
+
+
+    @Test
+    void getDeliveryAddress_대표주소_없어서_실패() {
+        // given
+        String userId = "user1";
+
+        given(userAddressMapper.findDeliveryAddressByUserId(userId)).willReturn(Optional.empty());
+
+        // when
+        assertThatThrownBy(() -> addressService.getDeliveryAddress(userId))
+                .isInstanceOf(AddressException.class);
+
+        // then
+        verify(userAddressMapper).findDeliveryAddressByUserId(eq(userId));
+    }
+
+
+    @Test
+    void getDeliveryAddress_성공() {
+        // given
+        String userId = "user1";
+
+        given(userAddressMapper.findDeliveryAddressByUserId(userId)).willReturn(Optional.of(AddressDto.builder()
+                .townName("운암동")
+                .detailAddress("13번길 15")
+                .build()));
+
+        // when
+        String deliveryAddress = addressService.getDeliveryAddress(userId);
+
+        // then
+        assertThat(deliveryAddress).isEqualTo("운암동 13번길 15");
+        verify(userAddressMapper).findDeliveryAddressByUserId(eq(userId));
     }
 }

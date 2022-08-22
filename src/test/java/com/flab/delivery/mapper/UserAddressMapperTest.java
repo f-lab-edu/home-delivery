@@ -201,4 +201,17 @@ public class UserAddressMapperTest {
         assertThat(selectedAddress.isSelected()).isFalse();
 
     }
+
+    @Test
+    void findDeliveryAddressByUserId() {
+        // given
+        String userId = "user1";
+
+        // when
+        AddressDto deliveryAddressByUserId = userAddressMapper.findDeliveryAddressByUserId(userId).get();
+
+        // then
+        assertThat(deliveryAddressByUserId.getDetailAddress()).isNotNull();
+        assertThat(deliveryAddressByUserId.getTownName()).isNotNull();
+    }
 }

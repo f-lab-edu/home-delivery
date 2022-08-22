@@ -47,4 +47,31 @@ class StoreMapperTest {
         // then
         assertThat(storeListBy.size()).isGreaterThanOrEqualTo(2);
     }
+
+
+    @Test
+    void existsByUserIdAndStoreId_조건에_맞는_매장이_존재해서_True_반환() {
+        // given
+        String userId = "user2";
+        Long storeId = 2L;
+
+        // when
+        boolean result = storeMapper.existsByUserIdAndStoreId(userId, storeId);
+
+        // then
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    void existsByUserIdAndStoreId_조건에_맞는_매장이_존재하지_않아서_False_반환() {
+        // given
+        String userId = "user1";
+        Long storeId = 2L;
+
+        // when
+        boolean result = storeMapper.existsByUserIdAndStoreId(userId, storeId);
+
+        // then
+        assertThat(result).isFalse();
+    }
 }

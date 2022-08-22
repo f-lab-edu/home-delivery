@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static com.flab.delivery.exception.message.ErrorMessageConstants.BAD_REQUEST_MESSAGE;
+
 @Service
 @RequiredArgsConstructor
 public class AddressService {
@@ -55,7 +57,7 @@ public class AddressService {
         int updateCount = userAddressMapper.changeAddress(id, userId);
 
         if (updateCount == 0) {
-            throw new AddressException("잘못된 요청 입니다.");
+            throw new AddressException(BAD_REQUEST_MESSAGE);
         }
 
         userAddressMapper.resetSelection(userId);
@@ -63,5 +65,12 @@ public class AddressService {
 
     private boolean isExistsById(Long id) {
         return userAddressMapper.existsById(id);
+    }
+
+    public String getDeliveryAddress(String userId) {
+        AddressDto addressDto = userAddressMapper.findDeliveryAddressByUserId(userId)
+                .orElseThrow(() -> new AddressException("배달할 주소를 선택해주세요."));
+
+        return addressDto.getDeliveryAddress();
     }
 }

@@ -5,7 +5,6 @@ import com.flab.delivery.enums.MenuStatus;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Builder
 @Getter
@@ -21,6 +20,7 @@ public class MenuDto {
     private Integer price;
     private MenuStatus status;
     private Integer priority;
+
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 }

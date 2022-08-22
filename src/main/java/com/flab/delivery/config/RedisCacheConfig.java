@@ -1,6 +1,5 @@
 package com.flab.delivery.config;
 
-import com.flab.delivery.utils.CacheConstants;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
@@ -20,9 +19,9 @@ import java.util.Map;
 
 import static com.flab.delivery.utils.CacheConstants.*;
 
-@EnableCaching
 @Configuration
 public class RedisCacheConfig {
+
     @Value("${spring.redis.cache.host}")
     private String redisHost;
 

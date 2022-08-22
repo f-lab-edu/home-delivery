@@ -17,7 +17,12 @@ public abstract class AbstractRedisContainer {
 
     @DynamicPropertySource
     public static void overrideProps(DynamicPropertyRegistry registry) {
-        registry.add("spring.redis.host", REDIS_CONTAINER::getHost);
-        registry.add("spring.redis.port", () -> "" + REDIS_CONTAINER.getMappedPort(6379));
+        registry.add("spring.redis.cache.host", REDIS_CONTAINER::getHost);
+        registry.add("spring.redis.session.host", REDIS_CONTAINER::getHost);
+        registry.add("spring.redis.rider.host", REDIS_CONTAINER::getHost);
+
+        registry.add("spring.redis.cache.port", () -> "" + REDIS_CONTAINER.getExposedPorts().get(0));
+        registry.add("spring.redis.session.port", () -> "" + REDIS_CONTAINER.getExposedPorts().get(0));
+        registry.add("spring.redis.rider.port", () -> "" + REDIS_CONTAINER.getExposedPorts().get(0));
     }
 }

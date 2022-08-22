@@ -4,7 +4,6 @@ import com.flab.delivery.dto.menugroup.MenuGroupDto;
 import com.flab.delivery.dto.menugroup.MenuGroupRequestDto;
 import com.flab.delivery.exception.MenuGroupException;
 import com.flab.delivery.mapper.MenuGroupMapper;
-import com.flab.delivery.mapper.StoreMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
