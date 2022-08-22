@@ -10,5 +10,7 @@ public final class ErrorMessageConstants {
 
     public static final String UNAUTHORIZED_MESSAGE = "세션 아이디가 존재하지 않습니다";
     public static final String FORBIDDEN_MESSAGE = "권한이 없습니다.";
+
+    public static final String NOT_ENOUGH_DELIVERY_REQUEST_TIME_MESSAGE = "이미 배차 요청을 하셨습니다. 잠시 후 다시 시도해주세요";
     
 }

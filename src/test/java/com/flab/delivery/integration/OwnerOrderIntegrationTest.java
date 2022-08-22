@@ -1,5 +1,6 @@
 package com.flab.delivery.integration;
 
+import com.flab.delivery.AbstractRedisContainer;
 import com.flab.delivery.annotation.IntegrationTest;
 import com.flab.delivery.dto.order.OrderDto;
 import com.flab.delivery.dto.pay.PayDto;
@@ -8,6 +9,7 @@ import com.flab.delivery.enums.UserType;
 import com.flab.delivery.fixture.TestDto;
 import com.flab.delivery.mapper.OrderMapper;
 import com.flab.delivery.mapper.PayMapper;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @IntegrationTest
-public class OwnerOrderIntegrationTest {
+public class OwnerOrderIntegrationTest extends AbstractRedisContainer {
 
     @Autowired
     private MockMvc mockMvc;
@@ -36,10 +38,9 @@ public class OwnerOrderIntegrationTest {
 
     private MockHttpSession session = new MockHttpSession();
 
-
     @Autowired
     private OrderMapper orderMapper;
-
+    private OrderDto orderDto;
 
     @BeforeEach
     void init() {
@@ -55,6 +56,7 @@ public class OwnerOrderIntegrationTest {
         // then
         doOrderAuthTest(get("/orders/owner/1"));
     }
+
     @Test
     void getOwnerOrderList_주문내역_없어서_빈값_반환() throws Exception {
         // given
@@ -67,11 +69,11 @@ public class OwnerOrderIntegrationTest {
                 .andExpect(jsonPath("$.data[*]").isEmpty())
                 .andDo(print());
     }
+
     @Test
     void getOwnerOrderList_주문내역_있어서_데이터_반환() throws Exception {
         // given
-        orderMapper.save("user2", TestDto.getOrderDto());
-
+        createOrder();
         // when
         // then
         mockMvc.perform(get("/orders/owner/1")
@@ -94,23 +96,19 @@ public class OwnerOrderIntegrationTest {
     @Test
     void approveOrder_권한_없어서_실패() throws Exception {
         // given
-        OrderDto orderDto = TestDto.getOrderDto();
-        orderMapper.save("user2", orderDto);
-
+        createOrder();
         // when
         // then
-        doOrderAuthTest(patch("/orders/"+orderDto.getId()+"/owner/approve"));
+        doOrderAuthTest(patch(getApproveOrderUri(orderDto.getId())));
     }
 
     @Test
     void approveOrder_잘못된_입력으로_실패() throws Exception {
         // given
-        OrderDto orderDto = TestDto.getOrderDto();
-        orderMapper.save("user2", orderDto);
-
+        createOrder();
         // when
         // then
-        mockMvc.perform(patch("/orders/99999/owner/approve")
+        mockMvc.perform(patch(getApproveOrderUri(99999L))
                         .session(session))
                 .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
                 .andExpect(jsonPath("$.message").value(BAD_REQUEST_MESSAGE));
@@ -119,41 +117,40 @@ public class OwnerOrderIntegrationTest {
     @Test
     void approveOrder_성공() throws Exception {
         // given
-        OrderDto orderDto = TestDto.getOrderDto();
-        orderMapper.save("user2", orderDto);
+        createOrder();
         PayDto payDto = PayDto.completePay(orderDto.getId(), PayType.CARD);
         payMapper.save(payDto);
 
         // when
         // then
-        mockMvc.perform(patch("/orders/"+orderDto.getId()+"/owner/approve")
+        mockMvc.perform(patch(getApproveOrderUri(orderDto.getId()))
                         .session(session))
                 .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
                 .andExpect(jsonPath("$.message").value(SUCCESS_MESSAGE));
     }
 
 
+    @NotNull
+    private String getApproveOrderUri(Long orderId) {
+        return "/orders/" + orderId + "/owner/approve";
+    }
 
     @Test
     void cancelOrder_권한_없어서_실패() throws Exception {
         // given
-        OrderDto orderDto = TestDto.getOrderDto();
-        orderMapper.save("user2", orderDto);
-
+        createOrder();
         // when
         // then
-        doOrderAuthTest(patch("/orders/"+orderDto.getId()+"/owner/cancel"));
+        doOrderAuthTest(patch(getCancelOrderUri(orderDto.getId())));
     }
 
     @Test
     void cancelOrder_잘못된_입력으로_실패() throws Exception {
         // given
-        OrderDto orderDto = TestDto.getOrderDto();
-        orderMapper.save("user2", orderDto);
-
+        createOrder();
         // when
         // then
-        mockMvc.perform(patch("/orders/99999/owner/cancel")
+        mockMvc.perform(patch(getCancelOrderUri(99999L))
                         .session(session))
                 .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
                 .andExpect(jsonPath("$.message").value(BAD_REQUEST_MESSAGE));
@@ -162,19 +159,54 @@ public class OwnerOrderIntegrationTest {
     @Test
     void cancelOrder_성공() throws Exception {
         // given
-        OrderDto orderDto = TestDto.getOrderDto();
-        orderMapper.save("user2", orderDto);
+        createOrder();
         PayDto payDto = PayDto.completePay(orderDto.getId(), PayType.CARD);
         payMapper.save(payDto);
 
         // when
         // then
-        mockMvc.perform(patch("/orders/"+orderDto.getId()+"/owner/cancel")
+        mockMvc.perform(patch(getCancelOrderUri(orderDto.getId()))
                         .session(session))
                 .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
                 .andExpect(jsonPath("$.message").value(SUCCESS_MESSAGE));
     }
 
+    @NotNull
+    private String getCancelOrderUri(Long orderId) {
+        return "/orders/" + orderId + "/owner/cancel";
+    }
+
+    @Test
+    void callRider_권한_없어서_실패() throws Exception {
+        // given
+        createOrder();
+        // when
+        // then
+        doOrderAuthTest(post(getCallRiderURI(orderDto.getId(), orderDto.getStoreId())));
+    }
+
+    @Test
+    void callRider_성공() throws Exception {
+        // given
+        createOrder();
+        // when
+        // then
+        mockMvc.perform(post(getCallRiderURI(orderDto.getId(), orderDto.getStoreId()))
+                        .session(session))
+                .andExpect(jsonPath("$.status").value(HttpStatus.CREATED.value()))
+                .andExpect(jsonPath("$.message").value(SUCCESS_MESSAGE));
+
+    }
+
+    @NotNull
+    private String getCallRiderURI(Long orderId, Long storeId) {
+        return "/orders/" + orderId + "/owner/" + storeId + "/call";
+    }
+
+    private void createOrder() {
+        orderDto = TestDto.getOrderDto();
+        orderMapper.save("user2", orderDto);
+    }
 
     private void doOrderAuthTest(MockHttpServletRequestBuilder requestBuilder) throws Exception {
         doAuthTest(mockMvc, requestBuilder);

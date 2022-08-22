@@ -3,6 +3,7 @@ package com.flab.delivery.service;
 import com.flab.delivery.dao.RiderDao;
 import com.flab.delivery.dto.order.OrderDto;
 import com.flab.delivery.dto.order.owner.OwnerOrderResponseDto;
+import com.flab.delivery.dto.store.StoreDto;
 import com.flab.delivery.enums.OrderStatus;
 import com.flab.delivery.exception.OrderException;
 import com.flab.delivery.mapper.OrderMapper;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.flab.delivery.exception.message.ErrorMessageConstants.BAD_REQUEST_MESSAGE;
+import static com.flab.delivery.exception.message.ErrorMessageConstants.NOT_ENOUGH_DELIVERY_REQUEST_TIME_MESSAGE;
 
 @Service
 @RequiredArgsConstructor
@@ -67,4 +69,21 @@ public class OwnerOrderService {
     private boolean hasStoreBy(String userId, Long storeId) {
         return storeService.existsStoreByUserIdAndStoreId(userId, storeId);
     }
+
+    public void callRider(String userId, Long orderId, Long storeId) {
+
+        StoreDto findStore = storeService.getStore(storeId);
+
+        if (findStore == null || !findStore.getUserId().equals(userId)) {
+            throw new OrderException(BAD_REQUEST_MESSAGE, HttpStatus.BAD_REQUEST);
+        }
+
+
+        boolean isAddOrder = riderDao.addOrderBy(findStore.getAddressId(), orderId);
+
+        if (!isAddOrder) {
+            throw new OrderException(NOT_ENOUGH_DELIVERY_REQUEST_TIME_MESSAGE, HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }

@@ -4,32 +4,41 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @Repository
 @RequiredArgsConstructor
 public class RiderDao {
 
+    private static final int MIN_REQUEST_TIME = 60 * 1000;
     private final RedisTemplate<String, Object> redisTemplate;
 
 
     public void registerStandByRider(String userId, Long addressId) {
         redisTemplate.opsForSet().add(getRidersKeyBy(addressId), userId);
         redisTemplate.expire(getRidersKeyBy(addressId), 1, TimeUnit.DAYS);
-        return;
-    }
-
-    public Set<Object> findAllRiderBy(Long addressId) {
-        return redisTemplate.opsForSet().members(getRidersKeyBy(addressId));
     }
 
     public void deleteStandByRider(String userId, Long addressId) {
         redisTemplate.opsForSet().remove(getRidersKeyBy(addressId), userId);
-        return;
     }
 
     private String getRidersKeyBy(Long addressId) {
         return "RIDER" + addressId;
+    }
+
+    public boolean addOrderBy(Long addressId, Long orderId) {
+
+        Double score = redisTemplate.opsForZSet().score(getOrderKey(addressId), orderId);
+        if (score != null && score > System.currentTimeMillis() - MIN_REQUEST_TIME) {
+            return false;
+        }
+
+        redisTemplate.opsForZSet().add(getOrderKey(addressId), orderId, System.currentTimeMillis());
+        return true;
+    }
+
+    private String getOrderKey(Long addressId) {
+        return "ORDER" + addressId;
     }
 }
