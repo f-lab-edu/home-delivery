@@ -85,4 +85,28 @@
         ORDER BY o.created_at DESC
         LIMIT 100;
     </select>
+
+    <resultMap id="orderDelivery" type="OrderDeliveryDto">
+        <result property="orderId" column="id"/>
+        <result property="status" column="status"/>
+        <result property="addressId" column="address_id"/>
+        <result property="storeName" column="name"/>
+        <result property="deliveryAddress" column="detail_address"/>
+        <result property="userPhoneNumber" column="phone_number"/>
+    </resultMap>
+
+
+    <select id="findDeliveryInfo" resultMap="orderDelivery">
+        SELECT o.id,
+               o.status,
+               s.address_id,
+               s.name,
+               s.detail_address,
+               o.delivery_address,
+               u.phone_number
+        FROM ORDERS o
+                 JOIN STORE s
+                      ON o.id = #{orderId} AND s.id = #{storeId} AND s.user_id = #{ownerId} AND s.id = o.store_id
+                 JOIN USER u ON u.id = o.user_id
+    </select>
 </mapper>

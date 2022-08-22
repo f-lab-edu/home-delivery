@@ -3,6 +3,7 @@ package com.flab.delivery.mapper;
 import com.flab.delivery.config.DatabaseConfig;
 import com.flab.delivery.dto.order.owner.OwnerOrderResponseDto;
 import com.flab.delivery.dto.order.OrderDto;
+import com.flab.delivery.dto.order.rider.OrderDeliveryDto;
 import com.flab.delivery.dto.order.user.OrderSimpleResponseDto;
 import com.flab.delivery.dto.pay.PayDto;
 import com.flab.delivery.enums.OrderStatus;
@@ -20,6 +21,7 @@ import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -142,5 +144,30 @@ class OrderMapperTest {
             assertThat(dto).usingRecursiveComparison().isNotNull();
         }
     }
+    @Test
+    void findDeliveryInfo_검색_결과_없음() {
+        // given
+        OrderDto orderDto = TestDto.getOrderDto();
+        orderMapper.save("user1", orderDto);
+
+        // when
+        Optional<OrderDeliveryDto> deliveryInfo = orderMapper.findDeliveryInfo("user3", orderDto.getId(), orderDto.getStoreId());
+
+        // then
+        assertThat(deliveryInfo).isEmpty();
+    }
+    @Test
+    void findDeliveryInfo_확인() {
+        // given
+        OrderDto orderDto = TestDto.getOrderDto();
+        orderMapper.save("user1", orderDto);
+
+        // when
+        Optional<OrderDeliveryDto> deliveryInfo = orderMapper.findDeliveryInfo("user2", orderDto.getId(), orderDto.getStoreId());
+
+        // then
+        assertThat(deliveryInfo).usingRecursiveComparison().isNotNull();
+    }
+
 
 }

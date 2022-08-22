@@ -4,6 +4,8 @@ import com.flab.delivery.dto.address.AddressRequestDto;
 import com.flab.delivery.dto.menu.MenuDto;
 import com.flab.delivery.dto.option.OptionDto;
 import com.flab.delivery.dto.order.OrderDto;
+import com.flab.delivery.dto.order.OrderHistoryDto;
+import com.flab.delivery.dto.order.rider.OrderDeliveryDto;
 import com.flab.delivery.dto.order.user.*;
 import com.flab.delivery.dto.store.StoreDto;
 import com.flab.delivery.dto.user.PasswordDto;
@@ -141,6 +143,12 @@ public class TestDto {
                 .id(storeId)
                 .userId(userId)
                 .addressId(addressId)
+                .build();
+    }
+
+    public static OrderDeliveryDto getOrderDeliveryDto(Long orderId) {
+        return OrderDeliveryDto.builder()
+                .orderId(orderId)
                 .build();
     }
 }

@@ -1,5 +1,6 @@
 package com.flab.delivery.dao;
 
+import com.flab.delivery.dto.order.rider.OrderDeliveryDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
@@ -27,14 +28,14 @@ public class RiderDao {
         return "RIDER" + addressId;
     }
 
-    public boolean addOrderBy(Long addressId, Long orderId) {
+    public boolean addOrderBy(Long addressId, OrderDeliveryDto orderDeliveryDto) {
 
-        Double score = redisTemplate.opsForZSet().score(getOrderKey(addressId), orderId);
+        Double score = redisTemplate.opsForZSet().score(getOrderKey(addressId), orderDeliveryDto);
         if (score != null && score > System.currentTimeMillis() - MIN_REQUEST_TIME) {
             return false;
         }
 
-        redisTemplate.opsForZSet().add(getOrderKey(addressId), orderId, System.currentTimeMillis());
+        redisTemplate.opsForZSet().add(getOrderKey(addressId), orderDeliveryDto, System.currentTimeMillis());
         return true;
     }
 

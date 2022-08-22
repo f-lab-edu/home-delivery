@@ -1,6 +1,7 @@
 package com.flab.delivery.dao;
 
 import com.flab.delivery.AbstractRedisContainer;
+import com.flab.delivery.fixture.TestDto;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,6 +12,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 
 import java.util.Set;
 
+import static com.flab.delivery.fixture.TestDto.getOrderDeliveryDto;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -28,8 +30,9 @@ class RiderDaoTestRedis extends AbstractRedisContainer {
     @BeforeEach
     void init() {
         redisTemplate.opsForSet().remove(getKey("RIDER"), RIDER);
-        redisTemplate.opsForZSet().remove(getKey("ORDER"), ORDER_ID);
+        redisTemplate.opsForZSet().remove(getKey("ORDER"), getOrderDeliveryDto(ORDER_ID));
     }
+
     @Test
     void registerStandByRider_확인() {
         // given
@@ -65,7 +68,7 @@ class RiderDaoTestRedis extends AbstractRedisContainer {
     void addOrderBy_첫번째_요청으로_성공() {
         // given
         // when
-        boolean isAdded = riderDao.addOrderBy(ADDRESS_ID, ORDER_ID);
+        boolean isAdded = riderDao.addOrderBy(ADDRESS_ID, getOrderDeliveryDto(ORDER_ID));
 
         // then
         assertThat(isAdded).isTrue();
@@ -74,10 +77,10 @@ class RiderDaoTestRedis extends AbstractRedisContainer {
     @Test
     void addOrderBy_이미_주문이_있으며_1분이_지나지_않아_False_반환() {
         // given
-        riderDao.addOrderBy(ADDRESS_ID, ORDER_ID);
+        riderDao.addOrderBy(ADDRESS_ID, getOrderDeliveryDto(ORDER_ID));
 
         // when
-        boolean isAdded = riderDao.addOrderBy(ADDRESS_ID, ORDER_ID);
+        boolean isAdded = riderDao.addOrderBy(ADDRESS_ID, getOrderDeliveryDto(ORDER_ID));
 
         // then
         assertThat(isAdded).isFalse();
@@ -91,11 +94,11 @@ class RiderDaoTestRedis extends AbstractRedisContainer {
         redisTemplate.opsForZSet().add(OrderKey, ORDER_ID, beforeScore);
 
         // when
-        boolean isAdded = riderDao.addOrderBy(ADDRESS_ID, ORDER_ID);
+        boolean isAdded = riderDao.addOrderBy(ADDRESS_ID, getOrderDeliveryDto(ORDER_ID));
 
         // then
         assertThat(isAdded).isTrue();
-        Double afterScore = redisTemplate.opsForZSet().score(OrderKey, ORDER_ID);
+        Double afterScore = redisTemplate.opsForZSet().score(OrderKey, getOrderDeliveryDto(ORDER_ID));
         assertThat(afterScore).isGreaterThan(beforeScore);
     }
 

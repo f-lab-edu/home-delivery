@@ -1,6 +1,6 @@
 package com.flab.delivery.dto.order.owner;
 
-import com.flab.delivery.dto.order.user.OrderHistoryDto;
+import com.flab.delivery.dto.order.OrderHistoryDto;
 import com.flab.delivery.enums.OrderStatus;
 import lombok.*;
 

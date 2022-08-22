@@ -62,7 +62,7 @@ public class OwnerOrderIntegrationTest extends AbstractRedisContainer {
         // given
         // when
         // then
-        mockMvc.perform(get("/orders/owner/1")
+        mockMvc.perform(get("/orders/owner/10")
                         .session(session))
                 .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
                 .andExpect(jsonPath("$.message").value(SUCCESS_MESSAGE))

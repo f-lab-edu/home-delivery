@@ -2,12 +2,14 @@ package com.flab.delivery.mapper;
 
 import com.flab.delivery.dto.order.OrderDto;
 import com.flab.delivery.dto.order.owner.OwnerOrderResponseDto;
+import com.flab.delivery.dto.order.rider.OrderDeliveryDto;
 import com.flab.delivery.dto.order.user.OrderSimpleResponseDto;
 import com.flab.delivery.enums.OrderStatus;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 @Mapper
 public interface OrderMapper {
@@ -23,4 +25,6 @@ public interface OrderMapper {
     OrderDto findByOrderId(Long orderId);
 
     List<OwnerOrderResponseDto> findAllOwnerOrderLimit100(Long storeId);
+
+    Optional<OrderDeliveryDto> findDeliveryInfo(@Param("ownerId") String ownerId, @Param("orderId") Long orderId, @Param("storeId") Long storeId);
 }

@@ -3,6 +3,7 @@ package com.flab.delivery.service;
 import com.flab.delivery.dao.RiderDao;
 import com.flab.delivery.dto.order.OrderDto;
 import com.flab.delivery.dto.order.owner.OwnerOrderResponseDto;
+import com.flab.delivery.dto.order.rider.OrderDeliveryDto;
 import com.flab.delivery.dto.store.StoreDto;
 import com.flab.delivery.enums.OrderStatus;
 import com.flab.delivery.exception.OrderException;
@@ -17,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static com.flab.delivery.exception.message.ErrorMessageConstants.BAD_REQUEST_MESSAGE;
 import static com.flab.delivery.exception.message.ErrorMessageConstants.NOT_ENOUGH_DELIVERY_REQUEST_TIME_MESSAGE;
@@ -169,7 +171,7 @@ class OwnerOrderServiceTest {
     @Test
     void callRider_입력된_매장의_매장_주인이_아니라서_예외_반환() {
         // given
-        given(storeService.getStore(eq(STORE_ID))).willReturn(StoreDto.builder().userId("Owner2").build());
+        given(orderMapper.findDeliveryInfo(eq(OWNER_ID), anyLong(), eq(STORE_ID))).willReturn(Optional.empty());
 
         // when
         assertThatThrownBy(() -> ownerOrderService.callRider(OWNER_ID, ORDER_ID, STORE_ID))
@@ -177,15 +179,15 @@ class OwnerOrderServiceTest {
                 .hasMessage(BAD_REQUEST_MESSAGE);
 
         // then
-        verify(riderDao, never()).addOrderBy(anyLong(), anyLong());
+        verify(riderDao, never()).addOrderBy(anyLong(), any());
     }
 
     @Test
     void callRider_배차_요청후_최소_요청시간이_지나지_않아_예외_반환() {
 
         // given
-        given(storeService.getStore(eq(STORE_ID))).willReturn(getStoreDto(STORE_ID, OWNER_ID, ADDRESS_ID));
-        given(riderDao.addOrderBy(ADDRESS_ID, ORDER_ID)).willReturn(false);
+        given(orderMapper.findDeliveryInfo(eq(OWNER_ID), anyLong(), eq(STORE_ID))).willReturn(Optional.of(OrderDeliveryDto.builder().addressId(ADDRESS_ID).build()));
+        given(riderDao.addOrderBy(eq(ADDRESS_ID), any())).willReturn(false);
 
         // when
         // then
@@ -199,8 +201,8 @@ class OwnerOrderServiceTest {
     void callRider_성공() {
 
         // given
-        given(storeService.getStore(eq(STORE_ID))).willReturn(getStoreDto(STORE_ID, OWNER_ID, ADDRESS_ID));
-        given(riderDao.addOrderBy(ADDRESS_ID, ORDER_ID)).willReturn(true);
+        given(orderMapper.findDeliveryInfo(eq(OWNER_ID), anyLong(), eq(STORE_ID))).willReturn(Optional.of(OrderDeliveryDto.builder().addressId(ADDRESS_ID).build()));
+        given(riderDao.addOrderBy(eq(ADDRESS_ID), any())).willReturn(true);
 
         // when
         // then
