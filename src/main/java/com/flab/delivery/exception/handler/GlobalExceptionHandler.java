@@ -8,8 +8,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import javax.servlet.http.HttpServletRequest;
 import java.sql.SQLIntegrityConstraintViolationException;
+import javax.servlet.http.HttpServletRequest;
 
 @RestControllerAdvice
 @Slf4j
@@ -34,8 +34,6 @@ public class GlobalExceptionHandler {
         log.info("Http Method : {}  URI : {}, msg : {}", request.getMethod(), request.getRequestURI(), ex.getMessage());
         return CommonResult.getSimpleResult(HttpStatus.BAD_REQUEST.value(), "무결성 제약 조건에 위배됩니다");
     }
-
-
 
 
 }

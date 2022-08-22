@@ -6,7 +6,6 @@ import com.flab.delivery.dto.store.StoreResponseDto;
 import com.flab.delivery.enums.StoreStatus;
 import com.flab.delivery.exception.StoreException;
 import com.flab.delivery.mapper.StoreMapper;
-import com.flab.delivery.utils.CacheConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
@@ -75,5 +74,9 @@ public class StoreService {
                 .menuGroupDtoList(menuGroupService.getMenuGroupList(id))
                 .menuDtoList(menuService.getMenuList(id))
                 .build();
+    }
+
+    public boolean existsStoreByUserIdAndStoreId(String userId, Long storeId) {
+        return storeMapper.existsByUserIdAndStoreId(userId, storeId);
     }
 }

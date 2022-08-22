@@ -3,7 +3,6 @@ package com.flab.delivery.controller;
 import com.flab.delivery.annotation.LoginCheck;
 import com.flab.delivery.dto.menu.MenuDto;
 import com.flab.delivery.dto.menu.MenuRequestDto;
-import com.flab.delivery.dto.option.OptionDto;
 import com.flab.delivery.enums.UserType;
 import com.flab.delivery.response.CommonResult;
 import com.flab.delivery.service.MenuService;

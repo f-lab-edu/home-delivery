@@ -6,6 +6,7 @@ import com.flab.delivery.annotation.IntegrationTest;
 import com.flab.delivery.dto.option.OptionDto;
 import com.flab.delivery.dto.option.OptionRequestDto;
 import com.flab.delivery.enums.UserType;
+import com.flab.delivery.exception.message.ErrorMessageConstants;
 import com.flab.delivery.fixture.MessageConstants;
 import com.flab.delivery.mapper.OptionMapper;
 import com.flab.delivery.utils.SessionConstants;
@@ -17,6 +18,8 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 
 
+import static com.flab.delivery.exception.message.ErrorMessageConstants.FORBIDDEN_MESSAGE;
+import static com.flab.delivery.exception.message.ErrorMessageConstants.UNAUTHORIZED_MESSAGE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -179,7 +182,7 @@ class OptionIntegrationTest {
                     String json = objectMapper.writeValueAsString(getRequestDto());
                     mockMvc.perform(post(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
                             .andExpect(jsonPath("$.status").value(HttpStatus.FORBIDDEN.value()))
-                            .andExpect(jsonPath("$.message").value(MessageConstants.HAVE_NO_AUTHORITY_MESSAGE))
+                            .andExpect(jsonPath("$.message").value(FORBIDDEN_MESSAGE))
                             .andDo(print());
                 }
 
@@ -191,7 +194,7 @@ class OptionIntegrationTest {
 
                     mockMvc.perform(post(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
                             .andExpect(jsonPath("$.status").value(HttpStatus.FORBIDDEN.value()))
-                            .andExpect(jsonPath("$.message").value(MessageConstants.HAVE_NO_AUTHORITY_MESSAGE))
+                            .andExpect(jsonPath("$.message").value(FORBIDDEN_MESSAGE))
                             .andDo(print());
 
                 }
@@ -347,7 +350,7 @@ class OptionIntegrationTest {
                     String json = objectMapper.writeValueAsString(getRequestDto());
                     mockMvc.perform(patch(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
                             .andExpect(jsonPath("$.status").value(HttpStatus.FORBIDDEN.value()))
-                            .andExpect(jsonPath("$.message").value(MessageConstants.HAVE_NO_AUTHORITY_MESSAGE))
+                            .andExpect(jsonPath("$.message").value(FORBIDDEN_MESSAGE))
                             .andDo(print());
                 }
 
@@ -359,7 +362,7 @@ class OptionIntegrationTest {
 
                     mockMvc.perform(patch(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
                             .andExpect(jsonPath("$.status").value(HttpStatus.FORBIDDEN.value()))
-                            .andExpect(jsonPath("$.message").value(MessageConstants.HAVE_NO_AUTHORITY_MESSAGE))
+                            .andExpect(jsonPath("$.message").value(FORBIDDEN_MESSAGE))
                             .andDo(print());
                 }
             }
@@ -408,18 +411,18 @@ class OptionIntegrationTest {
 
                     mockMvc.perform(delete(url).session(mockHttpSession))
                             .andExpect(jsonPath("$.status").value(HttpStatus.FORBIDDEN.value()))
-                            .andExpect(jsonPath("$.message").value(MessageConstants.HAVE_NO_AUTHORITY_MESSAGE))
+                            .andExpect(jsonPath("$.message").value(FORBIDDEN_MESSAGE))
                             .andDo(print());
                 }
 
                 @Test
-                @DisplayName("권한 - 유저인경우")
+                @DisplayName("권한 - 라이더인경우")
                 void userTypeRider() throws Exception {
                     mockHttpSession.setAttribute(SessionConstants.AUTH_TYPE, com.flab.delivery.enums.UserType.RIDER);
 
                     mockMvc.perform(delete(url).session(mockHttpSession))
                             .andExpect(jsonPath("$.status").value(HttpStatus.FORBIDDEN.value()))
-                            .andExpect(jsonPath("$.message").value(MessageConstants.HAVE_NO_AUTHORITY_MESSAGE))
+                            .andExpect(jsonPath("$.message").value(FORBIDDEN_MESSAGE))
                             .andDo(print());
                 }
             }

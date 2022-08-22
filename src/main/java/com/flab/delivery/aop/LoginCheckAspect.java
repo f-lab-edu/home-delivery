@@ -12,6 +12,9 @@ import org.aspectj.lang.annotation.Before;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
+import static com.flab.delivery.exception.message.ErrorMessageConstants.FORBIDDEN_MESSAGE;
+import static com.flab.delivery.exception.message.ErrorMessageConstants.UNAUTHORIZED_MESSAGE;
+
 @Aspect
 @Component
 @Slf4j
@@ -25,7 +28,7 @@ public class LoginCheckAspect {
         String sessionUserId = loginService.getSessionUserId();
 
         if (sessionUserId == null) {
-            throw new SessionLoginException("세션 아이디가 존재하지 않습니다", HttpStatus.UNAUTHORIZED);
+            throw new SessionLoginException(UNAUTHORIZED_MESSAGE, HttpStatus.UNAUTHORIZED);
         }
 
         UserType targetUserType = target.userType();
@@ -37,7 +40,7 @@ public class LoginCheckAspect {
         UserType userType = loginService.getUserType();
 
         if (userType != targetUserType) {
-            throw new SessionLoginException("권한이 없습니다", HttpStatus.FORBIDDEN);
+            throw new SessionLoginException(FORBIDDEN_MESSAGE, HttpStatus.FORBIDDEN);
         }
     }
 
