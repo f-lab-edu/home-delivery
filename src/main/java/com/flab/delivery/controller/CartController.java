@@ -46,10 +46,10 @@ public class CartController {
     public CommonResult<Void> updateQuantity(@SessionUserId String userId, @PathVariable("cartKey") String cartKey,
                                              @RequestParam("operation") OperationType operationType) {
         switch (operationType) {
-            case PLUS:
+            case INCREASE:
                 cartService.increaseQuantity(userId, cartKey);
                 break;
-            case MINUS:
+            case DECREASE:
                 cartService.decreaseQuantity(userId, cartKey);
                 break;
         }

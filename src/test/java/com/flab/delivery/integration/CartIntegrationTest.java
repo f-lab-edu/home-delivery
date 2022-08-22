@@ -138,7 +138,7 @@ class CartIntegrationTest {
         }
 
         @Test
-        @DisplayName("CartType : EQUAL -  같은메뉴 담는경우 - 수량 증가")
+        @DisplayName("같은메뉴 담는경우 - 수량 증가")
         void sameInsert() throws Exception {
             List<OptionDto> optionDtoList = optionMapper.findAllByMenuId(menuId);
             MenuDto menuDto = menuMapper.findById(menuId).get();
@@ -161,7 +161,7 @@ class CartIntegrationTest {
 
 
         @Test
-        @DisplayName("CartType : EQUAL -  옵션 다른경우  새로운 필드 추가")
+        @DisplayName("옵션 다른경우  새로운 필드 추가")
         void optionDiff() throws Exception {
             List<OptionDto> optionDtoList = optionMapper.findAllByMenuId(menuId);
 
@@ -185,7 +185,7 @@ class CartIntegrationTest {
         }
 
         @Test
-        @DisplayName("CartType : EQUAL - 메뉴 다른경우  새로운 필드 추가")
+        @DisplayName("메뉴 다른경우  새로운 필드 추가")
         void menuDiff() throws Exception {
             Long diffMenuId = 16L;
             List<OptionDto> optionDtoList = optionMapper.findAllByMenuId(diffMenuId);
@@ -208,7 +208,7 @@ class CartIntegrationTest {
         }
 
         @Test
-        @DisplayName("CartType : DIFF  - 장바구니 다 지우고 새로운것만 존재")
+        @DisplayName("장바구니 다 지우고 새로운것만 존재")
         void storeCartTypeDIFF() throws Exception {
             Long diffStoreMenuId = 16L;
             String diffStore = "2";
@@ -345,13 +345,12 @@ class CartIntegrationTest {
         @Test
         @DisplayName("증가")
         void increaseQuantity() throws Exception {
-            paramValue = "PLUS";
+            paramValue = "INCREASE";
             mockMvc.perform(patch(url + pathValue).session(mockHttpSession).param(paramName, paramValue))
                     .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
                     .andDo(print());
 
-            Object o = redisCartTemplate.opsForHash().get(userId, "2_7_8");
-            ItemDto item = (ItemDto) o;
+            ItemDto item = (ItemDto)redisCartTemplate.opsForHash().get(userId, "2_7_8");
             Assertions.assertEquals(item.getQuantity(), 2);
         }
 
@@ -359,31 +358,29 @@ class CartIntegrationTest {
         @Test
         @DisplayName("감소 2->1로")
         void decreaseCase1() throws Exception {
-            paramValue = "PLUS";
+            paramValue = "INCREASE";
             mockMvc.perform(patch(url + pathValue).session(mockHttpSession).param(paramName, paramValue))
                     .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
                     .andDo(print());
 
-            paramValue = "MINUS";
+            paramValue = "DECREASE";
             mockMvc.perform(patch(url + pathValue).session(mockHttpSession).param(paramName, paramValue))
                     .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
                     .andDo(print());
 
-            Object o = redisCartTemplate.opsForHash().get(userId, "2_7_8");
-            ItemDto item = (ItemDto) o;
+            ItemDto item = (ItemDto) redisCartTemplate.opsForHash().get(userId, "2_7_8");
             Assertions.assertEquals(item.getQuantity(), 1);
         }
 
         @Test
         @DisplayName("감소 1에서 진행하는경우 - 1이되어야한다")
         void decreaseCase2() throws Exception {
-            paramValue = "MINUS";
+            paramValue = "DECREASE";
             mockMvc.perform(patch(url + pathValue).session(mockHttpSession).param(paramName, paramValue))
                     .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
                     .andDo(print());
 
-            Object o = redisCartTemplate.opsForHash().get(userId, "2_7_8");
-            ItemDto item = (ItemDto) o;
+            ItemDto item = (ItemDto)redisCartTemplate.opsForHash().get(userId, "2_7_8");
             Assertions.assertEquals(item.getQuantity(), 1);
         }
 
