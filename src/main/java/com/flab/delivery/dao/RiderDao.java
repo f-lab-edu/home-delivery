@@ -30,6 +30,6 @@ public class RiderDao {
     }
 
     private String getRidersKeyBy(Long addressId) {
-        return "STANDBY_RIDER" + addressId;
+        return "RIDER" + addressId;
     }
 }
