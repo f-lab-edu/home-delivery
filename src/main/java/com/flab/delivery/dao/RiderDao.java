@@ -5,7 +5,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -41,5 +45,19 @@ public class RiderDao {
 
     private String getOrderKey(Long addressId) {
         return "ORDER" + addressId;
+    }
+
+
+    public boolean isStandByRider(String userId, Long addressId) {
+        return redisTemplate.opsForSet().isMember(getRidersKeyBy(addressId), userId);
+    }
+
+    public List<OrderDeliveryDto> getDeliveryRequestList(Long addressId) {
+
+        Set<Object> requestOrders = redisTemplate.opsForZSet().reverseRange(getOrderKey(addressId), 0, 30);
+
+        return requestOrders
+                .stream().map(o -> (OrderDeliveryDto) o)
+                .collect(Collectors.toList());
     }
 }

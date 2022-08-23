@@ -1,6 +1,8 @@
 package com.flab.delivery.dao;
 
 import com.flab.delivery.AbstractRedisContainer;
+import com.flab.delivery.dto.order.rider.OrderDeliveryDto;
+import com.flab.delivery.enums.OrderStatus;
 import com.flab.delivery.fixture.TestDto;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.RedisTemplate;
 
+import java.util.List;
 import java.util.Set;
 
 import static com.flab.delivery.fixture.TestDto.getOrderDeliveryDto;
@@ -100,6 +103,20 @@ class RiderDaoTestRedis extends AbstractRedisContainer {
         assertThat(isAdded).isTrue();
         Double afterScore = redisTemplate.opsForZSet().score(OrderKey, getOrderDeliveryDto(ORDER_ID));
         assertThat(afterScore).isGreaterThan(beforeScore);
+    }
+
+    @Test
+    void getDeliveryRequestList_확인() {
+        // given
+        for (int i = 0; i < 50; i++) {
+            riderDao.addOrderBy(ADDRESS_ID, TestDto.getOrderDeliveryDto(ORDER_ID + i));
+        }
+
+        // when
+        List<OrderDeliveryDto> requestList = riderDao.getDeliveryRequestList(ADDRESS_ID);
+
+        // then
+        assertThat(requestList.size()).isEqualTo(31);
     }
 
 
