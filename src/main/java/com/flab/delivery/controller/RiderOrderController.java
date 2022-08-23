@@ -7,10 +7,8 @@ import com.flab.delivery.enums.UserType;
 import com.flab.delivery.response.CommonResult;
 import com.flab.delivery.service.RiderOrderService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,8 +22,19 @@ public class RiderOrderController {
 
     @LoginCheck(userType = UserType.RIDER)
     @GetMapping("/rider/request")
-    public CommonResult<List<OrderDeliveryDto>> getDeliveryList(@SessionUserId String userId,
-                                                                @RequestParam Long addressId) {
+    public CommonResult<List<OrderDeliveryDto>> getDeliveryRequestList(@SessionUserId String userId,
+                                                                       @RequestParam Long addressId) {
         return CommonResult.getDataSuccessResult(riderOrderService.getDeliveryRequests(userId, addressId));
     }
+
+    @LoginCheck(userType = UserType.RIDER)
+    @PatchMapping("{orderId}/rider/accept")
+    public CommonResult<Void> acceptDelivery(@SessionUserId String userId,
+                                             @RequestParam Long addressId,
+                                             @PathVariable Long orderId) {
+
+        riderOrderService.acceptDeliveryBy(orderId, userId, addressId);
+        return CommonResult.getSimpleSuccessResult(HttpStatus.OK.value());
+    }
+
 }

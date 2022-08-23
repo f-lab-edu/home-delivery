@@ -27,4 +27,8 @@ public interface OrderMapper {
     List<OwnerOrderResponseDto> findAllOwnerOrderLimit100(Long storeId);
 
     Optional<OrderDeliveryDto> findDeliveryInfo(@Param("ownerId") String ownerId, @Param("orderId") Long orderId, @Param("storeId") Long storeId);
+
+    List<OrderDeliveryDto> findDeliveryList(String riderId);
+
+    void updateOrderForDelivery(@Param("orderId") Long orderId, @Param("riderId") String riderId);
 }

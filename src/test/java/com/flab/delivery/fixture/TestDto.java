@@ -149,6 +149,8 @@ public class TestDto {
     public static OrderDeliveryDto getOrderDeliveryDto(Long orderId) {
         return OrderDeliveryDto.builder()
                 .orderId(orderId)
+                .status(OrderStatus.ORDER_APPROVED)
+                .storeName("테스트 매장")
                 .build();
     }
 }

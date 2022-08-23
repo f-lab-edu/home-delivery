@@ -2,10 +2,12 @@ package com.flab.delivery.dao;
 
 import com.flab.delivery.dto.order.rider.OrderDeliveryDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.SessionCallback;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -40,6 +42,8 @@ public class RiderDao {
         }
 
         redisTemplate.opsForZSet().add(getOrderKey(addressId), orderDeliveryDto, System.currentTimeMillis());
+
+
         return true;
     }
 
@@ -59,5 +63,19 @@ public class RiderDao {
         return requestOrders
                 .stream().map(o -> (OrderDeliveryDto) o)
                 .collect(Collectors.toList());
+    }
+
+    public boolean acceptDelivery(Long orderId, Long addressId) {
+
+        Object execute = redisTemplate.execute(new SessionCallback<Object>() {
+            @Override
+            public Object execute(RedisOperations operations) throws DataAccessException {
+                operations.watch(getOrderKey(addressId));
+                operations.multi();
+                operations.opsForZSet().remove(getOrderKey(addressId), OrderDeliveryDto.builder().orderId(orderId).build());
+                return operations.exec().get(0);
+            }
+        });
+        return execute.equals(1);
     }
 }

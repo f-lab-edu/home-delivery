@@ -166,8 +166,7 @@ class OrderMapperTest {
         Optional<OrderDeliveryDto> deliveryInfo = orderMapper.findDeliveryInfo("user2", orderDto.getId(), orderDto.getStoreId());
 
         // then
-        assertThat(deliveryInfo).usingRecursiveComparison().isNotNull();
+        assertThat(deliveryInfo.get()).usingRecursiveComparison().isNotNull();
     }
-
 
 }
