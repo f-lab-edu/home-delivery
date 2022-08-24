@@ -8,19 +8,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.DataAccessException;
-import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.SessionCallback;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static com.flab.delivery.fixture.TestDto.getOrderDeliveryDto;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -127,41 +118,46 @@ class RiderDaoTestRedis extends AbstractRedisContainer {
     }
 
     @Test
+    void findOrderRequest_확인() {
+        // given
+        for (int i = 0; i < 10; i++) {
+            riderDao.addOrderBy(ADDRESS_ID, TestDto.getOrderDeliveryDto(ORDER_ID + i));
+        }
+
+        // when
+        OrderDeliveryDto orderRequest = riderDao.findDeliveryRequest(ORDER_ID, ADDRESS_ID);
+
+        // then
+        assertThat(TestDto.getOrderDeliveryDto(ORDER_ID)).usingRecursiveComparison().isEqualTo(orderRequest);
+
+    }
+
+    @Test
+    void findOrderRequest_존재하지_않는_요청_Null_반환() {
+        // given
+        for (int i = 0; i < 10; i++) {
+            riderDao.addOrderBy(ADDRESS_ID, TestDto.getOrderDeliveryDto(ORDER_ID + i));
+        }
+
+        // when
+        OrderDeliveryDto orderRequest = riderDao.findDeliveryRequest(99L, ADDRESS_ID);
+
+        // then
+        assertThat(orderRequest).isNull();
+
+    }
+
+    @Test
     void acceptDelivery_확인() {
         // given
         for (int i = 0; i < 10; i++) {
             riderDao.addOrderBy(ADDRESS_ID, TestDto.getOrderDeliveryDto(ORDER_ID + i));
         }
         // when
-        riderDao.acceptDelivery(ORDER_ID + 1L , ADDRESS_ID);
+        riderDao.acceptDelivery(ADDRESS_ID, TestDto.getOrderDeliveryDto(ORDER_ID + 1L));
 
         // then
         assertThat(redisTemplate.opsForZSet().zCard(getKey("ORDER"))).isEqualTo(9);
-    }
-
-    @Test
-    void acceptDelivery_동시성_확인() throws InterruptedException {
-        riderDao.addOrderBy(ADDRESS_ID, TestDto.getOrderDeliveryDto(ORDER_ID));
-
-        int count = 10;
-        ExecutorService executorService = Executors.newFixedThreadPool(count);
-        CountDownLatch countDownLatch = new CountDownLatch(count);
-
-
-        ArrayList<Boolean> booleans = new ArrayList<>();
-
-        for (int i = 1; i <= count; i++) {
-            executorService.execute(() -> {
-                boolean result = riderDao.acceptDelivery(ORDER_ID, ADDRESS_ID);
-                if (result) {
-                    booleans.add(true);
-                }
-                countDownLatch.countDown();
-            });
-        }
-        countDownLatch.await();
-
-        assertThat(booleans.size()).isEqualTo(1);
     }
 
 

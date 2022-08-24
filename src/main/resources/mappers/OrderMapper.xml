@@ -16,6 +16,7 @@
         WHERE id = #{orderId};
     </update>
 
+    <!--    TODO StartId 에 따라 최신 정보가아닌 과거 정보를 가져와야 함-->
     <select id="findPageIds" resultType="Long">
         SELECT id
         FROM ORDERS
@@ -107,7 +108,8 @@
                u.phone_number
         FROM ORDERS o
                  JOIN STORE s
-                      ON o.id = #{orderId} AND s.id = #{storeId} AND s.user_id = #{ownerId} AND s.id = o.store_id
+                      ON o.id = #{orderId} AND s.id = #{storeId} AND s.user_id = #{ownerId} AND
+                         o.status = 'ORDER_APPROVED' AND s.id = o.store_id
                  JOIN USER u ON u.id = o.user_id
     </select>
 
@@ -119,6 +121,16 @@
             rider_id   = #{riderId}
         WHERE id = #{orderId}
     </update>
+
+    <update id="updateOrderForFinish">
+        UPDATE
+            ORDERS
+        SET status   ='FINISH_DELIVERY',
+            end_time = NOW()
+        WHERE id = #{orderId}
+          AND rider_id = #{riderId}
+    </update>
+
 
     <select id="findDeliveryList" resultMap="orderDelivery">
         SELECT o.id,

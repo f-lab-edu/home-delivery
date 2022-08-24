@@ -72,7 +72,7 @@ public class TestDto {
                 .id(orderId)
                 .orderPrice(30000)
                 .storeId(1L)
-                .status(OrderStatus.ORDER_REQUEST)
+                .status(OrderStatus.ORDER_APPROVED)
                 .history(OrderHistoryDto.from(getOrderRequestDto()))
                 .deliveryAddress("운암동 13번길 15")
                 .build();

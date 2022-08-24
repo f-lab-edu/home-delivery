@@ -10,7 +10,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.flab.delivery.exception.message.ErrorMessageConstants.*;
+import static com.flab.delivery.exception.message.ErrorMessageConstants.NOT_EXIST_ORDER_REQUEST_MESSAGE;
+import static com.flab.delivery.exception.message.ErrorMessageConstants.NOT_STAND_BY_RIDER;
 
 @Service
 @RequiredArgsConstructor
@@ -21,23 +22,47 @@ public class RiderOrderService {
 
     public List<OrderDeliveryDto> getDeliveryRequests(String userId, Long addressId) {
 
-        if (!riderDao.isStandByRider(userId, addressId)) {
-            throw new OrderException(NOT_STAND_BY_RIDER, HttpStatus.NOT_FOUND);
-        }
+        isStandByRider(userId, addressId);
 
         return riderDao.getDeliveryRequestList(addressId);
     }
 
     public void acceptDeliveryBy(Long orderId, String userId, Long addressId) {
 
-        if (!riderDao.isStandByRider(userId, addressId)) {
-            throw new OrderException(CANT_DELIVERY_IN_LOCATION_MESSAGE, HttpStatus.BAD_REQUEST);
-        }
+        isStandByRider(userId, addressId);
 
-        if (!riderDao.acceptDelivery(orderId, addressId)) {
+        OrderDeliveryDto findDeliveryRequest = getDeliveryRequestBy(orderId, addressId);
+
+        if (!riderDao.acceptDelivery(addressId, findDeliveryRequest)) {
             throw new OrderException(NOT_EXIST_ORDER_REQUEST_MESSAGE, HttpStatus.CONFLICT);
         }
 
         orderMapper.updateOrderForDelivery(orderId, userId);
+    }
+
+    private OrderDeliveryDto getDeliveryRequestBy(Long orderId, Long addressId) {
+        OrderDeliveryDto orderRequest = riderDao.findDeliveryRequest(orderId, addressId);
+
+        if (orderRequest == null) {
+            throw new OrderException(NOT_EXIST_ORDER_REQUEST_MESSAGE, HttpStatus.CONFLICT);
+        }
+
+        return orderRequest;
+    }
+
+    private void isStandByRider(String userId, Long addressId) {
+        if (!riderDao.isStandByRider(userId, addressId)) {
+            throw new OrderException(NOT_STAND_BY_RIDER, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    public void finishDeliveryBy(Long orderId, String userId, Long addressId) {
+        isStandByRider(userId, addressId);
+        orderMapper.updateOrderForFinish(orderId, userId);
+    }
+
+    public List<OrderDeliveryDto> getDeliveryList(String userId, Long addressId) {
+        isStandByRider(userId, addressId);
+        return orderMapper.findDeliveryList(userId);
     }
 }

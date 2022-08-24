@@ -8,7 +8,6 @@ import lombok.*;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-@EqualsAndHashCode(of = "orderId")
 public class OrderDeliveryDto {
 
     private Long orderId;

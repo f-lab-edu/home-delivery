@@ -3,12 +3,12 @@ package com.flab.delivery.dao;
 import com.flab.delivery.dto.order.rider.OrderDeliveryDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
-import org.springframework.data.redis.core.RedisOperations;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.SessionCallback;
+import org.springframework.data.redis.connection.RedisZSetCommands;
+import org.springframework.data.redis.core.*;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -65,17 +65,49 @@ public class RiderDao {
                 .collect(Collectors.toList());
     }
 
-    public boolean acceptDelivery(Long orderId, Long addressId) {
+    public boolean acceptDelivery(Long addressId, OrderDeliveryDto deliveryRequest) {
 
-        Object execute = redisTemplate.execute(new SessionCallback<Object>() {
+        List<Object> execute = redisTemplate.execute(new SessionCallback<List<Object>>() {
             @Override
-            public Object execute(RedisOperations operations) throws DataAccessException {
+            public List<Object> execute(RedisOperations operations) throws DataAccessException {
+
                 operations.watch(getOrderKey(addressId));
                 operations.multi();
-                operations.opsForZSet().remove(getOrderKey(addressId), OrderDeliveryDto.builder().orderId(orderId).build());
-                return operations.exec().get(0);
+                operations.opsForZSet().remove(getOrderKey(addressId), deliveryRequest);
+                return operations.exec();
             }
         });
-        return execute.equals(1);
+
+        return isRemovedDeliveryRequest(execute);
+    }
+
+    private boolean isRemovedDeliveryRequest(List<Object> execute) {
+        return !execute.isEmpty() && Objects.equals(execute.get(0).toString(), "1");
+    }
+
+    public OrderDeliveryDto findDeliveryRequest(Long orderId, Long addressId) {
+
+        OrderDeliveryDto findDeliveryRequest = redisTemplate.execute((RedisCallback<OrderDeliveryDto>) redisConnection -> {
+
+            ScanOptions options = ScanOptions.scanOptions().count(100).build();
+            Cursor<RedisZSetCommands.Tuple> scans = redisConnection.zScan(getOrderKey(addressId).getBytes(), options);
+
+            while (scans.hasNext()) {
+                RedisZSetCommands.Tuple next = scans.next();
+                OrderDeliveryDto deliveryRequest = getDeliveryRequest(next);
+
+                if (deliveryRequest.getOrderId().equals(orderId)) {
+                    return deliveryRequest;
+                }
+            }
+
+            return null;
+        });
+
+        return findDeliveryRequest;
+    }
+
+    private OrderDeliveryDto getDeliveryRequest(RedisZSetCommands.Tuple next) {
+        return (OrderDeliveryDto) redisTemplate.getValueSerializer().deserialize(next.getValue());
     }
 }
