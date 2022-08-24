@@ -104,7 +104,7 @@ class RiderDaoTestRedis extends AbstractRedisContainer {
     }
 
     @Test
-    void getDeliveryRequestList_확인() {
+    void getDeliveryRequestList_30개_미만_확인() {
         // given
         for (int i = 0; i < 10; i++) {
             riderDao.addOrderBy(ADDRESS_ID, TestDto.getOrderDeliveryDto(ORDER_ID + i));
@@ -115,6 +115,21 @@ class RiderDaoTestRedis extends AbstractRedisContainer {
 
         // then
         assertThat(requestList.size()).isEqualTo(10);
+    }
+
+
+    @Test
+    void getDeliveryRequestList_30개_초과_확인() {
+        // given
+        for (int i = 0; i < 40; i++) {
+            riderDao.addOrderBy(ADDRESS_ID, TestDto.getOrderDeliveryDto(ORDER_ID + i));
+        }
+
+        // when
+        List<OrderDeliveryDto> requestList = riderDao.getDeliveryRequestList(ADDRESS_ID);
+
+        // then
+        assertThat(requestList.size()).isEqualTo(31);
     }
 
     @Test
