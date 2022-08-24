@@ -2,13 +2,14 @@ package com.flab.delivery.dao;
 
 import com.flab.delivery.dto.order.rider.OrderDeliveryDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.RedisZSetCommands;
-import org.springframework.data.redis.core.*;
+import org.springframework.data.redis.core.Cursor;
+import org.springframework.data.redis.core.RedisCallback;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -65,25 +66,13 @@ public class RiderDao {
                 .collect(Collectors.toList());
     }
 
-    public boolean acceptDelivery(Long addressId, OrderDeliveryDto deliveryRequest) {
+    public synchronized boolean acceptDelivery(Long addressId, OrderDeliveryDto deliveryRequest) {
 
-        List<Object> execute = redisTemplate.execute(new SessionCallback<List<Object>>() {
-            @Override
-            public List<Object> execute(RedisOperations operations) throws DataAccessException {
+        Long removed = redisTemplate.opsForZSet().remove(getOrderKey(addressId), deliveryRequest);
 
-                operations.watch(getOrderKey(addressId));
-                operations.multi();
-                operations.opsForZSet().remove(getOrderKey(addressId), deliveryRequest);
-                return operations.exec();
-            }
-        });
-
-        return isRemovedDeliveryRequest(execute);
+        return removed == 1;
     }
 
-    private boolean isRemovedDeliveryRequest(List<Object> execute) {
-        return !execute.isEmpty() && Objects.equals(execute.get(0).toString(), "1");
-    }
 
     public OrderDeliveryDto findDeliveryRequest(Long orderId, Long addressId) {
 

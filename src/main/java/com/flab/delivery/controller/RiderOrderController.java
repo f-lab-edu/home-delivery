@@ -48,10 +48,19 @@ public class RiderOrderController {
     }
 
     @LoginCheck(userType = UserType.RIDER)
-    @GetMapping("/rider")
-    public CommonResult<List<OrderDeliveryDto>> getDeliveryList(@SessionUserId String userId,
-                                                                @RequestParam Long addressId) {
+    @GetMapping("/rider/in-delivery")
+    public CommonResult<List<OrderDeliveryDto>> getInDeliveryList(@SessionUserId String userId,
+                                                                  @RequestParam Long addressId) {
 
-        return CommonResult.getDataSuccessResult(riderOrderService.getDeliveryList(userId, addressId));
+        return CommonResult.getDataSuccessResult(riderOrderService.getInDeliveryList(userId, addressId));
+    }
+
+    @LoginCheck(userType = UserType.RIDER)
+    @GetMapping("/rider/finish")
+    public CommonResult<List<OrderDeliveryDto>> getFinishDeliveryList(@SessionUserId String userId,
+                                                                      @RequestParam Long addressId,
+                                                                      @RequestParam Long startId) {
+
+        return CommonResult.getDataSuccessResult(riderOrderService.getFinishDeliveryList(userId, addressId, startId));
     }
 }

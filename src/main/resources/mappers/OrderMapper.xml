@@ -131,21 +131,53 @@
           AND rider_id = #{riderId}
     </update>
 
-
-    <select id="findDeliveryList" resultMap="orderDelivery">
+    <select id="findInDeliveryList" resultMap="orderDelivery">
         SELECT o.id,
                o.status,
                s.address_id,
                s.name,
                s.detail_address,
                o.delivery_address,
-               u.phone_number
+               u.phone_number,
+               o.start_time
         FROM ORDERS o
                  JOIN STORE s
-                      ON o.rider_id = #{riderId} AND s.id = o.store_id
+                      ON o.rider_id = #{riderId} AND o.status = 'IN_DELIVERY' AND s.id = o.store_id
                  JOIN USER u ON u.id = o.user_id
-        ORDER BY o.created_at DESC
-        LIMIT 100;
+        ORDER BY o.start_time DESC
+    </select>
+
+    <select id="findFinishDeliveryPageIds" resultType="Long">
+        SELECT id
+        FROM ORDERS
+        WHERE rider_id = #{riderId}
+        <if test="startId != null">
+            AND id &lt; #{startId}
+        </if>
+        ORDER BY end_time DESC
+        LIMIT 10
+    </select>
+
+
+    <select id="findFinishDeliveryList" resultMap="orderDelivery">
+        SELECT o.id,
+        o.status,
+        s.address_id,
+        s.name,
+        s.detail_address,
+        o.delivery_address,
+        u.phone_number,
+        o.start_time,
+        o.end_time
+        FROM ORDERS o
+        JOIN STORE s
+        ON o.id IN
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+        AND o.rider_id = #{riderId} AND s.id = o.store_id
+        JOIN USER u ON u.id = o.user_id
+        ORDER BY o.end_time DESC
     </select>
 
 </mapper>

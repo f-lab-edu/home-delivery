@@ -61,8 +61,17 @@ public class RiderOrderService {
         orderMapper.updateOrderForFinish(orderId, userId);
     }
 
-    public List<OrderDeliveryDto> getDeliveryList(String userId, Long addressId) {
+    public List<OrderDeliveryDto> getInDeliveryList(String userId, Long addressId) {
         isStandByRider(userId, addressId);
-        return orderMapper.findDeliveryList(userId);
+
+        return orderMapper.findInDeliveryList(userId);
+    }
+
+    public List<OrderDeliveryDto> getFinishDeliveryList(String userId, Long addressId, Long startId) {
+        isStandByRider(userId, addressId);
+
+        List<Long> ids = orderMapper.findFinishDeliveryPageIds(userId, startId);
+
+        return orderMapper.findFinishDeliveryList(userId, ids);
     }
 }

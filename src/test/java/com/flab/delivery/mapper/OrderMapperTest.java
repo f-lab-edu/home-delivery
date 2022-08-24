@@ -1,8 +1,8 @@
 package com.flab.delivery.mapper;
 
 import com.flab.delivery.config.DatabaseConfig;
-import com.flab.delivery.dto.order.owner.OwnerOrderResponseDto;
 import com.flab.delivery.dto.order.OrderDto;
+import com.flab.delivery.dto.order.owner.OwnerOrderResponseDto;
 import com.flab.delivery.dto.order.rider.OrderDeliveryDto;
 import com.flab.delivery.dto.order.user.OrderSimpleResponseDto;
 import com.flab.delivery.dto.pay.PayDto;
@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.context.annotation.Import;
 import org.springframework.dao.DataAccessException;
+import org.springframework.test.annotation.Rollback;
 
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDateTime;
@@ -31,6 +32,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class OrderMapperTest {
 
+    public static final String RIDER_ID = "rider1";
     @Autowired
     private OrderMapper orderMapper;
 
@@ -135,7 +137,6 @@ class OrderMapperTest {
         orderMapper.save("user2", TestDto.getOrderDto());
 
 
-
         // when
         List<OwnerOrderResponseDto> responseDtoList = orderMapper.findAllOwnerOrderLimit100(1L);
 
@@ -144,6 +145,7 @@ class OrderMapperTest {
             assertThat(dto).usingRecursiveComparison().isNotNull();
         }
     }
+
     @Test
     void findDeliveryInfo_검색_결과_없음() {
         // given
@@ -156,6 +158,7 @@ class OrderMapperTest {
         // then
         assertThat(deliveryInfo).isEmpty();
     }
+
     @Test
     void findDeliveryInfo_확인() {
         // given
@@ -168,5 +171,50 @@ class OrderMapperTest {
         // then
         assertThat(deliveryInfo.get()).usingRecursiveComparison().isNotNull();
     }
+
+    @Test
+    void findFinishDeliveryPageIds_확인() {
+        // given
+        List<Long> orderIds = new ArrayList<>();
+
+        for (int i = 0; i < 15; i++) {
+            OrderDto dto = TestDto.getOrderDto();
+            orderMapper.save("user1", dto);
+            orderIds.add(dto.getId());
+            orderMapper.updateOrderForDelivery(dto.getId(), RIDER_ID);
+            orderMapper.updateOrderForFinish(dto.getId(), RIDER_ID);
+        }
+
+        // when
+        List<Long> ids = orderMapper.findFinishDeliveryPageIds(RIDER_ID, null);
+
+        // then
+        assertThat(ids).containsAnyElementsOf(orderIds);
+        assertThat(ids.size()).isEqualTo(10);
+
+    }
+    @Test
+    void findFinishDeliveryList_확인() {
+        // given
+        List<Long> orderIds = new ArrayList<>();
+
+        for (int i = 0; i < 15; i++) {
+            OrderDto dto = TestDto.getOrderDto();
+            orderMapper.save("user1", dto);
+            orderIds.add(dto.getId());
+            orderMapper.updateOrderForDelivery(dto.getId(), RIDER_ID);
+            orderMapper.updateOrderForFinish(dto.getId(), RIDER_ID);
+        }
+
+        // when
+        List<Long> ids = orderMapper.findFinishDeliveryPageIds(RIDER_ID, null);
+        List<OrderDeliveryDto> finishDeliveryList = orderMapper.findFinishDeliveryList(RIDER_ID, ids);
+
+        // then
+        assertThat(finishDeliveryList).usingFieldByFieldElementComparator().isNotNull();
+        assertThat(finishDeliveryList.size()).isEqualTo(10);
+
+    }
+
 
 }

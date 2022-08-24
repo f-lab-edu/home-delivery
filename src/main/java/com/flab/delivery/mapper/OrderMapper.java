@@ -31,7 +31,11 @@ public interface OrderMapper {
     //TODO 테스트 작성
     void updateOrderForDelivery(@Param("orderId") Long orderId, @Param("riderId") String riderId);
 
-    List<OrderDeliveryDto> findDeliveryList(String riderId);
-
     void updateOrderForFinish(@Param("orderId") Long orderId, @Param("riderId") String userId);
+
+    List<Long> findFinishDeliveryPageIds(@Param("riderId") String userId, @Param("startId") Long startId);
+
+    List<OrderDeliveryDto> findFinishDeliveryList(@Param("riderId") String riderId, @Param("ids") List<Long> ids);
+
+    List<OrderDeliveryDto> findInDeliveryList(String userId);
 }
