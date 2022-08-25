@@ -16,12 +16,15 @@
         WHERE id = #{orderId};
     </update>
 
-    <!--    TODO StartId 에 따라 최신 정보가아닌 과거 정보를 가져와야 함-->
     <select id="findPageIds" resultType="Long">
         SELECT id
         FROM ORDERS
-        WHERE id &gt;= #{startId}
-          AND user_id = #{userId}
+        WHERE user_id = #{userId}
+        <if test="startId != null">
+            AND id &lt; #{startId}
+        </if>
+        ORDER BY created_at DESC
+        LIMIT 10
     </select>
 
     <select id="findAllByPageIds" resultType="OrderSimpleResponseDto">
@@ -36,7 +39,7 @@
         <foreach collection="list" item="id" separator="," open="(" close=")">
             #{id}
         </foreach>
-        ORDER BY created_at DESC LIMIT 10;
+        ORDER BY created_at DESC;
     </select>
 
     <resultMap id="orderDetail" type="OrderDto">

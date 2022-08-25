@@ -37,8 +37,6 @@ public class UserOrderService {
         orderMapper.changeStatus(orderId, OrderStatus.ORDER_REQUEST);
 
         // TODO 사장님 알람
-
-        // TODO 메시지큐 OR 구현
     }
 
     public List<OrderSimpleResponseDto> getUserOrderList(String userId, Long startId) {

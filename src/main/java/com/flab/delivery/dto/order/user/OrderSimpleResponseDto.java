@@ -18,8 +18,4 @@ public class OrderSimpleResponseDto {
     private OrderStatus status;
     private int orderPrice;
     private LocalDateTime createdAt;
-
-    public String getMenuName() {
-        return menuName.substring(1, menuName.length() - 1);
-    }
 }

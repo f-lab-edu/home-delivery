@@ -109,7 +109,7 @@ class UserOrderServiceTest {
         given(orderMapper.findPageIds(any(), eq(0L))).willReturn(new ArrayList<>());
 
         // when
-        List<OrderSimpleResponseDto> userOrderList = userOrderService.getUserOrderList(USER_ID, null);
+        List<OrderSimpleResponseDto> userOrderList = userOrderService.getUserOrderList(USER_ID, 0L);
 
         // then
         assertThat(userOrderList.size()).isEqualTo(0);
@@ -131,7 +131,7 @@ class UserOrderServiceTest {
         given(orderMapper.findAllByPageIds(idList)).willReturn(responseDtoList);
 
         // when
-        List<OrderSimpleResponseDto> userOrderList = userOrderService.getUserOrderList(USER_ID, null);
+        List<OrderSimpleResponseDto> userOrderList = userOrderService.getUserOrderList(USER_ID, 0L);
 
         // then
         assertThat(userOrderList).usingFieldByFieldElementComparator().containsAll(responseDtoList);
