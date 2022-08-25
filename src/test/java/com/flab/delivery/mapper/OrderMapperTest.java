@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.context.annotation.Import;
 import org.springframework.dao.DataAccessException;
-import org.springframework.test.annotation.Rollback;
 
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDateTime;
@@ -42,10 +41,7 @@ class OrderMapperTest {
     @Test
     void save_확인() {
         // given
-        OrderDto orderDto = TestDto.getOrderDto();
-
-        // when
-        orderMapper.save("user1", orderDto);
+        OrderDto orderDto = saveOrderDto("user1");
 
         // then
         assertThat(orderDto.getId()).isNotNull();
@@ -67,8 +63,7 @@ class OrderMapperTest {
     @Test
     void changeStatus_확인() {
         // given
-        OrderDto orderDto = TestDto.getOrderDto();
-        orderMapper.save("user1", orderDto);
+        OrderDto orderDto = saveOrderDto("user1");
 
         // when
         Long count = orderMapper.changeStatus(orderDto.getId(), OrderStatus.ORDER_APPROVED);
@@ -84,8 +79,7 @@ class OrderMapperTest {
 
         OrderDto orderDto = TestDto.getOrderDto();
         for (int i = 0; i < 15; i++) {
-            OrderDto dto = TestDto.getOrderDto();
-            orderMapper.save("user1", dto);
+            OrderDto dto = saveOrderDto("user1");
             orderIds.add(dto.getId());
         }
 
@@ -149,8 +143,7 @@ class OrderMapperTest {
     @Test
     void findDeliveryInfo_검색_결과_없음() {
         // given
-        OrderDto orderDto = TestDto.getOrderDto();
-        orderMapper.save("user1", orderDto);
+        OrderDto orderDto = saveOrderDto("user1");
 
         // when
         Optional<OrderDeliveryDto> deliveryInfo = orderMapper.findDeliveryInfo("user3", orderDto.getId(), orderDto.getStoreId());
@@ -162,8 +155,7 @@ class OrderMapperTest {
     @Test
     void findDeliveryInfo_확인() {
         // given
-        OrderDto orderDto = TestDto.getOrderDto();
-        orderMapper.save("user1", orderDto);
+        OrderDto orderDto = saveOrderDto("user1");
 
         // when
         Optional<OrderDeliveryDto> deliveryInfo = orderMapper.findDeliveryInfo("user2", orderDto.getId(), orderDto.getStoreId());
@@ -173,13 +165,68 @@ class OrderMapperTest {
     }
 
     @Test
+    void updateOrderForDelivery_확인() {
+        // given
+        OrderDto orderDto = saveOrderDto("user1");
+
+        // when
+        Long result = orderMapper.updateOrderForDelivery(orderDto.getId(), RIDER_ID);
+
+        // then
+        assertThat(result).isEqualTo(1);
+    }
+
+    @Test
+    void updateOrderForFinish_주문_상태가_배달중이_아니라서_변경_X() {
+        // given
+        OrderDto orderDto = saveOrderDto("user1");
+
+        // when
+        Long result = orderMapper.updateOrderForFinish(orderDto.getId(), RIDER_ID);
+
+        // then
+        assertThat(result).isEqualTo(0);
+    }
+
+    @Test
+    void updateOrderForFinish_확인() {
+        // given
+        OrderDto orderDto = saveOrderDto("user1");
+
+        // when
+        orderMapper.updateOrderForDelivery(orderDto.getId(), RIDER_ID);
+        Long result = orderMapper.updateOrderForFinish(orderDto.getId(), RIDER_ID);
+
+        // then
+        assertThat(result).isEqualTo(1);
+    }
+
+    @Test
+    void findInDeliveryList_확인() {
+        // given
+        List<Long> orderIds = new ArrayList<>();
+
+        for (int i = 0; i < 15; i++) {
+            OrderDto dto = saveOrderDto("user1");
+            orderIds.add(dto.getId());
+            orderMapper.updateOrderForDelivery(dto.getId(), RIDER_ID);
+        }
+
+        // when
+        List<OrderDeliveryDto> inDeliveryList = orderMapper.findInDeliveryList(RIDER_ID);
+
+        // then
+        assertThat(inDeliveryList).usingFieldByFieldElementComparator().isNotNull();
+        assertThat(inDeliveryList).extracting(OrderDeliveryDto::getOrderId).containsAnyElementsOf(orderIds);
+    }
+
+    @Test
     void findFinishDeliveryPageIds_확인() {
         // given
         List<Long> orderIds = new ArrayList<>();
 
         for (int i = 0; i < 15; i++) {
-            OrderDto dto = TestDto.getOrderDto();
-            orderMapper.save("user1", dto);
+            OrderDto dto = saveOrderDto("user1");
             orderIds.add(dto.getId());
             orderMapper.updateOrderForDelivery(dto.getId(), RIDER_ID);
             orderMapper.updateOrderForFinish(dto.getId(), RIDER_ID);
@@ -193,14 +240,20 @@ class OrderMapperTest {
         assertThat(ids.size()).isEqualTo(10);
 
     }
+
+    private OrderDto saveOrderDto(String userId) {
+        OrderDto dto = TestDto.getOrderDto();
+        orderMapper.save(userId, dto);
+        return dto;
+    }
+
     @Test
     void findFinishDeliveryList_확인() {
         // given
         List<Long> orderIds = new ArrayList<>();
 
         for (int i = 0; i < 15; i++) {
-            OrderDto dto = TestDto.getOrderDto();
-            orderMapper.save("user1", dto);
+            OrderDto dto = saveOrderDto("user1");
             orderIds.add(dto.getId());
             orderMapper.updateOrderForDelivery(dto.getId(), RIDER_ID);
             orderMapper.updateOrderForFinish(dto.getId(), RIDER_ID);

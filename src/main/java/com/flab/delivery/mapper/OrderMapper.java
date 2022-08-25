@@ -28,10 +28,9 @@ public interface OrderMapper {
 
     Optional<OrderDeliveryDto> findDeliveryInfo(@Param("ownerId") String ownerId, @Param("orderId") Long orderId, @Param("storeId") Long storeId);
 
-    //TODO 테스트 작성
-    void updateOrderForDelivery(@Param("orderId") Long orderId, @Param("riderId") String riderId);
+    Long updateOrderForDelivery(@Param("orderId") Long orderId, @Param("riderId") String riderId);
 
-    void updateOrderForFinish(@Param("orderId") Long orderId, @Param("riderId") String userId);
+    Long updateOrderForFinish(@Param("orderId") Long orderId, @Param("riderId") String userId);
 
     List<Long> findFinishDeliveryPageIds(@Param("riderId") String userId, @Param("startId") Long startId);
 
