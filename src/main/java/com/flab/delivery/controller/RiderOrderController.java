@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-// TODO 테스트 작성
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/orders")
@@ -59,7 +58,7 @@ public class RiderOrderController {
     @GetMapping("/rider/finish")
     public CommonResult<List<OrderDeliveryDto>> getFinishDeliveryList(@SessionUserId String userId,
                                                                       @RequestParam Long addressId,
-                                                                      @RequestParam Long startId) {
+                                                                      @RequestParam(required = false) Long startId) {
 
         return CommonResult.getDataSuccessResult(riderOrderService.getFinishDeliveryList(userId, addressId, startId));
     }

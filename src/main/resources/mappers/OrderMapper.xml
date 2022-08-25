@@ -95,6 +95,8 @@
         <result property="storeAddress" column="detail_address"/>
         <result property="deliveryAddress" column="delivery_address"/>
         <result property="userPhoneNumber" column="phone_number"/>
+        <result property="startDeliveryTime" column="start_time"/>
+        <result property="endDeliveryTime" column="end_time"/>
     </resultMap>
 
 

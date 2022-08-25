@@ -45,7 +45,7 @@ public class UserOrderController {
     @LoginCheck(userType = UserType.USER)
     @GetMapping("/user")
     public CommonResult<List<OrderSimpleResponseDto>> getUserOrderList(@SessionUserId String userId,
-                                                                       @RequestParam Integer startId) {
+                                                                       @RequestParam(required = false) Long startId) {
 
         return CommonResult.getDataSuccessResult(userOrderService.getUserOrderList(userId, startId));
     }

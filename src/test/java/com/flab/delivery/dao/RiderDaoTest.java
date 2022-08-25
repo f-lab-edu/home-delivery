@@ -17,7 +17,7 @@ import static com.flab.delivery.fixture.TestDto.getOrderDeliveryDto;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-class RiderDaoTestRedis extends AbstractRedisContainer {
+class RiderDaoTest extends AbstractRedisContainer {
 
     private static final String RIDER = "Rider1";
     private static final Long ADDRESS_ID = 1L;

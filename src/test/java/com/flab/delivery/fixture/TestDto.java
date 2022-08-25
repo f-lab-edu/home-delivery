@@ -152,6 +152,9 @@ public class TestDto {
                 .status(OrderStatus.ORDER_APPROVED)
                 .storeName("테스트 매장"+orderId)
                 .addressId(1L)
+                .userPhoneNumber("010-1111-1111")
+                .storeAddress("테스트 매장 상세 주소")
+                .deliveryAddress("배달 상세 주소")
                 .build();
     }
 }

@@ -41,7 +41,7 @@ public class UserOrderService {
         // TODO 메시지큐 OR 구현
     }
 
-    public List<OrderSimpleResponseDto> getUserOrderList(String userId, int startId) {
+    public List<OrderSimpleResponseDto> getUserOrderList(String userId, Long startId) {
 
         List<Long> pageIds = orderMapper.findPageIds(userId, startId);
 
