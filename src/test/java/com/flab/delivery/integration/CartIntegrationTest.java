@@ -52,9 +52,6 @@ class CartIntegrationTest {
     ObjectMapper objectMapper;
 
     @Autowired
-    Environment en;
-
-    @Autowired
     RedisTemplate<String, Object> redisCartTemplate;
 
 
@@ -63,6 +60,14 @@ class CartIntegrationTest {
     @Container
     static GenericContainer redisContainer = new GenericContainer("redis")
             .withExposedPorts(6379);
+
+    static class ContainerPropertyInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
+        @Override
+        public void initialize(ConfigurableApplicationContext context) {
+            TestPropertyValues.of("spring.redis.cart.port=" + redisContainer.getMappedPort(6379))
+                    .applyTo(context.getEnvironment());
+        }
+    }
 
 
 
@@ -441,11 +446,4 @@ class CartIntegrationTest {
     }
 
 
-    static class ContainerPropertyInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
-        @Override
-        public void initialize(ConfigurableApplicationContext context) {
-            TestPropertyValues.of("spring.redis.cart.port=" + redisContainer.getMappedPort(6379))
-                    .applyTo(context.getEnvironment());
-        }
-    }
 }
