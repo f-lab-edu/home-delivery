@@ -3,8 +3,10 @@ package com.flab.delivery.controller;
 import com.flab.delivery.annotation.LoginCheck;
 import com.flab.delivery.annotation.SessionUserId;
 import com.flab.delivery.controller.validator.PasswordValidator;
+import com.flab.delivery.dao.FCMTokenDao;
 import com.flab.delivery.dto.user.*;
 import com.flab.delivery.response.CommonResult;
+import com.flab.delivery.service.FCMService;
 import com.flab.delivery.service.LoginService;
 import com.flab.delivery.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,8 @@ public class UserController {
     private final UserService userService;
     private final LoginService loginService;
     private final PasswordValidator passwordValidator;
+    private final FCMService fcmService;
+
 
     @InitBinder("passwordDto")
     public void initBinder(WebDataBinder webDataBinder) {
@@ -37,14 +41,16 @@ public class UserController {
     @PostMapping("/login")
     public CommonResult<Void> loginUser(@RequestBody UserDto userDto) {
         userService.loginUser(userDto);
+        fcmService.saveToken(userDto.getId(), userDto.getToken());
         return CommonResult.getSimpleSuccessResult(HttpStatus.OK.value());
     }
 
 
     @LoginCheck
     @DeleteMapping("/logout")
-    public CommonResult<Void> logoutUser() {
+    public CommonResult<Void> logoutUser(@SessionUserId String userId) {
         loginService.logoutUser();
+        fcmService.deleteToken(userId);
         return CommonResult.getSimpleSuccessResult(HttpStatus.OK.value());
     }
 
