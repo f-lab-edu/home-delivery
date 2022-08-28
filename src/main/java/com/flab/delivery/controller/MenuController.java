@@ -22,10 +22,12 @@ public class MenuController {
 
     private final MenuService menuService;
 
+
     @LoginCheck(userType = UserType.OWNER)
     @PostMapping
-    public CommonResult<Void> createMenu(@RequestBody @Valid MenuRequestDto menuRequestDto) {
-        menuService.createMenu(menuRequestDto);
+    public CommonResult<Void> createMenu(@RequestBody @Valid MenuRequestDto menuRequestDto,
+                                         @RequestParam(name = "storeId") Long storeId) {
+        menuService.createMenu(menuRequestDto, storeId);
         return CommonResult.getSimpleSuccessResult(HttpStatus.CREATED.value());
     }
 

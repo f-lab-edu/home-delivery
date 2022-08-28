@@ -39,6 +39,8 @@ class MenuServiceTest {
         private String info = "바삭한 후라이드 치킨입니다";
         private Integer price = 18000;
 
+        private Long storeId = 1L;
+
         private MenuRequestDto getMenuRequestDto() {
             return MenuRequestDto.builder()
                     .menuGroupId(menuGroupId)
@@ -57,11 +59,11 @@ class MenuServiceTest {
                 MenuRequestDto menuRequestDto = getMenuRequestDto();
                 when(menuMapper.existsByName(menuRequestDto.getMenuGroupId(), menuRequestDto.getName()))
                         .thenReturn(Optional.empty());
-                menuService.createMenu(menuRequestDto);
+                menuService.createMenu(menuRequestDto, storeId);
 
                 when(menuMapper.existsByName(menuRequestDto.getMenuGroupId(), menuRequestDto.getName()))
                         .thenReturn(Optional.of(1L));
-                MenuException ex = Assertions.assertThrows(MenuException.class, () -> menuService.createMenu(menuRequestDto));
+                MenuException ex = Assertions.assertThrows(MenuException.class, () -> menuService.createMenu(menuRequestDto, storeId));
                 Assertions.assertEquals(ex.getMessage(), "이미 존재하는 메뉴 입니다");
             }
         }
@@ -76,7 +78,7 @@ class MenuServiceTest {
                 when(menuMapper.existsByName(menuRequestDto.getMenuGroupId(), menuRequestDto.getName()))
                         .thenReturn(Optional.of(1L));
 
-                MenuException ex = Assertions.assertThrows(MenuException.class, () -> menuService.createMenu(menuRequestDto));
+                MenuException ex = Assertions.assertThrows(MenuException.class, () -> menuService.createMenu(menuRequestDto, storeId));
                 Assertions.assertEquals(ex.getMessage(), "이미 존재하는 메뉴 입니다");
             }
         }
