@@ -25,4 +25,5 @@ public abstract class AbstractRedisContainer {
         registry.add("spring.redis.session.port", () -> "" + REDIS_CONTAINER.getExposedPorts().get(0));
         registry.add("spring.redis.rider.port", () -> "" + REDIS_CONTAINER.getExposedPorts().get(0));
     }
+
 }
