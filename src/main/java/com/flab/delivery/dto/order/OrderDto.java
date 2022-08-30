@@ -1,7 +1,6 @@
 package com.flab.delivery.dto.order;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.flab.delivery.dto.order.user.OrderHistoryDto;
 import com.flab.delivery.dto.order.user.OrderRequestDto;
 import com.flab.delivery.enums.OrderStatus;
 import com.flab.delivery.enums.PayType;

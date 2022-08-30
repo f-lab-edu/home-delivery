@@ -19,8 +19,12 @@
     <select id="findPageIds" resultType="Long">
         SELECT id
         FROM ORDERS
-        WHERE id &gt;= #{startId}
-          AND user_id = #{userId}
+        WHERE user_id = #{userId}
+        <if test="startId != null">
+            AND id &lt; #{startId}
+        </if>
+        ORDER BY created_at DESC
+        LIMIT 10
     </select>
 
     <select id="findAllByPageIds" resultType="OrderSimpleResponseDto">
@@ -35,7 +39,7 @@
         <foreach collection="list" item="id" separator="," open="(" close=")">
             #{id}
         </foreach>
-        ORDER BY created_at DESC LIMIT 10;
+        ORDER BY created_at DESC;
     </select>
 
     <resultMap id="orderDetail" type="OrderDto">
@@ -85,4 +89,100 @@
         ORDER BY o.created_at DESC
         LIMIT 100;
     </select>
+
+    <resultMap id="orderDelivery" type="OrderDeliveryDto">
+        <result property="orderId" column="id"/>
+        <result property="status" column="status"/>
+        <result property="addressId" column="address_id"/>
+        <result property="storeName" column="name"/>
+        <result property="storeAddress" column="detail_address"/>
+        <result property="deliveryAddress" column="delivery_address"/>
+        <result property="userPhoneNumber" column="phone_number"/>
+        <result property="startDeliveryTime" column="start_time"/>
+        <result property="endDeliveryTime" column="end_time"/>
+    </resultMap>
+
+
+    <select id="findDeliveryInfo" resultMap="orderDelivery">
+        SELECT o.id,
+               o.status,
+               s.address_id,
+               s.name,
+               s.detail_address,
+               o.delivery_address,
+               u.phone_number
+        FROM ORDERS o
+                 JOIN STORE s
+                      ON o.id = #{orderId} AND s.id = #{storeId} AND s.user_id = #{ownerId} AND
+                         o.status = 'ORDER_APPROVED' AND s.id = o.store_id
+                 JOIN USER u ON u.id = o.user_id
+    </select>
+
+    <update id="updateOrderForDelivery">
+        UPDATE
+            ORDERS
+        SET status     = 'IN_DELIVERY',
+            start_time = NOW(),
+            rider_id   = #{riderId}
+        WHERE id = #{orderId}
+    </update>
+
+    <update id="updateOrderForFinish">
+        UPDATE
+            ORDERS
+        SET status   ='FINISH_DELIVERY',
+            end_time = NOW()
+        WHERE id = #{orderId}
+          AND rider_id = #{riderId}
+    </update>
+
+    <select id="findInDeliveryList" resultMap="orderDelivery">
+        SELECT o.id,
+               o.status,
+               s.address_id,
+               s.name,
+               s.detail_address,
+               o.delivery_address,
+               u.phone_number,
+               o.start_time
+        FROM ORDERS o
+                 JOIN STORE s
+                      ON o.rider_id = #{riderId} AND o.status = 'IN_DELIVERY' AND s.id = o.store_id
+                 JOIN USER u ON u.id = o.user_id
+        ORDER BY o.start_time DESC
+    </select>
+
+    <select id="findFinishDeliveryPageIds" resultType="Long">
+        SELECT id
+        FROM ORDERS
+        WHERE rider_id = #{riderId}
+        <if test="startId != null">
+            AND id &lt; #{startId}
+        </if>
+        ORDER BY end_time DESC
+        LIMIT 10
+    </select>
+
+
+    <select id="findFinishDeliveryList" resultMap="orderDelivery">
+        SELECT o.id,
+        o.status,
+        s.address_id,
+        s.name,
+        s.detail_address,
+        o.delivery_address,
+        u.phone_number,
+        o.start_time,
+        o.end_time
+        FROM ORDERS o
+        JOIN STORE s
+        ON o.id IN
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+        AND o.rider_id = #{riderId} AND s.id = o.store_id
+        JOIN USER u ON u.id = o.user_id
+        ORDER BY o.end_time DESC
+    </select>
+
 </mapper>

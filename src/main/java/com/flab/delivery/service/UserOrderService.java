@@ -35,13 +35,9 @@ public class UserOrderService {
 
         // 결제 완료 후 주문 상태 변경
         orderMapper.changeStatus(orderId, OrderStatus.ORDER_REQUEST);
-
-        // TODO 사장님 알람
-
-        // TODO 메시지큐 OR 구현
     }
 
-    public List<OrderSimpleResponseDto> getUserOrderList(String userId, int startId) {
+    public List<OrderSimpleResponseDto> getUserOrderList(String userId, Long startId) {
 
         List<Long> pageIds = orderMapper.findPageIds(userId, startId);
 
@@ -52,7 +48,7 @@ public class UserOrderService {
         return orderMapper.findAllByPageIds(pageIds);
     }
 
-    public OrderDto getUserDetailOrder(String userId, Long orderId) {
+    public OrderDto getUserDetailOrder(Long orderId) {
         return orderMapper.findByOrderId(orderId);
     }
 }

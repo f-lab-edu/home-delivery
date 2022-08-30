@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flab.delivery.annotation.IntegrationTest;
 import com.flab.delivery.dto.menu.MenuDto;
 import com.flab.delivery.dto.option.OptionDto;
+import com.flab.delivery.dto.order.OrderDto;
 import com.flab.delivery.dto.order.user.OrderMenuDto;
 import com.flab.delivery.dto.order.user.OrderRequestDto;
 import com.flab.delivery.enums.PayType;
@@ -217,10 +218,43 @@ public class UserOrderIntegrationTest {
     @Test
     void getUserOrderList_성공() throws Exception {
         // given
+        for (int i = 0; i < 20; i++) {
+            OrderDto orderDto = TestDto.getOrderDto();
+            orderMapper.save("user1", orderDto);
+        }
         // when
         // then
         mockMvc.perform(get("/orders/user")
-                        .param("startId", "0")
+                        .session(session))
+                .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
+                .andExpect(jsonPath("$.message").value(MessageConstants.SUCCESS_MESSAGE))
+                .andExpect(jsonPath("$.data[*].storeId").exists())
+                .andExpect(jsonPath("$.data[*].menuCount").exists())
+                .andExpect(jsonPath("$.data[*].menuName").exists())
+                .andExpect(jsonPath("$.data.size()").value(10))
+                .andExpect(jsonPath("$.data[*].status").exists())
+                .andExpect(jsonPath("$.data[*].orderPrice").exists())
+                .andExpect(jsonPath("$.data[*].createdAt").exists())
+                .andDo(print());
+    }
+
+    @Test
+    void getUserOrderList_다음_페이지_성공() throws Exception {
+        // given
+        Long startId = null;
+
+        for (int i = 0; i < 20; i++) {
+            OrderDto orderDto = TestDto.getOrderDto();
+            orderMapper.save("user1", orderDto);
+            if (i == 10) {
+                startId = orderDto.getId();
+            }
+        }
+
+        // when
+        // then
+        mockMvc.perform(get("/orders/user")
+                        .param("startId", String.valueOf(startId))
                         .session(session))
                 .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
                 .andExpect(jsonPath("$.message").value(MessageConstants.SUCCESS_MESSAGE))
@@ -228,10 +262,12 @@ public class UserOrderIntegrationTest {
                 .andExpect(jsonPath("$.data[*].menuCount").exists())
                 .andExpect(jsonPath("$.data[*].menuName").exists())
                 .andExpect(jsonPath("$.data[*].status").exists())
+                .andExpect(jsonPath("$.data.size()").value(10))
                 .andExpect(jsonPath("$.data[*].orderPrice").exists())
                 .andExpect(jsonPath("$.data[*].createdAt").exists())
                 .andDo(print());
     }
+
     private OrderMenuDto createMenuDto(MenuDto menu, List<OptionDto> optionList) {
         return OrderMenuDto.builder()
                 .menuDto(menu)

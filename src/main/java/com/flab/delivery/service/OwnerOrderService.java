@@ -3,6 +3,7 @@ package com.flab.delivery.service;
 import com.flab.delivery.dao.RiderDao;
 import com.flab.delivery.dto.order.OrderDto;
 import com.flab.delivery.dto.order.owner.OwnerOrderResponseDto;
+import com.flab.delivery.dto.order.rider.OrderDeliveryDto;
 import com.flab.delivery.enums.OrderStatus;
 import com.flab.delivery.exception.OrderException;
 import com.flab.delivery.mapper.OrderMapper;
@@ -67,4 +68,16 @@ public class OwnerOrderService {
     private boolean hasStoreBy(String userId, Long storeId) {
         return storeService.existsStoreByUserIdAndStoreId(userId, storeId);
     }
+
+    public void callRider(String userId, Long orderId, Long storeId) {
+
+
+        OrderDeliveryDto deliveryInfo = orderMapper.findDeliveryInfo(userId, orderId, storeId)
+                .orElseThrow(() -> new OrderException(BAD_REQUEST_MESSAGE, HttpStatus.BAD_REQUEST));
+
+
+        riderDao.addDeliveryRequestBy(deliveryInfo.getAddressId(), deliveryInfo);
+
+    }
+
 }

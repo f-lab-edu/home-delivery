@@ -1,10 +1,11 @@
-package com.flab.delivery.dto.order.user;
+package com.flab.delivery.dto.order;
 
+import com.flab.delivery.dto.order.user.OrderRequestDto;
 import lombok.*;
 
 import java.util.List;
 
-import static com.flab.delivery.dto.order.user.OrderMenuHistoryDto.createHistory;
+import static com.flab.delivery.dto.order.OrderMenuHistoryDto.createHistory;
 
 @Getter
 @Builder

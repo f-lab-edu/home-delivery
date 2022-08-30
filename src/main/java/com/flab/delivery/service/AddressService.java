@@ -28,9 +28,7 @@ public class AddressService {
             throw new AddressException("존재하지 않는 주소 입니다.");
         }
 
-        if (addressRequestDto.getAlias() == null) {
-            addressRequestDto.changeAlias(addressRequestDto.getDetailAddress());
-        }
+        addressRequestDto.changeAlias(addressRequestDto.getDetailAddress());
 
         userAddressMapper.addAddress(addressRequestDto, findAddressId, userId);
 
@@ -51,7 +49,7 @@ public class AddressService {
     }
 
 
-    @Transactional(rollbackFor = AddressException.class)
+    @Transactional
     public void selectAddress(Long id, String userId) {
 
         int updateCount = userAddressMapper.changeAddress(id, userId);

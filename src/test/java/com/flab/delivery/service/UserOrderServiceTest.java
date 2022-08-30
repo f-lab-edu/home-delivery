@@ -106,15 +106,15 @@ class UserOrderServiceTest {
     @Test
     void getUserOrderList_주문목록_없음() {
         // given
-        given(orderMapper.findPageIds(any(), eq(0))).willReturn(new ArrayList<>());
+        given(orderMapper.findPageIds(any(), eq(0L))).willReturn(new ArrayList<>());
 
         // when
-        List<OrderSimpleResponseDto> userOrderList = userOrderService.getUserOrderList(USER_ID, 0);
+        List<OrderSimpleResponseDto> userOrderList = userOrderService.getUserOrderList(USER_ID, 0L);
 
         // then
         assertThat(userOrderList.size()).isEqualTo(0);
 
-        verify(orderMapper).findPageIds(eq(USER_ID), eq(0));
+        verify(orderMapper).findPageIds(eq(USER_ID), eq(0L));
         verify(orderMapper, never()).findAllByPageIds(anyList());
     }
 
@@ -127,16 +127,16 @@ class UserOrderServiceTest {
                 getOrderSimpleResponseDto("피자", 13000));
 
         List<Long> idList = Arrays.asList(1L, 2L, 3L);
-        given(orderMapper.findPageIds(any(), eq(0))).willReturn(idList);
+        given(orderMapper.findPageIds(any(), eq(0L))).willReturn(idList);
         given(orderMapper.findAllByPageIds(idList)).willReturn(responseDtoList);
 
         // when
-        List<OrderSimpleResponseDto> userOrderList = userOrderService.getUserOrderList(USER_ID, 0);
+        List<OrderSimpleResponseDto> userOrderList = userOrderService.getUserOrderList(USER_ID, 0L);
 
         // then
         assertThat(userOrderList).usingFieldByFieldElementComparator().containsAll(responseDtoList);
 
         verify(orderMapper).findAllByPageIds(eq(idList));
-        verify(orderMapper).findPageIds(any(), eq(0));
+        verify(orderMapper).findPageIds(any(), eq(0L));
     }
 }

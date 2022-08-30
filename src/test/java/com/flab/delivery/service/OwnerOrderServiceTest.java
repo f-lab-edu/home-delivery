@@ -1,9 +1,13 @@
 package com.flab.delivery.service;
 
+import com.flab.delivery.dao.RiderDao;
 import com.flab.delivery.dto.order.OrderDto;
 import com.flab.delivery.dto.order.owner.OwnerOrderResponseDto;
+import com.flab.delivery.dto.order.rider.OrderDeliveryDto;
 import com.flab.delivery.enums.OrderStatus;
+import com.flab.delivery.exception.AddressException;
 import com.flab.delivery.exception.OrderException;
+import com.flab.delivery.fixture.TestDto;
 import com.flab.delivery.mapper.OrderMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,19 +18,23 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
+import static com.flab.delivery.exception.message.ErrorMessageConstants.BAD_REQUEST_MESSAGE;
+import static com.flab.delivery.exception.message.ErrorMessageConstants.NOT_ENOUGH_DELIVERY_REQUEST_TIME_MESSAGE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class OwnerOrderServiceTest {
 
-    public static final String OWNER_ID = "owner";
-    public static final long STORE_ID = 1L;
+    private static final String OWNER_ID = "owner";
+    private static final long STORE_ID = 1L;
+    private static final long ADDRESS_ID = 1L;
+    private static final long ORDER_ID = 1L;
     @InjectMocks
     OwnerOrderService ownerOrderService;
 
@@ -35,6 +43,9 @@ class OwnerOrderServiceTest {
 
     @Mock
     StoreService storeService;
+
+    @Mock
+    RiderDao riderDao;
 
 
     @Test
@@ -89,7 +100,7 @@ class OwnerOrderServiceTest {
     @Test
     void approveOrder_주문에_대한_매장이_존재하지_않아서_예외_반환() {
         // given
-        OrderDto orderDto = OrderDto.builder().id(1L).storeId(1L).status(OrderStatus.ORDER_REQUEST).build();
+        OrderDto orderDto = TestDto.getOrderDto(1L);
         given(orderMapper.findByOrderId(anyLong())).willReturn(orderDto);
         given(storeService.existsStoreByUserIdAndStoreId(eq(OWNER_ID), eq(1L))).willReturn(false);
 
@@ -103,7 +114,7 @@ class OwnerOrderServiceTest {
     @Test
     void approveOrder_성공() {
         // given
-        OrderDto orderDto = OrderDto.builder().id(1L).storeId(1L).status(OrderStatus.ORDER_REQUEST).build();
+        OrderDto orderDto = TestDto.getOrderDto(1L);
         given(orderMapper.findByOrderId(anyLong())).willReturn(orderDto);
         given(storeService.existsStoreByUserIdAndStoreId(eq(OWNER_ID), eq(1L))).willReturn(true);
 
@@ -129,7 +140,7 @@ class OwnerOrderServiceTest {
     @Test
     void cancelOrder_주문에_대한_매장이_존재하지_않아서_예외_반환() {
         // given
-        OrderDto orderDto = OrderDto.builder().id(1L).storeId(1L).status(OrderStatus.ORDER_REQUEST).build();
+        OrderDto orderDto = TestDto.getOrderDto(1L);
         given(orderMapper.findByOrderId(anyLong())).willReturn(orderDto);
         given(storeService.existsStoreByUserIdAndStoreId(eq(OWNER_ID), eq(1L))).willReturn(false);
 
@@ -144,7 +155,7 @@ class OwnerOrderServiceTest {
     @Test
     void cancelOrder_성공() {
         // given
-        OrderDto orderDto = OrderDto.builder().id(1L).storeId(1L).status(OrderStatus.ORDER_REQUEST).build();
+        OrderDto orderDto = TestDto.getOrderDto(1L);
         given(orderMapper.findByOrderId(anyLong())).willReturn(orderDto);
         given(storeService.existsStoreByUserIdAndStoreId(eq(OWNER_ID), eq(1L))).willReturn(true);
 
@@ -153,6 +164,45 @@ class OwnerOrderServiceTest {
 
         // then
         verify(orderMapper).changeStatus(eq(orderDto.getId()), any());
+    }
+
+    @Test
+    void callRider_입력된_매장의_매장_주인이_아니라서_예외_반환() {
+        // given
+        given(orderMapper.findDeliveryInfo(eq(OWNER_ID), anyLong(), eq(STORE_ID))).willReturn(Optional.empty());
+
+        // when
+        assertThatThrownBy(() -> ownerOrderService.callRider(OWNER_ID, ORDER_ID, STORE_ID))
+                .isInstanceOf(OrderException.class)
+                .hasMessage(BAD_REQUEST_MESSAGE);
+
+        // then
+        verify(riderDao, never()).addDeliveryRequestBy(anyLong(), any());
+    }
+
+    @Test
+    void callRider_배차_요청후_최소_요청시간이_지나지_않아_예외_반환() {
+
+        // given
+        given(orderMapper.findDeliveryInfo(eq(OWNER_ID), anyLong(), eq(STORE_ID))).willReturn(Optional.of(OrderDeliveryDto.builder().addressId(ADDRESS_ID).build()));
+        doThrow(OrderException.class).when(riderDao).addDeliveryRequestBy(eq(ADDRESS_ID),any());
+
+        // when
+        // then
+        assertThatThrownBy(() -> ownerOrderService.callRider(OWNER_ID, ORDER_ID, STORE_ID))
+                .isInstanceOf(OrderException.class);
+
+    }
+
+    @Test
+    void callRider_성공() {
+
+        // given
+        given(orderMapper.findDeliveryInfo(eq(OWNER_ID), anyLong(), eq(STORE_ID))).willReturn(Optional.of(OrderDeliveryDto.builder().addressId(ADDRESS_ID).build()));
+
+        // when
+        // then
+        ownerOrderService.callRider(OWNER_ID, ORDER_ID, STORE_ID);
     }
 
     private OwnerOrderResponseDto getOwnerOrderResponseDto(OrderStatus status, LocalDateTime createdAt) {
