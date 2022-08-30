@@ -1,6 +1,7 @@
 package com.flab.delivery.dto.user;
 
 import com.flab.delivery.enums.UserType;
+import com.flab.delivery.utils.PasswordEncoder;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
@@ -36,4 +37,15 @@ public class SignUpDto {
 
     @NotNull(message = "권한은 필수 입력값입니다")
     private UserType type;
+
+    public static SignUpDto encryptUser(SignUpDto signUpDto) {
+        return SignUpDto.builder()
+                .id(signUpDto.getId())
+                .password(PasswordEncoder.encrypt(signUpDto.getPassword()))
+                .email(signUpDto.getEmail())
+                .name(signUpDto.getName())
+                .phoneNumber(signUpDto.getPhoneNumber())
+                .type(signUpDto.getType())
+                .build();
+    }
 }

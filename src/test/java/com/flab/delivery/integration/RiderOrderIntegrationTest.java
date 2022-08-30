@@ -67,7 +67,7 @@ public class RiderOrderIntegrationTest extends AbstractRedisContainer {
         // given
         riderDao.registerStandByRider(RIDER_ID, ADDRESS_ID);
         for (int i = 0; i < 5; i++) {
-            riderDao.addOrderBy(ADDRESS_ID, TestDto.getOrderDeliveryDto((long) i));
+            riderDao.addDeliveryRequestBy(ADDRESS_ID, TestDto.getOrderDeliveryDto((long) i));
         }
 
         // when
@@ -101,7 +101,7 @@ public class RiderOrderIntegrationTest extends AbstractRedisContainer {
         // given
         riderDao.registerStandByRider(RIDER_ID, ADDRESS_ID);
         for (int i = 0; i < 5; i++) {
-            riderDao.addOrderBy(ADDRESS_ID, TestDto.getOrderDeliveryDto((long) i));
+            riderDao.addDeliveryRequestBy(ADDRESS_ID, TestDto.getOrderDeliveryDto((long) i));
         }
 
         // when

@@ -2,6 +2,7 @@ package com.flab.delivery.dao;
 
 import com.flab.delivery.AbstractRedisContainer;
 import com.flab.delivery.dto.order.rider.OrderDeliveryDto;
+import com.flab.delivery.exception.OrderException;
 import com.flab.delivery.fixture.TestDto;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +16,7 @@ import java.util.Set;
 
 import static com.flab.delivery.fixture.TestDto.getOrderDeliveryDto;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 class RiderDaoTest extends AbstractRedisContainer {
@@ -66,39 +68,36 @@ class RiderDaoTest extends AbstractRedisContainer {
     }
 
     @Test
-    void addOrderBy_첫번째_요청으로_성공() {
+    void addDeliveryRequestBy_첫번째_요청으로_성공() {
         // given
         // when
-        boolean isAdded = riderDao.addOrderBy(ADDRESS_ID, getOrderDeliveryDto(ORDER_ID));
-
         // then
-        assertThat(isAdded).isTrue();
+        riderDao.addDeliveryRequestBy(ADDRESS_ID, getOrderDeliveryDto(ORDER_ID));
     }
 
     @Test
-    void addOrderBy_이미_주문이_있으며_1분이_지나지_않아_False_반환() {
+    void addDeliveryRequestBy_이미_주문이_있으며_1분이_지나지_않아_False_반환() {
         // given
-        riderDao.addOrderBy(ADDRESS_ID, getOrderDeliveryDto(ORDER_ID));
+        riderDao.addDeliveryRequestBy(ADDRESS_ID, getOrderDeliveryDto(ORDER_ID));
 
         // when
-        boolean isAdded = riderDao.addOrderBy(ADDRESS_ID, getOrderDeliveryDto(ORDER_ID));
-
         // then
-        assertThat(isAdded).isFalse();
+        assertThatThrownBy(() -> riderDao.addDeliveryRequestBy(ADDRESS_ID, getOrderDeliveryDto(ORDER_ID)))
+                .isInstanceOf(OrderException.class);
+
     }
 
     @Test
-    void addOrderBy_이미_주문이_있지만_1분이_지나_Score_업데이트() {
+    void addDeliveryRequestBy_이미_주문이_있지만_1분이_지나_Score_업데이트() {
         // given
         String OrderKey = getKey("ORDER");
         long beforeScore = System.currentTimeMillis() - 60 * 1000;
         redisTemplate.opsForZSet().add(OrderKey, ORDER_ID, beforeScore);
 
         // when
-        boolean isAdded = riderDao.addOrderBy(ADDRESS_ID, getOrderDeliveryDto(ORDER_ID));
+        riderDao.addDeliveryRequestBy(ADDRESS_ID, getOrderDeliveryDto(ORDER_ID));
 
         // then
-        assertThat(isAdded).isTrue();
         Double afterScore = redisTemplate.opsForZSet().score(OrderKey, getOrderDeliveryDto(ORDER_ID));
         assertThat(afterScore).isGreaterThan(beforeScore);
     }
@@ -107,7 +106,7 @@ class RiderDaoTest extends AbstractRedisContainer {
     void getDeliveryRequestList_30개_미만_확인() {
         // given
         for (int i = 0; i < 10; i++) {
-            riderDao.addOrderBy(ADDRESS_ID, TestDto.getOrderDeliveryDto(ORDER_ID + i));
+            riderDao.addDeliveryRequestBy(ADDRESS_ID, TestDto.getOrderDeliveryDto(ORDER_ID + i));
         }
 
         // when
@@ -122,21 +121,21 @@ class RiderDaoTest extends AbstractRedisContainer {
     void getDeliveryRequestList_30개_초과_확인() {
         // given
         for (int i = 0; i < 40; i++) {
-            riderDao.addOrderBy(ADDRESS_ID, TestDto.getOrderDeliveryDto(ORDER_ID + i));
+            riderDao.addDeliveryRequestBy(ADDRESS_ID, TestDto.getOrderDeliveryDto(ORDER_ID + i));
         }
 
         // when
         List<OrderDeliveryDto> requestList = riderDao.getDeliveryRequestList(ADDRESS_ID);
 
         // then
-        assertThat(requestList.size()).isEqualTo(31);
+        assertThat(requestList.size()).isEqualTo(30);
     }
 
     @Test
     void findOrderRequest_확인() {
         // given
         for (int i = 0; i < 10; i++) {
-            riderDao.addOrderBy(ADDRESS_ID, TestDto.getOrderDeliveryDto(ORDER_ID + i));
+            riderDao.addDeliveryRequestBy(ADDRESS_ID, TestDto.getOrderDeliveryDto(ORDER_ID + i));
         }
 
         // when
@@ -151,7 +150,7 @@ class RiderDaoTest extends AbstractRedisContainer {
     void findOrderRequest_존재하지_않는_요청_Null_반환() {
         // given
         for (int i = 0; i < 10; i++) {
-            riderDao.addOrderBy(ADDRESS_ID, TestDto.getOrderDeliveryDto(ORDER_ID + i));
+            riderDao.addDeliveryRequestBy(ADDRESS_ID, TestDto.getOrderDeliveryDto(ORDER_ID + i));
         }
 
         // when
@@ -166,7 +165,7 @@ class RiderDaoTest extends AbstractRedisContainer {
     void acceptDelivery_확인() {
         // given
         for (int i = 0; i < 10; i++) {
-            riderDao.addOrderBy(ADDRESS_ID, TestDto.getOrderDeliveryDto(ORDER_ID + i));
+            riderDao.addDeliveryRequestBy(ADDRESS_ID, TestDto.getOrderDeliveryDto(ORDER_ID + i));
         }
         // when
         riderDao.acceptDelivery(ADDRESS_ID, TestDto.getOrderDeliveryDto(ORDER_ID + 1L));

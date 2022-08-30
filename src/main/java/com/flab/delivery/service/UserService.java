@@ -27,14 +27,8 @@ public class UserService {
         if (userMapper.idExists(signUpDto.getId())) {
             throw new SignUpException("이미 존재하는 아이디입니다");
         }
-        SignUpDto saveUser = SignUpDto.builder()
-                .id(signUpDto.getId())
-                .password(PasswordEncoder.encrypt(signUpDto.getPassword()))
-                .email(signUpDto.getEmail())
-                .name(signUpDto.getName())
-                .phoneNumber(signUpDto.getPhoneNumber())
-                .type(signUpDto.getType())
-                .build();
+
+        SignUpDto saveUser = SignUpDto.encryptUser(signUpDto);
         userMapper.save(saveUser);
     }
 
@@ -44,6 +38,8 @@ public class UserService {
         }
 
         UserDto findUser = userMapper.findById(userDto.getId());
+
+
         if (!PasswordEncoder.matches(userDto.getPassword(), findUser.getPassword())) {
             throw new LoginException("아이디랑 비밀번호를 확인해주세요");
         }

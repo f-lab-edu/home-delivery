@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.flab.delivery.exception.message.ErrorMessageConstants.BAD_REQUEST_MESSAGE;
-import static com.flab.delivery.exception.message.ErrorMessageConstants.NOT_ENOUGH_DELIVERY_REQUEST_TIME_MESSAGE;
 
 @Service
 @RequiredArgsConstructor
@@ -77,11 +76,8 @@ public class OwnerOrderService {
                 .orElseThrow(() -> new OrderException(BAD_REQUEST_MESSAGE, HttpStatus.BAD_REQUEST));
 
 
-        boolean isAddOrder = riderDao.addOrderBy(deliveryInfo.getAddressId(), deliveryInfo);
+        riderDao.addDeliveryRequestBy(deliveryInfo.getAddressId(), deliveryInfo);
 
-        if (!isAddOrder) {
-            throw new OrderException(NOT_ENOUGH_DELIVERY_REQUEST_TIME_MESSAGE, HttpStatus.BAD_REQUEST);
-        }
     }
 
 }

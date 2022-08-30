@@ -23,14 +23,14 @@ public class RiderOrderService {
 
     public List<OrderDeliveryDto> getDeliveryRequests(String userId, Long addressId) {
 
-        isStandByRider(userId, addressId);
+        ensureRiderIsStandBy(userId, addressId);
 
         return riderDao.getDeliveryRequestList(addressId);
     }
 
     public void acceptDeliveryBy(Long orderId, String userId, Long addressId) {
 
-        isStandByRider(userId, addressId);
+        ensureRiderIsStandBy(userId, addressId);
 
         OrderDeliveryDto findDeliveryRequest = getDeliveryRequestBy(orderId, addressId);
 
@@ -39,6 +39,29 @@ public class RiderOrderService {
         }
 
         orderMapper.updateOrderForDelivery(orderId, userId);
+    }
+
+    public void finishDeliveryBy(Long orderId, String userId, Long addressId) {
+        ensureRiderIsStandBy(userId, addressId);
+        orderMapper.updateOrderForFinish(orderId, userId);
+    }
+
+    public List<OrderDeliveryDto> getInDeliveryList(String userId, Long addressId) {
+        ensureRiderIsStandBy(userId, addressId);
+
+        return orderMapper.findInDeliveryList(userId);
+    }
+
+    public List<OrderDeliveryDto> getFinishDeliveryList(String userId, Long addressId, Long startId) {
+        ensureRiderIsStandBy(userId, addressId);
+
+        List<Long> ids = orderMapper.findFinishDeliveryPageIds(userId, startId);
+
+        if (ids.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        return orderMapper.findFinishDeliveryList(userId, ids);
     }
 
     private OrderDeliveryDto getDeliveryRequestBy(Long orderId, Long addressId) {
@@ -51,32 +74,9 @@ public class RiderOrderService {
         return orderRequest;
     }
 
-    private void isStandByRider(String userId, Long addressId) {
+    private void ensureRiderIsStandBy(String userId, Long addressId) {
         if (!riderDao.isStandByRider(userId, addressId)) {
             throw new OrderException(NOT_STAND_BY_RIDER, HttpStatus.NOT_FOUND);
         }
-    }
-
-    public void finishDeliveryBy(Long orderId, String userId, Long addressId) {
-        isStandByRider(userId, addressId);
-        orderMapper.updateOrderForFinish(orderId, userId);
-    }
-
-    public List<OrderDeliveryDto> getInDeliveryList(String userId, Long addressId) {
-        isStandByRider(userId, addressId);
-
-        return orderMapper.findInDeliveryList(userId);
-    }
-
-    public List<OrderDeliveryDto> getFinishDeliveryList(String userId, Long addressId, Long startId) {
-        isStandByRider(userId, addressId);
-
-        List<Long> ids = orderMapper.findFinishDeliveryPageIds(userId, startId);
-
-        if (ids.isEmpty()) {
-            return new ArrayList<>();
-        }
-
-        return orderMapper.findFinishDeliveryList(userId, ids);
     }
 }

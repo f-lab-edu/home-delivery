@@ -4,8 +4,8 @@ import com.flab.delivery.dao.RiderDao;
 import com.flab.delivery.dto.order.OrderDto;
 import com.flab.delivery.dto.order.owner.OwnerOrderResponseDto;
 import com.flab.delivery.dto.order.rider.OrderDeliveryDto;
-import com.flab.delivery.dto.store.StoreDto;
 import com.flab.delivery.enums.OrderStatus;
+import com.flab.delivery.exception.AddressException;
 import com.flab.delivery.exception.OrderException;
 import com.flab.delivery.fixture.TestDto;
 import com.flab.delivery.mapper.OrderMapper;
@@ -22,13 +22,11 @@ import java.util.Optional;
 
 import static com.flab.delivery.exception.message.ErrorMessageConstants.BAD_REQUEST_MESSAGE;
 import static com.flab.delivery.exception.message.ErrorMessageConstants.NOT_ENOUGH_DELIVERY_REQUEST_TIME_MESSAGE;
-import static com.flab.delivery.fixture.TestDto.getStoreDto;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class OwnerOrderServiceTest {
@@ -179,7 +177,7 @@ class OwnerOrderServiceTest {
                 .hasMessage(BAD_REQUEST_MESSAGE);
 
         // then
-        verify(riderDao, never()).addOrderBy(anyLong(), any());
+        verify(riderDao, never()).addDeliveryRequestBy(anyLong(), any());
     }
 
     @Test
@@ -187,13 +185,12 @@ class OwnerOrderServiceTest {
 
         // given
         given(orderMapper.findDeliveryInfo(eq(OWNER_ID), anyLong(), eq(STORE_ID))).willReturn(Optional.of(OrderDeliveryDto.builder().addressId(ADDRESS_ID).build()));
-        given(riderDao.addOrderBy(eq(ADDRESS_ID), any())).willReturn(false);
+        doThrow(OrderException.class).when(riderDao).addDeliveryRequestBy(eq(ADDRESS_ID),any());
 
         // when
         // then
         assertThatThrownBy(() -> ownerOrderService.callRider(OWNER_ID, ORDER_ID, STORE_ID))
-                .isInstanceOf(OrderException.class)
-                .hasMessage(NOT_ENOUGH_DELIVERY_REQUEST_TIME_MESSAGE);
+                .isInstanceOf(OrderException.class);
 
     }
 
@@ -202,7 +199,6 @@ class OwnerOrderServiceTest {
 
         // given
         given(orderMapper.findDeliveryInfo(eq(OWNER_ID), anyLong(), eq(STORE_ID))).willReturn(Optional.of(OrderDeliveryDto.builder().addressId(ADDRESS_ID).build()));
-        given(riderDao.addOrderBy(eq(ADDRESS_ID), any())).willReturn(true);
 
         // when
         // then

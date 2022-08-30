@@ -50,7 +50,7 @@ public class UserOrderService {
         return orderMapper.findAllByPageIds(pageIds);
     }
 
-    public OrderDto getUserDetailOrder(String userId, Long orderId) {
+    public OrderDto getUserDetailOrder(Long orderId) {
         return orderMapper.findByOrderId(orderId);
     }
 }
