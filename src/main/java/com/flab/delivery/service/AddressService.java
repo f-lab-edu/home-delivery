@@ -28,10 +28,7 @@ public class AddressService {
             throw new AddressException("존재하지 않는 주소 입니다.");
         }
 
-        // TODO Refactor
-        if (addressRequestDto.getAlias() == null) {
-            addressRequestDto.changeAlias(addressRequestDto.getDetailAddress());
-        }
+        addressRequestDto.changeAlias(addressRequestDto.getDetailAddress());
 
         userAddressMapper.addAddress(addressRequestDto, findAddressId, userId);
 

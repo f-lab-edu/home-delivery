@@ -19,6 +19,10 @@ public class AddressRequestDto {
     private String alias;
 
     public void changeAlias(String alias) {
+        if (this.alias != null) {
+            return;
+        }
+
         this.alias = alias;
     }
 }

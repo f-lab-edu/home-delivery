@@ -35,8 +35,6 @@ public class UserOrderService {
 
         // 결제 완료 후 주문 상태 변경
         orderMapper.changeStatus(orderId, OrderStatus.ORDER_REQUEST);
-
-        // TODO 사장님 알람
     }
 
     public List<OrderSimpleResponseDto> getUserOrderList(String userId, Long startId) {
