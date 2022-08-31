@@ -22,10 +22,12 @@ public class MenuController {
 
     private final MenuService menuService;
 
+
     @LoginCheck(userType = UserType.OWNER)
     @PostMapping
-    public CommonResult<Void> createMenu(@RequestBody @Valid MenuRequestDto menuRequestDto) {
-        menuService.createMenu(menuRequestDto);
+    public CommonResult<Void> createMenu(@RequestBody @Valid MenuRequestDto menuRequestDto,
+                                         @RequestParam(name = "storeId") Long storeId) {
+        menuService.createMenu(menuRequestDto, storeId);
         return CommonResult.getSimpleSuccessResult(HttpStatus.CREATED.value());
     }
 
@@ -38,24 +40,26 @@ public class MenuController {
 
     @LoginCheck(userType = UserType.OWNER)
     @PatchMapping("/{id}")
-    public CommonResult<Void> updateMenu(@PathVariable("id") Long id, @RequestBody @Valid MenuRequestDto menuRequestDto) {
-        menuService.updateMenu(id, menuRequestDto);
+    public CommonResult<Void> updateMenu(@PathVariable("id") Long id, @RequestBody @Valid MenuRequestDto menuRequestDto,
+                                         @RequestParam(name = "storeId") Long storeId) {
+        menuService.updateMenu(id, menuRequestDto, storeId);
         return CommonResult.getSimpleSuccessResult(HttpStatus.OK.value());
     }
 
 
     @LoginCheck(userType = UserType.OWNER)
     @DeleteMapping("/{id}")
-    public CommonResult<Void> deleteMenu(@PathVariable("id") Long id) {
-        menuService.deleteMenu(id);
+    public CommonResult<Void> deleteMenu(@PathVariable("id") Long id, @RequestParam(name = "storeId") Long storeId) {
+        menuService.deleteMenu(id, storeId);
         return CommonResult.getSimpleSuccessResult(HttpStatus.OK.value());
     }
 
 
     @LoginCheck(userType = UserType.OWNER)
     @PatchMapping("/{id}/status")
-    public CommonResult<Void> updateStatus(@PathVariable("id") Long id, @RequestBody MenuDto menuDto) {
-        menuService.updateStatus(id, menuDto.getStatus());
+    public CommonResult<Void> updateStatus(@PathVariable("id") Long id, @RequestBody MenuDto menuDto
+    , @RequestParam(name = "storeId") Long storeId) {
+        menuService.updateStatus(id, menuDto.getStatus(), storeId);
         return CommonResult.getSimpleSuccessResult(HttpStatus.OK.value());
     }
 
@@ -73,7 +77,6 @@ public class MenuController {
     public CommonResult<List<MenuDto>> getMenuList(@RequestParam(name = "storeId") Long storeId) {
         return CommonResult.getDataSuccessResult(menuService.getMenuList(storeId));
     }
-
 
 
 }

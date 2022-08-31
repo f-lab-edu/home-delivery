@@ -2,30 +2,30 @@ package com.flab.delivery.integration;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.flab.delivery.annotation.EnableMockMvc;
 import com.flab.delivery.annotation.IntegrationTest;
+import com.flab.delivery.dao.FCMTokenDao;
 import com.flab.delivery.dto.user.PasswordDto;
 import com.flab.delivery.dto.user.SignUpDto;
 import com.flab.delivery.dto.user.UserDto;
 import com.flab.delivery.dto.user.UserInfoUpdateDto;
 import com.flab.delivery.enums.UserType;
-import com.flab.delivery.exception.message.ErrorMessageConstants;
 import com.flab.delivery.fixture.TestDto;
 import com.flab.delivery.mapper.UserMapper;
 import com.flab.delivery.utils.SessionConstants;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.util.TestPropertyValues;
+import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.transaction.annotation.Transactional;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static com.flab.delivery.exception.message.ErrorMessageConstants.FORBIDDEN_MESSAGE;
 import static com.flab.delivery.exception.message.ErrorMessageConstants.UNAUTHORIZED_MESSAGE;
@@ -38,6 +38,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @IntegrationTest
+@Testcontainers
+@ContextConfiguration(initializers = UserIntegrationTest.ContainerPropertyInitializer.class)
 class UserIntegrationTest {
     @Autowired
     MockMvc mockMvc;
@@ -49,6 +51,14 @@ class UserIntegrationTest {
     UserMapper userMapper;
 
     MockHttpSession mockHttpSession = new MockHttpSession();
+
+    @Autowired
+    FCMTokenDao fcmTokenDao;
+
+    @Container
+    static GenericContainer redisContainer = new GenericContainer("redis")
+            .withExposedPorts(6379);
+
 
     @Nested
     @DisplayName("POST : /users")
@@ -348,12 +358,19 @@ class UserIntegrationTest {
     class loginUser {
         private String id = "user1";
         private String password = "1111";
+        private String token = "1234567aaa";
 
         private UserDto getUserDto() {
             return UserDto.builder()
                     .id(id)
                     .password(password)
+                    .token(token)
                     .build();
+        }
+
+        @AfterEach
+        void afterEach() {
+            fcmTokenDao.delete(id);
         }
 
         @Nested
@@ -421,12 +438,14 @@ class UserIntegrationTest {
             @Test
             @DisplayName("로그 아웃")
             void logout_success() throws Exception {
-                setMockLoginUser(mockHttpSession, "user1");
+                String userId = "user1";
+                setMockLoginUser(mockHttpSession, userId);
                 mockMvc.perform(delete("/users/logout").session(mockHttpSession))
                         .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
                         .andDo(print());
 
                 Assertions.assertNull(mockHttpSession.getAttribute(SESSION_ID));
+                Assertions.assertNull(fcmTokenDao.findToken(userId));
             }
         }
 
@@ -660,5 +679,13 @@ class UserIntegrationTest {
 
     private void doUserAuthTest(MockHttpServletRequestBuilder requestBuilder) throws Exception {
         doAuthTest(mockMvc, requestBuilder);
+    }
+
+    static class ContainerPropertyInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
+        @Override
+        public void initialize(ConfigurableApplicationContext context) {
+            TestPropertyValues.of("spring.redis.fcm.port=" + redisContainer.getMappedPort(6379))
+                    .applyTo(context.getEnvironment());
+        }
     }
 }

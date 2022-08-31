@@ -39,6 +39,8 @@ class MenuServiceTest {
         private String info = "바삭한 후라이드 치킨입니다";
         private Integer price = 18000;
 
+        private Long storeId = 1L;
+
         private MenuRequestDto getMenuRequestDto() {
             return MenuRequestDto.builder()
                     .menuGroupId(menuGroupId)
@@ -57,11 +59,11 @@ class MenuServiceTest {
                 MenuRequestDto menuRequestDto = getMenuRequestDto();
                 when(menuMapper.existsByName(menuRequestDto.getMenuGroupId(), menuRequestDto.getName()))
                         .thenReturn(Optional.empty());
-                menuService.createMenu(menuRequestDto);
+                menuService.createMenu(menuRequestDto, storeId);
 
                 when(menuMapper.existsByName(menuRequestDto.getMenuGroupId(), menuRequestDto.getName()))
                         .thenReturn(Optional.of(1L));
-                MenuException ex = Assertions.assertThrows(MenuException.class, () -> menuService.createMenu(menuRequestDto));
+                MenuException ex = Assertions.assertThrows(MenuException.class, () -> menuService.createMenu(menuRequestDto, storeId));
                 Assertions.assertEquals(ex.getMessage(), "이미 존재하는 메뉴 입니다");
             }
         }
@@ -76,7 +78,7 @@ class MenuServiceTest {
                 when(menuMapper.existsByName(menuRequestDto.getMenuGroupId(), menuRequestDto.getName()))
                         .thenReturn(Optional.of(1L));
 
-                MenuException ex = Assertions.assertThrows(MenuException.class, () -> menuService.createMenu(menuRequestDto));
+                MenuException ex = Assertions.assertThrows(MenuException.class, () -> menuService.createMenu(menuRequestDto, storeId));
                 Assertions.assertEquals(ex.getMessage(), "이미 존재하는 메뉴 입니다");
             }
         }
@@ -131,6 +133,8 @@ class MenuServiceTest {
         private String info = "바삭한 후라이드 치킨입니다";
         private Integer price = 18000;
 
+        private Long storeId = 1L;
+
         private MenuRequestDto getMenuRequestDto() {
             return MenuRequestDto.builder()
                     .menuGroupId(menuGroupId)
@@ -147,7 +151,7 @@ class MenuServiceTest {
             String beforeName = "후라이드치킨1";
             when(menuMapper.findById(id)).thenReturn(Optional.of(MenuDto.builder().id(id).name(beforeName).build()));
             // when
-            menuService.updateMenu(id, getMenuRequestDto());
+            menuService.updateMenu(id, getMenuRequestDto(), storeId);
             when(menuMapper.findById(id)).thenReturn(Optional.of(MenuDto.builder().id(id).name(name).build()));
             MenuDto findMenu = menuService.getMenu(id);
             // then
@@ -160,12 +164,13 @@ class MenuServiceTest {
     @DisplayName("메뉴 삭제")
     class DeleteMenu {
         private Long id = 1L;
+        private Long storeId = 1L;
 
         @Test
         @DisplayName("삭제 성공")
         void success() {
             when(menuMapper.findById(id)).thenReturn(Optional.of(MenuDto.builder().id(id).build()));
-            menuService.deleteMenu(id);
+            menuService.deleteMenu(id, storeId);
             when(menuMapper.findById(id)).thenReturn(Optional.empty());
             Assertions.assertThrows(MenuException.class, () -> menuService.getMenu(id));
         }
@@ -177,13 +182,14 @@ class MenuServiceTest {
 
         private Long id = 1L;
         private MenuStatus menuStatus = MenuStatus.SOLDOUT;
+        private Long storeId = 1L;
 
         @Test
         @DisplayName("상태 변경 성공 - ONSALE -> SOLDOUT")
         void success() {
             when(menuMapper.findById(id)).thenReturn(Optional.of(MenuDto.builder().id(id).status(MenuStatus.ONSALE).build()));
             MenuDto before = menuMapper.findById(id).get();
-            menuService.updateStatus(id, menuStatus);
+            menuService.updateStatus(id, menuStatus, storeId);
             when(menuMapper.findById(id)).thenReturn(Optional.of(MenuDto.builder().id(id).status(menuStatus).build()));
             MenuDto after = menuMapper.findById(id).get();
 

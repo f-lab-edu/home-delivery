@@ -47,6 +47,9 @@ class MenuIntegrationTest {
         private String info = "올리브유에 튀킨 치킨";
         private Integer price = 18000;
 
+        private String paramName = "storeId";
+        private String storeId = "1";
+
         private MenuRequestDto getRequestDto() {
             return MenuRequestDto.builder()
                     .menuGroupId(menuGroupId)
@@ -69,7 +72,8 @@ class MenuIntegrationTest {
             @DisplayName("생성 성공")
             void success() throws Exception {
                 String json = objectMapper.writeValueAsString(getRequestDto());
-                mockMvc.perform(post(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
+                mockMvc.perform(post(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON)
+                                .param(paramName, storeId))
                         .andExpect(jsonPath("$.status").value(HttpStatus.CREATED.value()))
                         .andDo(print());
             }
@@ -86,7 +90,8 @@ class MenuIntegrationTest {
                 void Null() throws Exception {
                     menuGroupId = null;
                     String json = objectMapper.writeValueAsString(getRequestDto());
-                    mockMvc.perform(post(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
+                    mockMvc.perform(post(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON)
+                                    .param(paramName, storeId))
                             .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
                             .andExpect(jsonPath("$.message").value("매뉴 그룹 정보가 올바르지 않습니다"))
                             .andDo(print());
@@ -97,7 +102,8 @@ class MenuIntegrationTest {
                 void negative() throws Exception {
                     menuGroupId = -1L;
                     String json = objectMapper.writeValueAsString(getRequestDto());
-                    mockMvc.perform(post(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
+                    mockMvc.perform(post(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON)
+                                    .param(paramName, storeId))
                             .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
                             .andExpect(jsonPath("$.message").value("매뉴 그룹 정보가 올바르지 않습니다"))
                             .andDo(print());
@@ -108,7 +114,8 @@ class MenuIntegrationTest {
                 void blank() throws Exception {
                     menuGroupId = Long.getLong(" ");
                     String json = objectMapper.writeValueAsString(getRequestDto());
-                    mockMvc.perform(post(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
+                    mockMvc.perform(post(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON)
+                                    .param(paramName, storeId))
                             .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
                             .andExpect(jsonPath("$.message").value("매뉴 그룹 정보가 올바르지 않습니다"))
                             .andDo(print());
@@ -120,7 +127,8 @@ class MenuIntegrationTest {
                     // given
                     menuGroupId = 100L;
                     String json = objectMapper.writeValueAsString(getRequestDto());
-                    mockMvc.perform(post(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
+                    mockMvc.perform(post(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON)
+                                    .param(paramName, storeId))
                             .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
                             .andExpect(jsonPath("$.message").value("무결성 제약 조건에 위배됩니다"))
                             .andDo(print());
@@ -135,7 +143,8 @@ class MenuIntegrationTest {
                 void isNull() throws Exception {
                     name = null;
                     String json = objectMapper.writeValueAsString(getRequestDto());
-                    mockMvc.perform(post(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
+                    mockMvc.perform(post(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON)
+                                    .param(paramName, storeId))
                             .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
                             .andExpect(jsonPath("$.message").value("메뉴 이름 정보가 올바르지 않습니다"))
                             .andDo(print());
@@ -146,7 +155,8 @@ class MenuIntegrationTest {
                 void blank() throws Exception {
                     name = " ";
                     String json = objectMapper.writeValueAsString(getRequestDto());
-                    mockMvc.perform(post(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
+                    mockMvc.perform(post(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON)
+                                    .param(paramName, storeId))
                             .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
                             .andExpect(jsonPath("$.message").value("메뉴 이름 정보가 올바르지 않습니다"))
                             .andDo(print());
@@ -164,7 +174,8 @@ class MenuIntegrationTest {
                 void isNull() throws Exception {
                     info = null;
                     String json = objectMapper.writeValueAsString(getRequestDto());
-                    mockMvc.perform(post(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
+                    mockMvc.perform(post(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON)
+                                    .param(paramName, storeId))
                             .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
                             .andExpect(jsonPath("$.message").value("메뉴 설명 정보가 올바르지 않습니다"))
                             .andDo(print());
@@ -175,7 +186,8 @@ class MenuIntegrationTest {
                 void blank() throws Exception {
                     info = " ";
                     String json = objectMapper.writeValueAsString(getRequestDto());
-                    mockMvc.perform(post(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
+                    mockMvc.perform(post(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON)
+                                    .param(paramName, storeId))
                             .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
                             .andExpect(jsonPath("$.message").value("메뉴 설명 정보가 올바르지 않습니다"))
                             .andDo(print());
@@ -191,7 +203,8 @@ class MenuIntegrationTest {
                 void isNull() throws Exception {
                     price = null;
                     String json = objectMapper.writeValueAsString(getRequestDto());
-                    mockMvc.perform(post(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
+                    mockMvc.perform(post(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON)
+                                    .param(paramName, storeId))
                             .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
                             .andExpect(jsonPath("$.message").value("메뉴 가격 정보가 올바르지 않습니다"))
                             .andDo(print());
@@ -202,7 +215,8 @@ class MenuIntegrationTest {
                 void negative() throws Exception {
                     price = -1;
                     String json = objectMapper.writeValueAsString(getRequestDto());
-                    mockMvc.perform(post(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
+                    mockMvc.perform(post(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON)
+                                    .param(paramName, storeId))
                             .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
                             .andExpect(jsonPath("$.message").value("메뉴 가격 정보가 올바르지 않습니다"))
                             .andDo(print());
@@ -219,7 +233,8 @@ class MenuIntegrationTest {
                     String json = objectMapper.writeValueAsString(getRequestDto());
                     mockHttpSession.setAttribute(SessionConstants.AUTH_TYPE, changeType);
 
-                    mockMvc.perform(post(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
+                    mockMvc.perform(post(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON)
+                                    .param(paramName, storeId))
                             .andExpect(jsonPath("$.status").value(HttpStatus.FORBIDDEN.value()))
                             .andExpect(jsonPath("$.message").value(FORBIDDEN_MESSAGE))
                             .andDo(print());
@@ -286,6 +301,9 @@ class MenuIntegrationTest {
         private String info = "민츠초코 좋아요";
         private Integer price = 30000;
 
+        private String paramName = "storeId";
+        private String storeId = "1";
+
         @BeforeEach
         void setUp() {
             mockHttpSession.setAttribute(SessionConstants.SESSION_ID, ownerId);
@@ -313,7 +331,8 @@ class MenuIntegrationTest {
                 MenuDto before = menuMapper.findById(findId).get();
                 System.out.println("before" + before.getName());
 
-                mockMvc.perform(patch(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
+                mockMvc.perform(patch(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON)
+                                .param(paramName, storeId))
                         .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
                         .andDo(print());
 
@@ -334,7 +353,8 @@ class MenuIntegrationTest {
                 String json = objectMapper.writeValueAsString(getRequestDto());
 
                 mockHttpSession.setAttribute(SessionConstants.AUTH_TYPE, changeType);
-                mockMvc.perform(patch(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
+                mockMvc.perform(patch(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON)
+                                .param(paramName, storeId))
                         .andExpect(jsonPath("$.status").value(HttpStatus.FORBIDDEN.value()))
                         .andExpect(jsonPath("$.message").value(FORBIDDEN_MESSAGE))
                         .andDo(print());
@@ -349,6 +369,9 @@ class MenuIntegrationTest {
         private final UserType userType = UserType.OWNER;
         private final String url = "/menus/1";
 
+        private final String paramName = "storeId";
+        private final String storeId = "1";
+
         @BeforeEach
         void setUp() {
             mockHttpSession.setAttribute(SessionConstants.SESSION_ID, ownerId);
@@ -362,7 +385,7 @@ class MenuIntegrationTest {
             @DisplayName("삭제 성공")
             void success(@Autowired MenuMapper menuMapper) throws Exception {
                 Long deleteId = 1L;
-                mockMvc.perform(delete(url).session(mockHttpSession))
+                mockMvc.perform(delete(url).session(mockHttpSession).param(paramName, storeId))
                         .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
                         .andDo(print());
 
@@ -381,7 +404,7 @@ class MenuIntegrationTest {
                 UserType changeType = UserType.USER;
 
                 mockHttpSession.setAttribute(SessionConstants.AUTH_TYPE, changeType);
-                mockMvc.perform(delete(url).session(mockHttpSession))
+                mockMvc.perform(delete(url).session(mockHttpSession).param(paramName, storeId))
                         .andExpect(jsonPath("$.status").value(HttpStatus.FORBIDDEN.value()))
                         .andExpect(jsonPath("$.message").value(FORBIDDEN_MESSAGE))
                         .andDo(print());
@@ -395,6 +418,9 @@ class MenuIntegrationTest {
         private final String ownerId = "user2";
         private final UserType userType = UserType.OWNER;
         private final String url = "/menus/1/status";
+
+        private String paramName = "storeId";
+        private String storeId = "1";
 
         private MenuStatus menuStatus = MenuStatus.SOLDOUT;
 
@@ -420,7 +446,8 @@ class MenuIntegrationTest {
                 Long updateId = 1L;
 
                 MenuDto before = menuMapper.findById(updateId).get();
-                mockMvc.perform(patch(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
+                mockMvc.perform(patch(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON)
+                                .param(paramName, storeId))
                         .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
                         .andDo(print());
                 MenuDto after = menuMapper.findById(updateId).get();
@@ -440,7 +467,8 @@ class MenuIntegrationTest {
 
                 mockHttpSession.setAttribute(SessionConstants.AUTH_TYPE, changeType);
 
-                mockMvc.perform(patch(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
+                mockMvc.perform(patch(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON)
+                                .param(paramName, storeId))
                         .andExpect(jsonPath("$.status").value(HttpStatus.FORBIDDEN.value()))
                         .andExpect(jsonPath("$.message").value(FORBIDDEN_MESSAGE))
                         .andDo(print());

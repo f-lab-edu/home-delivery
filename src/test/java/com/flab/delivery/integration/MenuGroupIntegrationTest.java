@@ -222,7 +222,6 @@ class MenuGroupIntegrationTest {
         private final UserType userType = UserType.OWNER;
         private final String url = "/menugroups/1";
 
-
         private Long storeId = 1L;
         private String name = "매운 족발";
         private String info = "매운 족발입니다";
@@ -325,6 +324,9 @@ class MenuGroupIntegrationTest {
         private final UserType userType = UserType.OWNER;
         private final String url = "/menugroups/1";
 
+        private final String paramName = "storeId";
+        private final String storeId = "1";
+
 
         @BeforeEach
         void setUp() {
@@ -341,7 +343,7 @@ class MenuGroupIntegrationTest {
                 // given
                 Long deleteId = 1L;
                 // when
-                mockMvc.perform(delete(url).session(mockHttpSession))
+                mockMvc.perform(delete(url).session(mockHttpSession).param(paramName, storeId))
                         .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
                         .andDo(print());
                 // then
@@ -361,7 +363,7 @@ class MenuGroupIntegrationTest {
                 mockHttpSession.setAttribute(SessionConstants.AUTH_TYPE, changeType);
                 // when
                 // then
-                mockMvc.perform(delete(url).session(mockHttpSession))
+                mockMvc.perform(delete(url).session(mockHttpSession).param(paramName, storeId))
                         .andExpect(jsonPath("$.status").value(HttpStatus.FORBIDDEN.value()))
                         .andExpect(jsonPath("$.message").value(FORBIDDEN_MESSAGE))
                         .andDo(print());

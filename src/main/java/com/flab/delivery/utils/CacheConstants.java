@@ -10,6 +10,10 @@ public final class CacheConstants {
 
     public static final String CATEGORY = "CATEGORY";
     public static final String STORE_LIST = "STORE_LIST";
+    public static final String MENU_LIST = "MENU_LIST";
+    public static final String OPTION_LIST = "OPTION_LIST";
+    public static final String MENU_GROUP_LIST = "MENU_GROUP_LIST";
+
 
     public static final Duration DEFAULT_EXPIRE_TIME_MIN = Duration.ofMinutes(10L);
     public static final Duration CATEGORY_EXPIRE_TIME_MIN = Duration.ofMinutes(20L);

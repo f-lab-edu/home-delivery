@@ -6,6 +6,7 @@ import com.flab.delivery.dto.order.user.OrderSimpleResponseDto;
 import com.flab.delivery.exception.AddressException;
 import com.flab.delivery.fixture.TestDto;
 import com.flab.delivery.mapper.OrderMapper;
+import com.flab.delivery.utils.FCMAlarmConstants;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -18,6 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.flab.delivery.fixture.TestDto.getOrderSimpleResponseDto;
+import static com.flab.delivery.utils.FCMAlarmConstants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -41,6 +43,9 @@ class UserOrderServiceTest {
     @Mock
     private OrderMapper orderMapper;
 
+    @Mock
+    private FCMService fcmService;
+
     @Test
     void createOrder_대표주소_없어서_실패() {
         // given
@@ -59,6 +64,7 @@ class UserOrderServiceTest {
         verify(orderMapper, never()).save(eq(userId), any());
         verify(orderMapper, never()).changeStatus(anyLong(), any());
         verify(payService, never()).pay(anyLong(), any());
+        verify(fcmService, never()).sendMessage(userId, REQUEST_COMPLETE_TITLE, REQUEST_COMPLETE);
     }
 
     @Test
@@ -81,6 +87,7 @@ class UserOrderServiceTest {
         verify(orderMapper).save(eq(userId), any());
         verify(orderMapper, never()).changeStatus(anyLong(), any());
         verify(payService, never()).pay(anyLong(), any());
+        verify(fcmService, never()).sendMessage(userId, REQUEST_COMPLETE_TITLE, REQUEST_COMPLETE);
     }
 
     @Test
@@ -100,6 +107,7 @@ class UserOrderServiceTest {
         Long id = valueCapture.getValue().getId();
         verify(orderMapper).changeStatus(eq(id), any());
         verify(payService).pay(eq(id), any());
+        verify(fcmService, times(1)).sendMessage(userId, REQUEST_COMPLETE_TITLE, REQUEST_COMPLETE);
     }
 
 
