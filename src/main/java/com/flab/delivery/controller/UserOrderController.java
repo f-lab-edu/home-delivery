@@ -31,7 +31,6 @@ public class UserOrderController {
         webDataBinder.addValidators(orderValidator);
     }
 
-    //TODO 테스트 케이스 추가 작성
     @LoginCheck(userType = UserType.USER)
     @PostMapping
     public CommonResult<Void> createOrder(@RequestBody @Valid OrderRequestDto orderRequestDto,
@@ -45,16 +44,15 @@ public class UserOrderController {
     @LoginCheck(userType = UserType.USER)
     @GetMapping("/user")
     public CommonResult<List<OrderSimpleResponseDto>> getUserOrderList(@SessionUserId String userId,
-                                                                       @RequestParam Integer startId) {
+                                                                       @RequestParam(required = false) Long startId) {
 
         return CommonResult.getDataSuccessResult(userOrderService.getUserOrderList(userId, startId));
     }
 
     @LoginCheck(userType = UserType.USER)
     @GetMapping("/{orderId}/user")
-    public CommonResult<OrderDto> getUserDetailOrder(@SessionUserId String userId,
-                                                     @PathVariable Long orderId) {
-        return CommonResult.getDataSuccessResult(userOrderService.getUserDetailOrder(userId, orderId));
+    public CommonResult<OrderDto> getUserDetailOrder(@PathVariable Long orderId) {
+        return CommonResult.getDataSuccessResult(userOrderService.getUserDetailOrder(orderId));
     }
 
 }

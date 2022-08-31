@@ -46,4 +46,13 @@ public class OwnerOrderController {
         ownerOrderService.cancelOrder(userId, orderId);
         return CommonResult.getSimpleSuccessResult(HttpStatus.OK.value());
     }
+
+    @LoginCheck(userType = UserType.OWNER)
+    @PostMapping("/{orderId}/owner/{storeId}/call")
+    public CommonResult<Void> callRider(@SessionUserId String userId,
+                                        @PathVariable Long orderId,
+                                        @PathVariable Long storeId) {
+        ownerOrderService.callRider(userId, orderId, storeId);
+        return CommonResult.getSimpleSuccessResult(HttpStatus.CREATED.value());
+    }
 }

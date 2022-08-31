@@ -1,8 +1,9 @@
 package com.flab.delivery.mapper;
 
 import com.flab.delivery.config.DatabaseConfig;
-import com.flab.delivery.dto.order.owner.OwnerOrderResponseDto;
 import com.flab.delivery.dto.order.OrderDto;
+import com.flab.delivery.dto.order.owner.OwnerOrderResponseDto;
+import com.flab.delivery.dto.order.rider.OrderDeliveryDto;
 import com.flab.delivery.dto.order.user.OrderSimpleResponseDto;
 import com.flab.delivery.dto.pay.PayDto;
 import com.flab.delivery.enums.OrderStatus;
@@ -20,6 +21,7 @@ import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -29,6 +31,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class OrderMapperTest {
 
+    public static final String RIDER_ID = "rider1";
+    public static final String USER_ID = "user1";
     @Autowired
     private OrderMapper orderMapper;
 
@@ -38,10 +42,7 @@ class OrderMapperTest {
     @Test
     void save_확인() {
         // given
-        OrderDto orderDto = TestDto.getOrderDto();
-
-        // when
-        orderMapper.save("user1", orderDto);
+        OrderDto orderDto = saveOrderDto(USER_ID);
 
         // then
         assertThat(orderDto.getId()).isNotNull();
@@ -63,8 +64,7 @@ class OrderMapperTest {
     @Test
     void changeStatus_확인() {
         // given
-        OrderDto orderDto = TestDto.getOrderDto();
-        orderMapper.save("user1", orderDto);
+        OrderDto orderDto = saveOrderDto(USER_ID);
 
         // when
         Long count = orderMapper.changeStatus(orderDto.getId(), OrderStatus.ORDER_APPROVED);
@@ -78,31 +78,20 @@ class OrderMapperTest {
         // given
         List<Long> orderIds = new ArrayList<>();
 
-        OrderDto orderDto = TestDto.getOrderDto();
         for (int i = 0; i < 15; i++) {
-            OrderDto dto = TestDto.getOrderDto();
-            orderMapper.save("user1", dto);
+            OrderDto dto = saveOrderDto(USER_ID);
             orderIds.add(dto.getId());
         }
 
-        assertThat(orderIds.size()).isEqualTo(15);
+        List<Long> pageIds = orderMapper.findPageIds(USER_ID, null);
 
         // when
-        List<OrderSimpleResponseDto> allByPageIds = orderMapper.findAllByPageIds(orderIds);
+        List<OrderSimpleResponseDto> allByPageIds = orderMapper.findAllByPageIds(pageIds);
 
         // then
         assertThat(allByPageIds.size()).isEqualTo(10);
+        assertThat(allByPageIds).usingFieldByFieldElementComparator().isNotNull();
 
-        for (int i = 0; i < 10; i++) {
-            OrderSimpleResponseDto simpleResponseDto = allByPageIds.get(i);
-            assertThat(simpleResponseDto.getOrderPrice()).isEqualTo(orderDto.getOrderPrice());
-            assertThat(simpleResponseDto.getStoreId()).isEqualTo(orderDto.getStoreId());
-            assertThat(simpleResponseDto.getCreatedAt()).isBefore(LocalDateTime.now());
-            assertThat(simpleResponseDto.getMenuName()).isEqualTo(orderDto.getHistory().getMenuList().get(0).getMenuName());
-            assertThat(simpleResponseDto.getMenuCount()).isEqualTo(orderDto.getHistory().getMenuCount());
-            assertThat(simpleResponseDto.getStatus()).isEqualTo(orderDto.getStatus());
-
-        }
     }
 
 
@@ -110,7 +99,7 @@ class OrderMapperTest {
     void findByIdAndUserId_확인() {
         // given
         OrderDto dto = TestDto.getOrderDto();
-        String userId = "user1";
+        String userId = USER_ID;
         orderMapper.save(userId, dto);
         payMapper.save(PayDto.builder().type(PayType.CARD).orderId(dto.getId()).status(PayStatus.COMPLETE).build());
 
@@ -129,9 +118,8 @@ class OrderMapperTest {
     @Test
     void findAllOwnerOrder_확인() {
         // given
-        orderMapper.save("user1", TestDto.getOrderDto());
+        orderMapper.save(USER_ID, TestDto.getOrderDto());
         orderMapper.save("user2", TestDto.getOrderDto());
-
 
 
         // when
@@ -142,5 +130,135 @@ class OrderMapperTest {
             assertThat(dto).usingRecursiveComparison().isNotNull();
         }
     }
+
+    @Test
+    void findDeliveryInfo_검색_결과_없음() {
+        // given
+        OrderDto orderDto = saveOrderDto(USER_ID);
+
+        // when
+        Optional<OrderDeliveryDto> deliveryInfo = orderMapper.findDeliveryInfo("user3", orderDto.getId(), orderDto.getStoreId());
+
+        // then
+        assertThat(deliveryInfo).isEmpty();
+    }
+
+    @Test
+    void findDeliveryInfo_확인() {
+        // given
+        OrderDto orderDto = saveOrderDto(USER_ID);
+
+        // when
+        Optional<OrderDeliveryDto> deliveryInfo = orderMapper.findDeliveryInfo("user2", orderDto.getId(), orderDto.getStoreId());
+
+        // then
+        assertThat(deliveryInfo.get()).usingRecursiveComparison().isNotNull();
+    }
+
+    @Test
+    void updateOrderForDelivery_확인() {
+        // given
+        OrderDto orderDto = saveOrderDto(USER_ID);
+
+        // when
+        Long result = orderMapper.updateOrderForDelivery(orderDto.getId(), RIDER_ID);
+
+        // then
+        assertThat(result).isEqualTo(1);
+    }
+
+    @Test
+    void updateOrderForFinish_주문_상태가_배달중이_아니라서_변경_X() {
+        // given
+        OrderDto orderDto = saveOrderDto(USER_ID);
+
+        // when
+        Long result = orderMapper.updateOrderForFinish(orderDto.getId(), RIDER_ID);
+
+        // then
+        assertThat(result).isEqualTo(0);
+    }
+
+    @Test
+    void updateOrderForFinish_확인() {
+        // given
+        OrderDto orderDto = saveOrderDto(USER_ID);
+
+        // when
+        orderMapper.updateOrderForDelivery(orderDto.getId(), RIDER_ID);
+        Long result = orderMapper.updateOrderForFinish(orderDto.getId(), RIDER_ID);
+
+        // then
+        assertThat(result).isEqualTo(1);
+    }
+
+    @Test
+    void findInDeliveryList_확인() {
+        // given
+        List<Long> orderIds = new ArrayList<>();
+
+        for (int i = 0; i < 15; i++) {
+            OrderDto dto = saveOrderDto(USER_ID);
+            orderIds.add(dto.getId());
+            orderMapper.updateOrderForDelivery(dto.getId(), RIDER_ID);
+        }
+
+        // when
+        List<OrderDeliveryDto> inDeliveryList = orderMapper.findInDeliveryList(RIDER_ID);
+
+        // then
+        assertThat(inDeliveryList).usingFieldByFieldElementComparator().isNotNull();
+        assertThat(inDeliveryList).extracting(OrderDeliveryDto::getOrderId).containsAnyElementsOf(orderIds);
+    }
+
+    @Test
+    void findFinishDeliveryPageIds_확인() {
+        // given
+        List<Long> orderIds = new ArrayList<>();
+
+        for (int i = 0; i < 15; i++) {
+            OrderDto dto = saveOrderDto(USER_ID);
+            orderIds.add(dto.getId());
+            orderMapper.updateOrderForDelivery(dto.getId(), RIDER_ID);
+            orderMapper.updateOrderForFinish(dto.getId(), RIDER_ID);
+        }
+
+        // when
+        List<Long> ids = orderMapper.findFinishDeliveryPageIds(RIDER_ID, null);
+
+        // then
+        assertThat(ids).containsAnyElementsOf(orderIds);
+        assertThat(ids.size()).isEqualTo(10);
+
+    }
+
+    private OrderDto saveOrderDto(String userId) {
+        OrderDto dto = TestDto.getOrderDto();
+        orderMapper.save(userId, dto);
+        return dto;
+    }
+
+    @Test
+    void findFinishDeliveryList_확인() {
+        // given
+        List<Long> orderIds = new ArrayList<>();
+
+        for (int i = 0; i < 15; i++) {
+            OrderDto dto = saveOrderDto(USER_ID);
+            orderIds.add(dto.getId());
+            orderMapper.updateOrderForDelivery(dto.getId(), RIDER_ID);
+            orderMapper.updateOrderForFinish(dto.getId(), RIDER_ID);
+        }
+
+        // when
+        List<Long> ids = orderMapper.findFinishDeliveryPageIds(RIDER_ID, null);
+        List<OrderDeliveryDto> finishDeliveryList = orderMapper.findFinishDeliveryList(RIDER_ID, ids);
+
+        // then
+        assertThat(finishDeliveryList).usingFieldByFieldElementComparator().isNotNull();
+        assertThat(finishDeliveryList.size()).isEqualTo(10);
+
+    }
+
 
 }

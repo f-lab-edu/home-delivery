@@ -1,7 +1,8 @@
-package com.flab.delivery.dto.order.user;
+package com.flab.delivery.dto.order;
 
 
 import com.flab.delivery.dto.option.OptionDto;
+import com.flab.delivery.dto.order.user.OrderMenuDto;
 import lombok.*;
 import org.assertj.core.util.Strings;
 

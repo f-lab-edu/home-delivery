@@ -34,6 +34,7 @@ public class OrderValidator implements Validator {
         return clazz.isAssignableFrom(OrderRequestDto.class);
     }
 
+    // TODO Refactoring
     @Override
     public void validate(Object target, Errors errors) {
         OrderRequestDto orderRequestDto = (OrderRequestDto) target;

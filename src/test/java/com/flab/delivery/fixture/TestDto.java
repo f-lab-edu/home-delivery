@@ -4,7 +4,10 @@ import com.flab.delivery.dto.address.AddressRequestDto;
 import com.flab.delivery.dto.menu.MenuDto;
 import com.flab.delivery.dto.option.OptionDto;
 import com.flab.delivery.dto.order.OrderDto;
+import com.flab.delivery.dto.order.OrderHistoryDto;
+import com.flab.delivery.dto.order.rider.OrderDeliveryDto;
 import com.flab.delivery.dto.order.user.*;
+import com.flab.delivery.dto.store.StoreDto;
 import com.flab.delivery.dto.user.PasswordDto;
 import com.flab.delivery.dto.user.UserDto;
 import com.flab.delivery.dto.user.UserInfoUpdateDto;
@@ -61,10 +64,15 @@ public class TestDto {
     }
 
     public static OrderDto getOrderDto() {
+        return getOrderDto(null);
+    }
+
+    public static OrderDto getOrderDto(Long orderId) {
         return OrderDto.builder()
+                .id(orderId)
                 .orderPrice(30000)
                 .storeId(1L)
-                .status(OrderStatus.ORDER_REQUEST)
+                .status(OrderStatus.ORDER_APPROVED)
                 .history(OrderHistoryDto.from(getOrderRequestDto()))
                 .deliveryAddress("운암동 13번길 15")
                 .build();
@@ -128,5 +136,25 @@ public class TestDto {
                 .status(OrderStatus.ORDER_APPROVED)
                 .build();
 
+    }
+
+    public static StoreDto getStoreDto(Long storeId, String userId, Long addressId) {
+        return StoreDto.builder()
+                .id(storeId)
+                .userId(userId)
+                .addressId(addressId)
+                .build();
+    }
+
+    public static OrderDeliveryDto getOrderDeliveryDto(Long orderId) {
+        return OrderDeliveryDto.builder()
+                .orderId(orderId)
+                .status(OrderStatus.ORDER_APPROVED)
+                .storeName("테스트 매장"+orderId)
+                .addressId(1L)
+                .userPhoneNumber("010-1111-1111")
+                .storeAddress("테스트 매장 상세 주소")
+                .deliveryAddress("배달 상세 주소")
+                .build();
     }
 }

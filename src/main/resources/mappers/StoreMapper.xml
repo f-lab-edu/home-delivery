@@ -8,7 +8,8 @@
         SELECT id
         FROM STORE
         WHERE name = #{name}
-          AND detail_address = #{detailAddress} LIMIT 1;
+          AND detail_address = #{detailAddress}
+        LIMIT 1;
     </select>
 
 
@@ -26,8 +27,18 @@
     </select>
 
     <select id="findById" resultType="StoreDto">
-        SELECT s.id, s.address_id, s.category_id, s.detail_address, s.name, s.phone_number, s.info, s.status, s.open_time,
-               s.end_time, s.min_price
+        SELECT s.id,
+               s.address_id,
+               s.user_id,
+               s.category_id,
+               s.detail_address,
+               s.name,
+               s.phone_number,
+               s.info,
+               s.status,
+               s.open_time,
+               s.end_time,
+               s.min_price
         FROM store s
         WHERE id = #{id}
     </select>
@@ -67,7 +78,7 @@
     </select>
 
     <select id="existsByUserIdAndStoreId" resultType="boolean">
-        SELECT EXISTS(SELECT id FROM STORE WHERE user_id = #{userId} AND id =#{storeId})
+        SELECT EXISTS(SELECT id FROM STORE WHERE user_id = #{userId} AND id = #{storeId})
     </select>
 
 </mapper>

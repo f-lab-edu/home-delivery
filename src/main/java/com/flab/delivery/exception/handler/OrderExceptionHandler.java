@@ -1,6 +1,7 @@
 package com.flab.delivery.exception.handler;
 
 import com.flab.delivery.controller.OwnerOrderController;
+import com.flab.delivery.controller.RiderOrderController;
 import com.flab.delivery.exception.OrderException;
 import com.flab.delivery.response.CommonResult;
 import lombok.extern.slf4j.Slf4j;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import javax.servlet.http.HttpServletRequest;
 
 @Slf4j
-@RestControllerAdvice(assignableTypes = {OwnerOrderController.class})
+@RestControllerAdvice(assignableTypes = {OwnerOrderController.class, RiderOrderController.class})
 public class OrderExceptionHandler {
 
     @ExceptionHandler(OrderException.class)
