@@ -301,6 +301,9 @@ class MenuIntegrationTest {
         private String info = "민츠초코 좋아요";
         private Integer price = 30000;
 
+        private String paramName = "storeId";
+        private String storeId = "1";
+
         @BeforeEach
         void setUp() {
             mockHttpSession.setAttribute(SessionConstants.SESSION_ID, ownerId);
@@ -328,7 +331,8 @@ class MenuIntegrationTest {
                 MenuDto before = menuMapper.findById(findId).get();
                 System.out.println("before" + before.getName());
 
-                mockMvc.perform(patch(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
+                mockMvc.perform(patch(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON)
+                                .param(paramName, storeId))
                         .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
                         .andDo(print());
 
@@ -349,7 +353,8 @@ class MenuIntegrationTest {
                 String json = objectMapper.writeValueAsString(getRequestDto());
 
                 mockHttpSession.setAttribute(SessionConstants.AUTH_TYPE, changeType);
-                mockMvc.perform(patch(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
+                mockMvc.perform(patch(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON)
+                                .param(paramName, storeId))
                         .andExpect(jsonPath("$.status").value(HttpStatus.FORBIDDEN.value()))
                         .andExpect(jsonPath("$.message").value(FORBIDDEN_MESSAGE))
                         .andDo(print());
@@ -364,6 +369,9 @@ class MenuIntegrationTest {
         private final UserType userType = UserType.OWNER;
         private final String url = "/menus/1";
 
+        private final String paramName = "storeId";
+        private final String storeId = "1";
+
         @BeforeEach
         void setUp() {
             mockHttpSession.setAttribute(SessionConstants.SESSION_ID, ownerId);
@@ -377,7 +385,7 @@ class MenuIntegrationTest {
             @DisplayName("삭제 성공")
             void success(@Autowired MenuMapper menuMapper) throws Exception {
                 Long deleteId = 1L;
-                mockMvc.perform(delete(url).session(mockHttpSession))
+                mockMvc.perform(delete(url).session(mockHttpSession).param(paramName, storeId))
                         .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
                         .andDo(print());
 
@@ -396,7 +404,7 @@ class MenuIntegrationTest {
                 UserType changeType = UserType.USER;
 
                 mockHttpSession.setAttribute(SessionConstants.AUTH_TYPE, changeType);
-                mockMvc.perform(delete(url).session(mockHttpSession))
+                mockMvc.perform(delete(url).session(mockHttpSession).param(paramName, storeId))
                         .andExpect(jsonPath("$.status").value(HttpStatus.FORBIDDEN.value()))
                         .andExpect(jsonPath("$.message").value(FORBIDDEN_MESSAGE))
                         .andDo(print());
@@ -410,6 +418,9 @@ class MenuIntegrationTest {
         private final String ownerId = "user2";
         private final UserType userType = UserType.OWNER;
         private final String url = "/menus/1/status";
+
+        private String paramName = "storeId";
+        private String storeId = "1";
 
         private MenuStatus menuStatus = MenuStatus.SOLDOUT;
 
@@ -435,7 +446,8 @@ class MenuIntegrationTest {
                 Long updateId = 1L;
 
                 MenuDto before = menuMapper.findById(updateId).get();
-                mockMvc.perform(patch(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
+                mockMvc.perform(patch(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON)
+                                .param(paramName, storeId))
                         .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
                         .andDo(print());
                 MenuDto after = menuMapper.findById(updateId).get();
@@ -455,7 +467,8 @@ class MenuIntegrationTest {
 
                 mockHttpSession.setAttribute(SessionConstants.AUTH_TYPE, changeType);
 
-                mockMvc.perform(patch(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON))
+                mockMvc.perform(patch(url).session(mockHttpSession).content(json).contentType(MediaType.APPLICATION_JSON)
+                                .param(paramName, storeId))
                         .andExpect(jsonPath("$.status").value(HttpStatus.FORBIDDEN.value()))
                         .andExpect(jsonPath("$.message").value(FORBIDDEN_MESSAGE))
                         .andDo(print());

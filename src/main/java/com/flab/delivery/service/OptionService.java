@@ -30,10 +30,12 @@ public class OptionService {
         optionMapper.save(requestDto);
     }
 
+    @CacheEvict(value = OPTION_LIST, key = "#requestDto.menuId")
     public void updateOption(Long id, OptionRequestDto requestDto) {
         optionMapper.updateById(id, requestDto);
     }
 
+    @CacheEvict(value = OPTION_LIST, key = "#requestDto.menuId")
     public void deleteOption(Long id) {
         optionMapper.deleteById(id);
     }

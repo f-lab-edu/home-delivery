@@ -38,15 +38,18 @@ public class MenuService {
         );
     }
 
-    public void updateMenu(Long id, MenuRequestDto menuRequestDto) {
+    @CacheEvict(value = MENU_LIST, key = "#storeId")
+    public void updateMenu(Long id, MenuRequestDto menuRequestDto, Long storeId) {
         menuMapper.updateById(id, menuRequestDto);
     }
 
-    public void deleteMenu(Long id) {
+    @CacheEvict(value = MENU_LIST, key = "#storeId")
+    public void deleteMenu(Long id, Long storeId) {
         menuMapper.deleteById(id);
     }
 
-    public void updateStatus(Long id, MenuStatus status) {
+    @CacheEvict(value = MENU_LIST, key = "#storeId")
+    public void updateStatus(Long id, MenuStatus status, Long storeId) {
         menuMapper.updateStatus(id, status);
     }
 

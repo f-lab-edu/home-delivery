@@ -29,7 +29,7 @@ public class MenuGroupService {
         menuGroupMapper.save(requestDto);
     }
 
-
+    @CacheEvict(value = MENU_GROUP_LIST, key = "#requestDto.storeId")
     public void updateMenuGroup(Long id, MenuGroupRequestDto requestDto) {
         menuGroupMapper.updateById(id, requestDto);
     }
@@ -40,8 +40,8 @@ public class MenuGroupService {
         return menuGroupMapper.findAllByStoreId(storeId);
     }
 
-
-    public void deleteGroup(Long id) {
+    @CacheEvict(value = MENU_GROUP_LIST, key = "#storeId")
+    public void deleteGroup(Long id, Long storeId) {
         menuGroupMapper.deleteById(id);
     }
 

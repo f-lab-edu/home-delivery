@@ -155,13 +155,14 @@ class MenuGroupServiceTest {
     class deleteGroup {
 
         private Long id = 1L;
+        private Long storeId = 1L;
 
         @Test
         @DisplayName("삭제 성공")
         void success() {
             // given
             // when
-            menuGroupService.deleteGroup(id);
+            menuGroupService.deleteGroup(id, storeId);
             when(menuGroupMapper.findById(id)).thenReturn(Optional.empty());
             // then
             Assertions.assertFalse(menuGroupMapper.findById(id).isPresent());
