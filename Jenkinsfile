@@ -1,5 +1,3 @@
-def remote = [:]
-
 pipeline {
     agent any
 
@@ -8,8 +6,10 @@ pipeline {
     }
 
     stages {
+
         stage('Build') {
             steps {
+                sh 'chmod +x -R ${env.WORKSPACE}'
                 sh './gradlew clean build'
                 archiveArtifacts 'build/libs/*.jar'
             }
