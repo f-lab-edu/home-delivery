@@ -1,8 +1,6 @@
 package com.flab.delivery.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.flab.delivery.AbstractDockerContainer;
-import com.flab.delivery.annotation.EnableMockMvc;
 import com.flab.delivery.annotation.IntegrationTest;
 import com.flab.delivery.dto.menugroup.MenuGroupDto;
 import com.flab.delivery.dto.menugroup.MenuGroupRequestDto;
@@ -11,12 +9,10 @@ import com.flab.delivery.mapper.MenuGroupMapper;
 import com.flab.delivery.utils.SessionConstants;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @IntegrationTest
-class MenuGroupIntegrationTest extends AbstractDockerContainer {
+class MenuGroupIntegrationTest  {
 
     @Autowired
     MockMvc mockMvc;

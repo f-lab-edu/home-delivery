@@ -1,7 +1,6 @@
 package com.flab.delivery.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.flab.delivery.AbstractDockerContainer;
 import com.flab.delivery.annotation.IntegrationTest;
 import com.flab.delivery.dto.cart.ItemDto;
 import com.flab.delivery.dto.menu.MenuDto;
@@ -17,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.core.env.Environment;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -30,7 +28,6 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -38,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @IntegrationTest
 @Testcontainers
 @ContextConfiguration(initializers = CartIntegrationTest.ContainerPropertyInitializer.class)
-class CartIntegrationTest extends AbstractDockerContainer {
+class CartIntegrationTest  {
 
     @Autowired
     MenuMapper menuMapper;

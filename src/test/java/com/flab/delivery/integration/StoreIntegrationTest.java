@@ -1,7 +1,6 @@
 package com.flab.delivery.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.flab.delivery.AbstractDockerContainer;
 import com.flab.delivery.annotation.IntegrationTest;
 import com.flab.delivery.dto.store.StoreDto;
 import com.flab.delivery.dto.store.StoreRequestDto;
@@ -23,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @IntegrationTest
-class StoreIntegrationTest extends AbstractDockerContainer {
+class StoreIntegrationTest  {
 
     @Autowired
     MockMvc mockMvc;

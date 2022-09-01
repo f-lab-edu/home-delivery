@@ -1,19 +1,13 @@
 package com.flab.delivery.mapper;
 
-import com.flab.delivery.AbstractDockerContainer;
-import com.flab.delivery.config.DatabaseConfig;
+import com.flab.delivery.annotation.DatabaseTest;
 import org.junit.jupiter.api.Test;
-import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.context.annotation.Import;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@MybatisTest
-@Import({DatabaseConfig.class})
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class AddressMapperTest extends AbstractDockerContainer {
+@DatabaseTest
+class AddressMapperTest {
 
     @Autowired
     private AddressMapper addressMapper;

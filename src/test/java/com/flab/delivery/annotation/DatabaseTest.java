@@ -12,9 +12,8 @@ import java.lang.annotation.Target;
 
 @SpringBootTest
 @Transactional
-@EnableMockMvc
 @ContextConfiguration(initializers = {DockerComposeContainerInitializer.class})
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface IntegrationTest {
+public @interface DatabaseTest {
 }

@@ -1,6 +1,5 @@
 package com.flab.delivery.integration;
 
-import com.flab.delivery.AbstractDockerContainer;
 import com.flab.delivery.annotation.IntegrationTest;
 import com.flab.delivery.dao.RiderDao;
 import com.flab.delivery.enums.UserType;
@@ -21,7 +20,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @IntegrationTest
-public class RiderIntegrationTestDocker extends AbstractDockerContainer {
+public class RiderIntegrationTestDocker  {
 
     private static final String RIDER_ID = "rider1";
     @Autowired

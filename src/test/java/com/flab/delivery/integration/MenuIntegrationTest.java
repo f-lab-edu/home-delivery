@@ -1,7 +1,6 @@
 package com.flab.delivery.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.flab.delivery.AbstractDockerContainer;
 import com.flab.delivery.annotation.IntegrationTest;
 import com.flab.delivery.dto.menu.MenuDto;
 import com.flab.delivery.dto.menu.MenuRequestDto;
@@ -26,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @IntegrationTest
-class MenuIntegrationTest extends AbstractDockerContainer {
+class MenuIntegrationTest  {
 
     @Autowired
     MockMvc mockMvc;
