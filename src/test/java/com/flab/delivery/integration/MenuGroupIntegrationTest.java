@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @IntegrationTest
-class MenuGroupIntegrationTest  {
+class MenuGroupIntegrationTest {
 
     @Autowired
     MockMvc mockMvc;
@@ -306,7 +306,7 @@ class MenuGroupIntegrationTest  {
         @DisplayName("조회 성공")
         void success() throws Exception {
             // given
-            mockMvc.perform(get(url).session(mockHttpSession).param(paramName,paramValue))
+            mockMvc.perform(get(url).session(mockHttpSession).param(paramName, paramValue))
                     .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
                     .andExpect(jsonPath("$.data").isArray())
                     .andDo(print());
@@ -377,7 +377,6 @@ class MenuGroupIntegrationTest  {
         private final String ownerId = "user2";
         private final UserType userType = UserType.OWNER;
         private final String url = "/menugroups/priorities";
-
 
 
         private List<MenuGroupDto> list = new ArrayList<>();

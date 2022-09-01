@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @IntegrationTest
-public class OwnerOrderIntegrationTest  {
+public class OwnerOrderIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;

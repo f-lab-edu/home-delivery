@@ -1,12 +1,12 @@
 package com.flab.delivery.mapper;
 
-import com.flab.delivery.annotation.DatabaseTest;
+import com.flab.delivery.annotation.IntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DatabaseTest
+@IntegrationTest
 class AddressMapperTest {
 
     @Autowired

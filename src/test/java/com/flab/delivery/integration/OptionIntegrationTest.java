@@ -15,14 +15,13 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 
-
 import static com.flab.delivery.exception.message.ErrorMessageConstants.FORBIDDEN_MESSAGE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @IntegrationTest
-class OptionIntegrationTest  {
+class OptionIntegrationTest {
 
     @Autowired
     ObjectMapper objectMapper;

@@ -1,6 +1,6 @@
 package com.flab.delivery.mapper;
 
-import com.flab.delivery.annotation.DatabaseTest;
+import com.flab.delivery.annotation.IntegrationTest;
 import com.flab.delivery.dto.user.PasswordDto;
 import com.flab.delivery.dto.user.UserDto;
 import com.flab.delivery.dto.user.UserInfoUpdateDto;
@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DatabaseTest
+@IntegrationTest
 class UserMapperTest {
 
     @Autowired

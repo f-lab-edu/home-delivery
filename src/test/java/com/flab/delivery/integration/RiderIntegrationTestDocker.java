@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @IntegrationTest
-public class RiderIntegrationTestDocker  {
+public class RiderIntegrationTestDocker {
 
     private static final String RIDER_ID = "rider1";
     @Autowired

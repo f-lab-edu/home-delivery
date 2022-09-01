@@ -1,7 +1,7 @@
 package com.flab.delivery.mapper;
 
 
-import com.flab.delivery.annotation.DatabaseTest;
+import com.flab.delivery.annotation.IntegrationTest;
 import com.flab.delivery.dto.address.AddressDto;
 import com.flab.delivery.dto.address.AddressRequestDto;
 import com.flab.delivery.fixture.TestDto;
@@ -14,7 +14,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@DatabaseTest
+@IntegrationTest
 public class UserAddressMapperTest {
 
     private static final String USER_ID = "user1";

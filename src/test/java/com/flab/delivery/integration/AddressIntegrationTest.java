@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @IntegrationTest
-class AddressIntegrationTest  {
+class AddressIntegrationTest {
 
     @Autowired
     AddressService addressService;

@@ -1,5 +1,6 @@
 package com.flab.delivery.dao;
 
+import com.flab.delivery.annotation.IntegrationTest;
 import com.flab.delivery.dto.order.rider.OrderDeliveryDto;
 import com.flab.delivery.exception.OrderException;
 import com.flab.delivery.fixture.TestDto;
@@ -17,8 +18,8 @@ import static com.flab.delivery.fixture.TestDto.getOrderDeliveryDto;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@SpringBootTest
-class RiderDaoTest  {
+@IntegrationTest
+class RiderDaoTest {
 
     private static final String RIDER = "Rider1";
     private static final Long ADDRESS_ID = 1L;

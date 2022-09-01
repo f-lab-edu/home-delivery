@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @IntegrationTest
-class MenuIntegrationTest  {
+class MenuIntegrationTest {
 
     @Autowired
     MockMvc mockMvc;

@@ -13,18 +13,11 @@ import com.flab.delivery.utils.SessionConstants;
 import org.hamcrest.core.IsNull;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.util.TestPropertyValues;
-import org.springframework.context.ApplicationContextInitializer;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
 
@@ -33,9 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @IntegrationTest
-@Testcontainers
-@ContextConfiguration(initializers = CartIntegrationTest.ContainerPropertyInitializer.class)
-class CartIntegrationTest  {
+class CartIntegrationTest {
 
     @Autowired
     MenuMapper menuMapper;
@@ -54,21 +45,6 @@ class CartIntegrationTest  {
 
 
     MockHttpSession mockHttpSession = new MockHttpSession();
-
-    @Container
-    static GenericContainer redisContainer = new GenericContainer("redis")
-            .withExposedPorts(6379);
-
-    static class ContainerPropertyInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
-        @Override
-        public void initialize(ConfigurableApplicationContext context) {
-            TestPropertyValues.of("spring.redis.cart.port=" + redisContainer.getMappedPort(6379))
-                    .applyTo(context.getEnvironment());
-        }
-    }
-
-
-
 
     @Nested
     @DisplayName("POST : /carts?storeId={storeId}")
@@ -353,7 +329,7 @@ class CartIntegrationTest  {
                     .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
                     .andDo(print());
 
-            ItemDto item = (ItemDto)redisCartTemplate.opsForHash().get(userId, "2_7_8");
+            ItemDto item = (ItemDto) redisCartTemplate.opsForHash().get(userId, "2_7_8");
             Assertions.assertEquals(item.getQuantity(), 2);
         }
 
@@ -383,7 +359,7 @@ class CartIntegrationTest  {
                     .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
                     .andDo(print());
 
-            ItemDto item = (ItemDto)redisCartTemplate.opsForHash().get(userId, "2_7_8");
+            ItemDto item = (ItemDto) redisCartTemplate.opsForHash().get(userId, "2_7_8");
             Assertions.assertEquals(item.getQuantity(), 1);
         }
 

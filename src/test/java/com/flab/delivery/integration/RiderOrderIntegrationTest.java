@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @IntegrationTest
-public class RiderOrderIntegrationTest  {
+public class RiderOrderIntegrationTest {
 
 
     public static final String RIDER_ID = "rider1";

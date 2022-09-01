@@ -1,6 +1,6 @@
 package com.flab.delivery.mapper;
 
-import com.flab.delivery.annotation.DatabaseTest;
+import com.flab.delivery.annotation.IntegrationTest;
 import com.flab.delivery.dto.order.OrderDto;
 import com.flab.delivery.dto.pay.PayDto;
 import com.flab.delivery.enums.PayType;
@@ -8,7 +8,7 @@ import com.flab.delivery.fixture.TestDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@DatabaseTest
+@IntegrationTest
 class PayMapperTest {
 
     @Autowired

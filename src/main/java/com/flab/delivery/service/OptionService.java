@@ -4,7 +4,6 @@ import com.flab.delivery.dto.option.OptionDto;
 import com.flab.delivery.dto.option.OptionRequestDto;
 import com.flab.delivery.exception.OptionException;
 import com.flab.delivery.mapper.OptionMapper;
-import com.flab.delivery.utils.CacheConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -13,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.flab.delivery.utils.CacheConstants.*;
+import static com.flab.delivery.utils.CacheConstants.OPTION_LIST;
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +34,6 @@ public class OptionService {
         optionMapper.updateById(id, requestDto);
     }
 
-    @CacheEvict(value = OPTION_LIST, key = "#requestDto.menuId")
     public void deleteOption(Long id) {
         optionMapper.deleteById(id);
     }

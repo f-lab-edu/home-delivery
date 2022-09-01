@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @IntegrationTest
-class StoreIntegrationTest  {
+class StoreIntegrationTest {
 
     @Autowired
     MockMvc mockMvc;

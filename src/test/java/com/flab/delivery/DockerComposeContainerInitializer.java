@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class DockerComposeContainerInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 
-    private static DockerComposeContainer dockerComposeContainer;
+    private static final DockerComposeContainer dockerComposeContainer;
     private static final String REDIS = "redis";
     private static final int REDIS_PORT = 6379;
     public static final String MYSQL = "mysql";
@@ -21,16 +21,7 @@ public class DockerComposeContainerInitializer implements ApplicationContextInit
     private Map<String, String> registry = new HashMap<>();
 
 
-    @Override
-    public void initialize(ConfigurableApplicationContext applicationContext) {
-        startTestDockerContainer();
-
-        addOverrideProperties();
-
-        TestPropertyValues.of(registry).applyTo(applicationContext.getEnvironment());
-    }
-
-    private void startTestDockerContainer() {
+    static {
         dockerComposeContainer = new DockerComposeContainer(new File("docker-compose-test.yml"))
                 .withExposedService(REDIS, REDIS_PORT, Wait.forListeningPort().withStartupTimeout(Duration.ofSeconds(30)))
                 .withExposedService(MYSQL, MYSQL_PORT, Wait.forListeningPort().withStartupTimeout(Duration.ofSeconds(30)));
@@ -38,14 +29,28 @@ public class DockerComposeContainerInitializer implements ApplicationContextInit
         dockerComposeContainer.start();
     }
 
-    private void addOverrideProperties() {
-        changeProperties("spring.redis.cache.host", dockerComposeContainer.getServiceHost(REDIS, REDIS_PORT));
-        changeProperties("spring.redis.session.host", dockerComposeContainer.getServiceHost(REDIS, REDIS_PORT));
-        changeProperties("spring.redis.rider.host", dockerComposeContainer.getServiceHost(REDIS, REDIS_PORT));
+    @Override
+    public void initialize(ConfigurableApplicationContext applicationContext) {
 
-        changeProperties("spring.redis.cache.port", String.valueOf(dockerComposeContainer.getServicePort(REDIS, REDIS_PORT)));
-        changeProperties("spring.redis.session.port", String.valueOf(dockerComposeContainer.getServicePort(REDIS, REDIS_PORT)));
-        changeProperties("spring.redis.rider.port", String.valueOf(dockerComposeContainer.getServicePort(REDIS, REDIS_PORT)));
+        addOverrideProperties();
+
+        TestPropertyValues.of(registry).applyTo(applicationContext.getEnvironment());
+    }
+
+    private void addOverrideProperties() {
+        String redisHost = dockerComposeContainer.getServiceHost(REDIS, REDIS_PORT);
+        changeProperties("spring.redis.cache.host", redisHost);
+        changeProperties("spring.redis.session.host", redisHost);
+        changeProperties("spring.redis.rider.host", redisHost);
+        changeProperties("spring.redis.cart.host", redisHost);
+        changeProperties("spring.redis.fcm.host", redisHost);
+
+        String redisPort = String.valueOf(dockerComposeContainer.getServicePort(REDIS, REDIS_PORT));
+        changeProperties("spring.redis.cache.port", redisPort);
+        changeProperties("spring.redis.session.port", redisPort);
+        changeProperties("spring.redis.rider.port", redisPort);
+        changeProperties("spring.redis.cart.port", redisPort);
+        changeProperties("spring.redis.fcm.port", redisPort);
 
         changeProperties("spring.datasource.url", "jdbc:mysql://" +
                 dockerComposeContainer.getServiceHost(MYSQL, MYSQL_PORT) +

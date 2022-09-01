@@ -36,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @IntegrationTest
-public class UserOrderIntegrationTest  {
+public class UserOrderIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;

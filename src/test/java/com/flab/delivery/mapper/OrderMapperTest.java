@@ -1,6 +1,6 @@
 package com.flab.delivery.mapper;
 
-import com.flab.delivery.annotation.DatabaseTest;
+import com.flab.delivery.annotation.IntegrationTest;
 import com.flab.delivery.dto.order.OrderDto;
 import com.flab.delivery.dto.order.owner.OwnerOrderResponseDto;
 import com.flab.delivery.dto.order.rider.OrderDeliveryDto;
@@ -23,7 +23,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@DatabaseTest
+@IntegrationTest
 class OrderMapperTest {
 
     public static final String RIDER_ID = "rider1";
