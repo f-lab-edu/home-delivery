@@ -6,13 +6,17 @@ pipeline {
     }
 
     stages {
-
-        stage('Build') {
+        stage('Build Stage') {
             steps {
                 sh 'chmod +x ./gradlew'
-                sh './gradlew clean build'
+                sh "./gradlew clean bootJar"
+            }
+        }
+
+        stage('Run Unit tests') {
+            steps {
+                sh "./gradlew test"
                 junit '**/build/test-results/test/*.xml'
-                archiveArtifacts 'build/libs/*.jar'
             }
         }
     }
