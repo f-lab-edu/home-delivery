@@ -11,6 +11,7 @@ pipeline {
             steps {
                 sh 'chmod +x ./gradlew'
                 sh './gradlew clean build'
+                junit '**/build/test-results/test/*.xml'
                 archiveArtifacts 'build/libs/*.jar'
             }
         }
