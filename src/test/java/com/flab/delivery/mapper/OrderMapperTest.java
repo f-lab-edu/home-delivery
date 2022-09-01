@@ -1,5 +1,6 @@
 package com.flab.delivery.mapper;
 
+import com.flab.delivery.AbstractDockerContainer;
 import com.flab.delivery.config.DatabaseConfig;
 import com.flab.delivery.dto.order.OrderDto;
 import com.flab.delivery.dto.order.owner.OwnerOrderResponseDto;
@@ -29,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @MybatisTest
 @Import({DatabaseConfig.class})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class OrderMapperTest {
+class OrderMapperTest extends AbstractDockerContainer {
 
     public static final String RIDER_ID = "rider1";
     public static final String USER_ID = "user1";

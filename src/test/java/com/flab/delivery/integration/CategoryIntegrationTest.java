@@ -1,5 +1,6 @@
 package com.flab.delivery.integration;
 
+import com.flab.delivery.AbstractDockerContainer;
 import com.flab.delivery.annotation.IntegrationTest;
 import com.flab.delivery.enums.UserType;
 import com.flab.delivery.fixture.TestDto;
@@ -17,7 +18,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @IntegrationTest
-public class CategoryIntegrationTest {
+public class CategoryIntegrationTest extends AbstractDockerContainer {
 
     @Autowired
     private MockMvc mockMvc;

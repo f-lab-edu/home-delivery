@@ -1,5 +1,6 @@
 package com.flab.delivery.mapper;
 
+import com.flab.delivery.AbstractDockerContainer;
 import com.flab.delivery.config.DatabaseConfig;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
@@ -12,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @MybatisTest
 @Import({DatabaseConfig.class})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class AddressMapperTest {
+class AddressMapperTest extends AbstractDockerContainer {
 
     @Autowired
     private AddressMapper addressMapper;

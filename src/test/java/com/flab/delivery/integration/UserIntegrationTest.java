@@ -2,6 +2,7 @@ package com.flab.delivery.integration;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.flab.delivery.AbstractDockerContainer;
 import com.flab.delivery.annotation.IntegrationTest;
 import com.flab.delivery.dao.FCMTokenDao;
 import com.flab.delivery.dto.user.PasswordDto;
@@ -40,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @IntegrationTest
 @Testcontainers
 @ContextConfiguration(initializers = UserIntegrationTest.ContainerPropertyInitializer.class)
-class UserIntegrationTest {
+class UserIntegrationTest extends AbstractDockerContainer {
     @Autowired
     MockMvc mockMvc;
 

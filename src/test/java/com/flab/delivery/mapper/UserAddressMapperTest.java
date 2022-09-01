@@ -1,6 +1,7 @@
 package com.flab.delivery.mapper;
 
 
+import com.flab.delivery.AbstractDockerContainer;
 import com.flab.delivery.config.DatabaseConfig;
 import com.flab.delivery.dto.address.AddressDto;
 import com.flab.delivery.dto.address.AddressRequestDto;
@@ -20,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @MybatisTest
 @Import({DatabaseConfig.class})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class UserAddressMapperTest {
+public class UserAddressMapperTest extends AbstractDockerContainer {
 
     private static final String USER_ID = "user1";
     @Autowired

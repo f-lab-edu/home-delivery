@@ -1,5 +1,6 @@
 package com.flab.delivery.mapper;
 
+import com.flab.delivery.AbstractDockerContainer;
 import com.flab.delivery.config.DatabaseConfig;
 import com.flab.delivery.dto.store.StoreDto;
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @MybatisTest
 @Import({DatabaseConfig.class})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class StoreMapperTest {
+class StoreMapperTest extends AbstractDockerContainer {
 
     @Autowired
     private StoreMapper storeMapper;

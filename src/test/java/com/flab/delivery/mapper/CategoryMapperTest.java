@@ -1,5 +1,6 @@
 package com.flab.delivery.mapper;
 
+import com.flab.delivery.AbstractDockerContainer;
 import com.flab.delivery.config.DatabaseConfig;
 import com.flab.delivery.dto.category.CategoryDto;
 import org.junit.jupiter.api.Test;
@@ -15,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @MybatisTest
 @Import({DatabaseConfig.class})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class CategoryMapperTest {
+class CategoryMapperTest extends AbstractDockerContainer {
 
     @Autowired
     private CategoryMapper categoryMapper;

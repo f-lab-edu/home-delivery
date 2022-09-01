@@ -1,6 +1,6 @@
 package com.flab.delivery.dao;
 
-import com.flab.delivery.AbstractRedisContainer;
+import com.flab.delivery.AbstractDockerContainer;
 import com.flab.delivery.dto.order.rider.OrderDeliveryDto;
 import com.flab.delivery.exception.OrderException;
 import com.flab.delivery.fixture.TestDto;
@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
-class RiderDaoTest extends AbstractRedisContainer {
+class RiderDaoTest extends AbstractDockerContainer {
 
     private static final String RIDER = "Rider1";
     private static final Long ADDRESS_ID = 1L;

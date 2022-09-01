@@ -2,6 +2,7 @@ package com.flab.delivery.integration;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.flab.delivery.AbstractDockerContainer;
 import com.flab.delivery.annotation.IntegrationTest;
 import com.flab.delivery.dto.option.OptionDto;
 import com.flab.delivery.dto.option.OptionRequestDto;
@@ -25,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @IntegrationTest
-class OptionIntegrationTest {
+class OptionIntegrationTest extends AbstractDockerContainer {
 
     @Autowired
     ObjectMapper objectMapper;

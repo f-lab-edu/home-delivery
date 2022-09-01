@@ -1,6 +1,6 @@
 package com.flab.delivery.integration;
 
-import com.flab.delivery.AbstractRedisContainer;
+import com.flab.delivery.AbstractDockerContainer;
 import com.flab.delivery.annotation.IntegrationTest;
 import com.flab.delivery.dto.order.OrderDto;
 import com.flab.delivery.dto.pay.PayDto;
@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @IntegrationTest
-public class OwnerOrderIntegrationTest extends AbstractRedisContainer {
+public class OwnerOrderIntegrationTest extends AbstractDockerContainer {
 
     @Autowired
     private MockMvc mockMvc;

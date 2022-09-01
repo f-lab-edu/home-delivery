@@ -1,5 +1,6 @@
 package com.flab.delivery.mapper;
 
+import com.flab.delivery.AbstractDockerContainer;
 import com.flab.delivery.config.DatabaseConfig;
 import com.flab.delivery.dto.order.OrderDto;
 import com.flab.delivery.dto.pay.PayDto;
@@ -14,7 +15,7 @@ import org.springframework.context.annotation.Import;
 @MybatisTest
 @Import({DatabaseConfig.class})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class PayMapperTest {
+class PayMapperTest  extends AbstractDockerContainer {
 
     @Autowired
     private OrderMapper orderMapper;
