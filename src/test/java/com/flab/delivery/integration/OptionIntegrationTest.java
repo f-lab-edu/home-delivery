@@ -411,7 +411,7 @@ class OptionIntegrationTest {
                 void userTypeUser() throws Exception {
                     mockHttpSession.setAttribute(SessionConstants.AUTH_TYPE, com.flab.delivery.enums.UserType.USER);
 
-                    mockMvc.perform(delete(url).session(mockHttpSession))
+                    mockMvc.perform(delete(url).session(mockHttpSession).param(paramName, menuId))
                             .andExpect(jsonPath("$.status").value(HttpStatus.FORBIDDEN.value()))
                             .andExpect(jsonPath("$.message").value(FORBIDDEN_MESSAGE))
                             .andDo(print());
@@ -422,7 +422,7 @@ class OptionIntegrationTest {
                 void userTypeRider() throws Exception {
                     mockHttpSession.setAttribute(SessionConstants.AUTH_TYPE, com.flab.delivery.enums.UserType.RIDER);
 
-                    mockMvc.perform(delete(url).session(mockHttpSession))
+                    mockMvc.perform(delete(url).session(mockHttpSession).param(paramName, menuId))
                             .andExpect(jsonPath("$.status").value(HttpStatus.FORBIDDEN.value()))
                             .andExpect(jsonPath("$.message").value(FORBIDDEN_MESSAGE))
                             .andDo(print());
