@@ -377,6 +377,8 @@ class OptionIntegrationTest {
         private String url = "/options/3";
 
         private Long id = 3L;
+        private String paramName = "menuId";
+        private String menuId = "1";
 
         @BeforeEach
         void setUp() {
@@ -391,7 +393,7 @@ class OptionIntegrationTest {
             @Test
             @DisplayName("삭제 성공")
             void success(@Autowired OptionMapper optionMapper) throws Exception {
-                mockMvc.perform(delete(url).session(mockHttpSession))
+                mockMvc.perform(delete(url).session(mockHttpSession).param(paramName, menuId))
                         .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
                         .andDo(print());
                 Assertions.assertFalse(optionMapper.findById(id).isPresent());
