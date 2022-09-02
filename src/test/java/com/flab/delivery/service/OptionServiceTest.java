@@ -101,11 +101,12 @@ class OptionServiceTest {
     @DisplayName("옵션삭제")
     class DeleteOption {
         private Long id = 1L;
+        private Long menuId = 1L;
 
         @Test
         @DisplayName("성공")
         void success() {
-            optionService.deleteOption(id);
+            optionService.deleteOption(id, menuId);
             verify(optionMapper, times(1)).deleteById(id);
         }
 

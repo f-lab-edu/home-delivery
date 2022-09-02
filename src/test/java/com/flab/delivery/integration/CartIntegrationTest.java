@@ -1,6 +1,7 @@
 package com.flab.delivery.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.flab.delivery.AbstractRedisContainer;
 import com.flab.delivery.annotation.IntegrationTest;
 import com.flab.delivery.dto.cart.ItemDto;
 import com.flab.delivery.dto.menu.MenuDto;
@@ -35,9 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @IntegrationTest
-@Testcontainers
-@ContextConfiguration(initializers = CartIntegrationTest.ContainerPropertyInitializer.class)
-class CartIntegrationTest {
+class CartIntegrationTest extends AbstractRedisContainer {
 
     @Autowired
     MenuMapper menuMapper;
@@ -57,17 +56,6 @@ class CartIntegrationTest {
 
     MockHttpSession mockHttpSession = new MockHttpSession();
 
-    @Container
-    static GenericContainer redisContainer = new GenericContainer("redis")
-            .withExposedPorts(6379);
-
-    static class ContainerPropertyInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
-        @Override
-        public void initialize(ConfigurableApplicationContext context) {
-            TestPropertyValues.of("spring.redis.cart.port=" + redisContainer.getMappedPort(6379))
-                    .applyTo(context.getEnvironment());
-        }
-    }
 
 
 

@@ -37,8 +37,8 @@ public class OptionController {
 
     @LoginCheck(userType = UserType.OWNER)
     @DeleteMapping("/{id}")
-    public CommonResult<Void> deleteOption(@PathVariable("id") Long id) {
-        optionService.deleteOption(id);
+    public CommonResult<Void> deleteOption(@PathVariable("id") Long id, @RequestParam("menuId") Long menuId) {
+        optionService.deleteOption(id, menuId);
         return CommonResult.getSimpleSuccessResult(HttpStatus.OK.value());
     }
 
