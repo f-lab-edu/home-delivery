@@ -13,7 +13,7 @@ pipeline {
             }
         }
 
-        stage('Run Unit tests') {
+        stage('Run tests') {
             steps {
                 sh "./gradlew test"
                 junit '**/build/test-results/test/*.xml'
