@@ -16,8 +16,8 @@ public class DockerComposeContainerInitializer implements ApplicationContextInit
     private static final DockerComposeContainer dockerComposeContainer;
     private static final String REDIS = "redis";
     private static final int REDIS_PORT = 6379;
-    public static final String MYSQL = "mysql";
-    public static final int MYSQL_PORT = 3307;
+    private static final String MYSQL = "mysql";
+    private static final int MYSQL_PORT = 3307;
     private Map<String, String> registry = new HashMap<>();
 
 
