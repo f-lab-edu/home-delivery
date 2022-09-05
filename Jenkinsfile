@@ -13,12 +13,12 @@ pipeline {
             }
         }
 
-        stage('Run tests') {
+/*         stage('Run tests') {
             steps {
                 sh "./gradlew test"
-                junit '**/build/test-results/test/*.xml'
+                junit '**//* build/test-results/test *//*.xml'
             }
-        }
+        } */
 
         stage('Build Docker Image') {
             steps {
