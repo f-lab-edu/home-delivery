@@ -185,7 +185,7 @@ class OwnerOrderServiceTest {
 
         // given
         given(orderMapper.findDeliveryInfo(eq(OWNER_ID), anyLong(), eq(STORE_ID))).willReturn(Optional.of(OrderDeliveryDto.builder().addressId(ADDRESS_ID).build()));
-        doThrow(OrderException.class).when(riderDao).addDeliveryRequestBy(eq(ADDRESS_ID),any());
+        doThrow(OrderException.class).when(riderDao).addDeliveryRequestBy(eq(ADDRESS_ID), any());
 
         // when
         // then

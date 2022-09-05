@@ -1,22 +1,17 @@
 package com.flab.delivery.mapper;
 
-import com.flab.delivery.config.DatabaseConfig;
+import com.flab.delivery.annotation.IntegrationTest;
 import com.flab.delivery.dto.user.PasswordDto;
 import com.flab.delivery.dto.user.UserDto;
 import com.flab.delivery.dto.user.UserInfoUpdateDto;
 import com.flab.delivery.utils.PasswordEncoder;
 import org.junit.jupiter.api.Test;
-import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.context.annotation.Import;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@MybatisTest
-@Import({DatabaseConfig.class})
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@IntegrationTest
 class UserMapperTest {
 
     @Autowired

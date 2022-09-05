@@ -1,25 +1,19 @@
 package com.flab.delivery.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.flab.delivery.annotation.EnableMockMvc;
 import com.flab.delivery.annotation.IntegrationTest;
 import com.flab.delivery.dto.store.StoreDto;
 import com.flab.delivery.dto.store.StoreRequestDto;
 import com.flab.delivery.enums.StoreStatus;
 import com.flab.delivery.enums.UserType;
-import com.flab.delivery.exception.message.ErrorMessageConstants;
 import com.flab.delivery.mapper.StoreMapper;
 import com.flab.delivery.utils.SessionConstants;
-import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
-
 
 import static com.flab.delivery.exception.message.ErrorMessageConstants.FORBIDDEN_MESSAGE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -626,6 +620,7 @@ class StoreIntegrationTest {
             mockHttpSession.setAttribute(SessionConstants.SESSION_ID, ownerId);
             mockHttpSession.setAttribute(SessionConstants.AUTH_TYPE, UserType.OWNER);
         }
+
         @Nested
         @DisplayName("성공")
         class Success {

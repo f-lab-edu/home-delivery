@@ -1,15 +1,12 @@
 package com.flab.delivery.mapper;
 
 
-import com.flab.delivery.config.DatabaseConfig;
+import com.flab.delivery.annotation.IntegrationTest;
 import com.flab.delivery.dto.address.AddressDto;
 import com.flab.delivery.dto.address.AddressRequestDto;
 import com.flab.delivery.fixture.TestDto;
 import org.junit.jupiter.api.Test;
-import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.context.annotation.Import;
 import org.springframework.dao.DataAccessException;
 
 import java.util.List;
@@ -17,9 +14,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@MybatisTest
-@Import({DatabaseConfig.class})
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@IntegrationTest
 public class UserAddressMapperTest {
 
     private static final String USER_ID = "user1";

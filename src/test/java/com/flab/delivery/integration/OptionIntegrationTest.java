@@ -6,8 +6,6 @@ import com.flab.delivery.annotation.IntegrationTest;
 import com.flab.delivery.dto.option.OptionDto;
 import com.flab.delivery.dto.option.OptionRequestDto;
 import com.flab.delivery.enums.UserType;
-import com.flab.delivery.exception.message.ErrorMessageConstants;
-import com.flab.delivery.fixture.MessageConstants;
 import com.flab.delivery.mapper.OptionMapper;
 import com.flab.delivery.utils.SessionConstants;
 import org.junit.jupiter.api.*;
@@ -17,9 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 
-
 import static com.flab.delivery.exception.message.ErrorMessageConstants.FORBIDDEN_MESSAGE;
-import static com.flab.delivery.exception.message.ErrorMessageConstants.UNAUTHORIZED_MESSAGE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;

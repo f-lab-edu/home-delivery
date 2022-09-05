@@ -14,23 +14,15 @@ import com.flab.delivery.mapper.UserMapper;
 import com.flab.delivery.utils.SessionConstants;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.util.TestPropertyValues;
-import org.springframework.context.ApplicationContextInitializer;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static com.flab.delivery.exception.message.ErrorMessageConstants.FORBIDDEN_MESSAGE;
 import static com.flab.delivery.exception.message.ErrorMessageConstants.UNAUTHORIZED_MESSAGE;
-import static com.flab.delivery.fixture.CommonTest.doAuthTest;
-import static com.flab.delivery.fixture.MessageConstants.*;
+import static com.flab.delivery.fixture.MessageConstants.SUCCESS_MESSAGE;
+import static com.flab.delivery.fixture.MessageConstants.WRONG_EMAIL_MESSAGE;
 import static com.flab.delivery.utils.SessionConstants.SESSION_ID;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -38,8 +30,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @IntegrationTest
-@Testcontainers
-@ContextConfiguration(initializers = UserIntegrationTest.ContainerPropertyInitializer.class)
 class UserIntegrationTest {
     @Autowired
     MockMvc mockMvc;
@@ -54,11 +44,6 @@ class UserIntegrationTest {
 
     @Autowired
     FCMTokenDao fcmTokenDao;
-
-    @Container
-    static GenericContainer redisContainer = new GenericContainer("redis")
-            .withExposedPorts(6379);
-
 
     @Nested
     @DisplayName("POST : /users")
@@ -675,17 +660,5 @@ class UserIntegrationTest {
 
     private void setMockLoginUser(MockHttpSession mockHttpSession, String user1) {
         mockHttpSession.setAttribute(SESSION_ID, user1);
-    }
-
-    private void doUserAuthTest(MockHttpServletRequestBuilder requestBuilder) throws Exception {
-        doAuthTest(mockMvc, requestBuilder);
-    }
-
-    static class ContainerPropertyInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
-        @Override
-        public void initialize(ConfigurableApplicationContext context) {
-            TestPropertyValues.of("spring.redis.fcm.port=" + redisContainer.getMappedPort(6379))
-                    .applyTo(context.getEnvironment());
-        }
     }
 }

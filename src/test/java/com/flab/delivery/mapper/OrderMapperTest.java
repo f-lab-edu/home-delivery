@@ -1,6 +1,6 @@
 package com.flab.delivery.mapper;
 
-import com.flab.delivery.config.DatabaseConfig;
+import com.flab.delivery.annotation.IntegrationTest;
 import com.flab.delivery.dto.order.OrderDto;
 import com.flab.delivery.dto.order.owner.OwnerOrderResponseDto;
 import com.flab.delivery.dto.order.rider.OrderDeliveryDto;
@@ -11,10 +11,7 @@ import com.flab.delivery.enums.PayStatus;
 import com.flab.delivery.enums.PayType;
 import com.flab.delivery.fixture.TestDto;
 import org.junit.jupiter.api.Test;
-import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.context.annotation.Import;
 import org.springframework.dao.DataAccessException;
 
 import java.sql.SQLIntegrityConstraintViolationException;
@@ -26,9 +23,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@MybatisTest
-@Import({DatabaseConfig.class})
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@IntegrationTest
 class OrderMapperTest {
 
     public static final String RIDER_ID = "rider1";

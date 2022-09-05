@@ -45,7 +45,7 @@ class OrderRequestDtoTest {
                                 createOrderMenu(3000, 3, Arrays.asList(
                                         createOption(100),
                                         createOption(200)))
-                ))
+                        ))
                 .build();
         // when
         int totalPrice = requestDto.getTotalPrice();
@@ -57,9 +57,11 @@ class OrderRequestDtoTest {
     private OptionDto createOption(int price) {
         return OptionDto.builder().price(price).build();
     }
+
     private OrderMenuDto createOrderMenu(int price, int quantity) {
         return createOrderMenu(price, quantity, new ArrayList<>());
     }
+
     private OrderMenuDto createOrderMenu(int price, int quantity, List<OptionDto> optionList) {
         return OrderMenuDto.builder()
                 .menuDto(MenuDto.builder().price(price).build())

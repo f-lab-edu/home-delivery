@@ -1,7 +1,6 @@
 package com.flab.delivery.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.flab.delivery.AbstractRedisContainer;
 import com.flab.delivery.annotation.IntegrationTest;
 import com.flab.delivery.dto.cart.ItemDto;
 import com.flab.delivery.dto.menu.MenuDto;
@@ -14,29 +13,20 @@ import com.flab.delivery.utils.SessionConstants;
 import org.hamcrest.core.IsNull;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.util.TestPropertyValues;
-import org.springframework.context.ApplicationContextInitializer;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.core.env.Environment;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @IntegrationTest
-class CartIntegrationTest extends AbstractRedisContainer {
+class CartIntegrationTest {
 
     @Autowired
     MenuMapper menuMapper;
@@ -55,10 +45,6 @@ class CartIntegrationTest extends AbstractRedisContainer {
 
 
     MockHttpSession mockHttpSession = new MockHttpSession();
-
-
-
-
 
     @Nested
     @DisplayName("POST : /carts?storeId={storeId}")
@@ -343,7 +329,7 @@ class CartIntegrationTest extends AbstractRedisContainer {
                     .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
                     .andDo(print());
 
-            ItemDto item = (ItemDto)redisCartTemplate.opsForHash().get(userId, "2_7_8");
+            ItemDto item = (ItemDto) redisCartTemplate.opsForHash().get(userId, "2_7_8");
             Assertions.assertEquals(item.getQuantity(), 2);
         }
 
@@ -373,7 +359,7 @@ class CartIntegrationTest extends AbstractRedisContainer {
                     .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
                     .andDo(print());
 
-            ItemDto item = (ItemDto)redisCartTemplate.opsForHash().get(userId, "2_7_8");
+            ItemDto item = (ItemDto) redisCartTemplate.opsForHash().get(userId, "2_7_8");
             Assertions.assertEquals(item.getQuantity(), 1);
         }
 

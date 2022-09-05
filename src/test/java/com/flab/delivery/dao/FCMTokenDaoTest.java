@@ -1,41 +1,20 @@
 package com.flab.delivery.dao;
 
 
-
+import com.flab.delivery.annotation.IntegrationTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.util.TestPropertyValues;
-import org.springframework.context.ApplicationContextInitializer;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-@SpringBootTest
-@Testcontainers
-@ContextConfiguration(initializers = FCMTokenDaoTest.ContainerPropertyInitializer.class)
+@IntegrationTest
 public class FCMTokenDaoTest {
 
     @Autowired
     FCMTokenDao fcmTokenDao;
-
-    @Container
-    static GenericContainer redisContainer = new GenericContainer("redis")
-            .withExposedPorts(6379);
-
-    static class ContainerPropertyInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
-        @Override
-        public void initialize(ConfigurableApplicationContext context) {
-            TestPropertyValues.of("spring.redis.fcm.port=" + redisContainer.getMappedPort(6379))
-                    .applyTo(context.getEnvironment());
-        }
-    }
-
 
     String userId = "user1";
     String token = "11231456";
@@ -69,8 +48,6 @@ public class FCMTokenDaoTest {
         String findToken = fcmTokenDao.findToken(userId);
         Assertions.assertNull(findToken);
     }
-
-
 
 
 }

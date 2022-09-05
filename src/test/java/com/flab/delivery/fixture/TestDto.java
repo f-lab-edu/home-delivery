@@ -150,7 +150,7 @@ public class TestDto {
         return OrderDeliveryDto.builder()
                 .orderId(orderId)
                 .status(OrderStatus.ORDER_APPROVED)
-                .storeName("테스트 매장"+orderId)
+                .storeName("테스트 매장" + orderId)
                 .addressId(1L)
                 .userPhoneNumber("010-1111-1111")
                 .storeAddress("테스트 매장 상세 주소")

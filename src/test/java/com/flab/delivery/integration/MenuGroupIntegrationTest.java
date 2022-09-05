@@ -1,7 +1,6 @@
 package com.flab.delivery.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.flab.delivery.annotation.EnableMockMvc;
 import com.flab.delivery.annotation.IntegrationTest;
 import com.flab.delivery.dto.menugroup.MenuGroupDto;
 import com.flab.delivery.dto.menugroup.MenuGroupRequestDto;
@@ -10,12 +9,10 @@ import com.flab.delivery.mapper.MenuGroupMapper;
 import com.flab.delivery.utils.SessionConstants;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -309,7 +306,7 @@ class MenuGroupIntegrationTest {
         @DisplayName("조회 성공")
         void success() throws Exception {
             // given
-            mockMvc.perform(get(url).session(mockHttpSession).param(paramName,paramValue))
+            mockMvc.perform(get(url).session(mockHttpSession).param(paramName, paramValue))
                     .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
                     .andExpect(jsonPath("$.data").isArray())
                     .andDo(print());
@@ -380,7 +377,6 @@ class MenuGroupIntegrationTest {
         private final String ownerId = "user2";
         private final UserType userType = UserType.OWNER;
         private final String url = "/menugroups/priorities";
-
 
 
         private List<MenuGroupDto> list = new ArrayList<>();

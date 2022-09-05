@@ -1,6 +1,7 @@
 package com.flab.delivery.dao;
 
 
+import com.flab.delivery.annotation.IntegrationTest;
 import com.flab.delivery.dto.cart.CartResponseDto;
 import com.flab.delivery.dto.cart.ItemDto;
 import com.flab.delivery.dto.menu.MenuDto;
@@ -20,9 +21,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import java.util.ArrayList;
 import java.util.List;
 
-@SpringBootTest
-@Testcontainers
-@ContextConfiguration(initializers = CartDaoTest.ContainerPropertyInitializer.class)
+@IntegrationTest
 public class CartDaoTest {
 
     @Autowired
@@ -30,19 +29,6 @@ public class CartDaoTest {
 
     @Autowired
     RedisTemplate<String, Object> redisCartTemplate;
-
-    @Container
-    static GenericContainer redisContainer = new GenericContainer("redis")
-            .withExposedPorts(6379);
-
-    static class ContainerPropertyInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
-        @Override
-        public void initialize(ConfigurableApplicationContext context) {
-            TestPropertyValues.of("spring.redis.cart.port=" + redisContainer.getMappedPort(6379))
-                    .applyTo(context.getEnvironment());
-        }
-    }
-
     String userId = "user1";
     String storeId = "1";
 
