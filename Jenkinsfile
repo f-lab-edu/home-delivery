@@ -38,6 +38,12 @@ pipeline {
             }
         }
 
+        stage('Remove Docker Image') {
+            steps {
+                sh 'docker rmi sukeun/home-delivery'
+            }
+        }
+
         stage('Deploy') {
             steps([$class: 'BapSshPromotionPublisherPlugin']) {
                 sshPublisher(
