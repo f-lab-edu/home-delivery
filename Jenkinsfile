@@ -30,11 +30,33 @@ pipeline {
 
         stage('Push Docker Image') {
             steps {
-                script{
+                script {
                     docker.withRegistry('https://registry.hub.docker.com/', 'docker-hub') {
                         app.push('latest')
                     }
                 }
+            }
+        }
+
+        stage('Deploy') {
+            steps([$class: 'BapSshPromotionPublisherPlugin']) {
+                sshPublisher(
+                    continueOnError: false, failOnError: true,
+                    publishers: [
+                        sshPublisherDesc(
+                            configName: "home-delivery-deploy",
+                            verbose: true,
+                            transfers: [
+                                sshTransfer(
+                                    sourceFiles: "",
+                                    removePrefix: "",
+                                    remoteDirectory: "",
+                                    execCommand: "sh ~/script/deploy.sh"
+                                )
+                            ]
+                        )
+                    ]
+                )
             }
         }
     }
