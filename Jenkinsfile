@@ -41,6 +41,7 @@ pipeline {
         stage('Remove Docker Image') {
             steps {
                 sh 'docker rmi sukeun/home-delivery'
+                sh 'docker rmi registry.hub.docker.com/sukeun/home-delivery'
             }
         }
 
