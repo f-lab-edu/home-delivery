@@ -22,9 +22,12 @@
 
 JAVA 8 , Spring Boot , JUnit5 , Jenkins , MyBatis , MySQL , Redis , Docker , Naver Cloud
 
-## Home-Delivery 구성
+## 현재 서버 구성도
 
+![image](https://user-images.githubusercontent.com/89121296/189665695-1230056f-8df7-40b3-9bb6-067d1e1f1e3f.png)
 
+현재까지 최종 서버 구성도 입니다. 자세한 사항은 아래의 링크에서 확인 가능합니다.
+- [서버 구성도](https://github.com/f-lab-edu/home-delivery/wiki/%EC%84%9C%EB%B2%84-%EA%B5%AC%EC%84%B1)
 
 ## Convention
 
@@ -43,9 +46,10 @@ JAVA 8 , Spring Boot , JUnit5 , Jenkins , MyBatis , MySQL , Redis , Docker , Nav
 자세한 사항은 아래의 링크에서 확인 가능합니다.
 - [초기 기능정의](https://github.com/f-lab-edu/home-delivery/wiki/%EA%B8%B0%EB%8A%A5%EC%A0%95%EC%9D%98)
 - [API 문서](https://github.com/f-lab-edu/home-delivery/wiki/API-%EB%AC%B8%EC%84%9C)
+
 ## ERD
 
-
+![image](https://user-images.githubusercontent.com/89121296/189665565-59ce9bfd-e16e-486d-b06d-a5327e232b55.png)
 
 
 ## WIKI
