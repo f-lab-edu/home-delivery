@@ -13,12 +13,12 @@ pipeline {
             }
         }
 
-/*         stage('Run tests') {
+         stage('Run tests') {
             steps {
                 sh "./gradlew test"
                 junit '**//* build/test-results/test *//*.xml'
             }
-        } */
+        }
 
         stage('Build Docker Image') {
             steps {
@@ -46,6 +46,11 @@ pipeline {
         }
 
         stage('Deploy') {
+
+            when {
+                branch 'develop'
+            }
+
             steps([$class: 'BapSshPromotionPublisherPlugin']) {
                 sshPublisher(
                     continueOnError: false, failOnError: true,
