@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.flab.delivery.exception.message.ErrorMessageConstants.NOT_EXIST_ORDER_REQUEST_MESSAGE;
@@ -55,13 +54,7 @@ public class RiderOrderService {
     public List<OrderDeliveryDto> getFinishDeliveryList(String userId, Long addressId, Long startId) {
         ensureRiderIsStandBy(userId, addressId);
 
-        List<Long> ids = orderMapper.findFinishDeliveryPageIds(userId, startId);
-
-        if (ids.isEmpty()) {
-            return new ArrayList<>();
-        }
-
-        return orderMapper.findFinishDeliveryList(userId, ids);
+        return orderMapper.findFinishDeliveryList(userId, startId);
     }
 
     private OrderDeliveryDto getDeliveryRequestBy(Long orderId, Long addressId) {

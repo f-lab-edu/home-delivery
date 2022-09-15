@@ -30,9 +30,7 @@ public interface OrderMapper {
 
     Long updateOrderForFinish(@Param("orderId") Long orderId, @Param("riderId") String userId);
 
-    List<Long> findFinishDeliveryPageIds(@Param("riderId") String userId, @Param("startId") Long startId);
-
-    List<OrderDeliveryDto> findFinishDeliveryList(@Param("riderId") String riderId, @Param("ids") List<Long> ids);
+    List<OrderDeliveryDto> findFinishDeliveryList(@Param("riderId") String riderId, @Param("startId") Long startId);
 
     List<OrderDeliveryDto> findInDeliveryList(String userId);
 }

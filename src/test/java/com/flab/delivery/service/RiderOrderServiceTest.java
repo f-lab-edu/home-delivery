@@ -204,7 +204,6 @@ class RiderOrderServiceTest {
                 .hasMessage(NOT_STAND_BY_RIDER);
 
         // then
-        verify(orderMapper, never()).findFinishDeliveryPageIds(eq(RIDER_ID), any());
         verify(orderMapper, never()).findFinishDeliveryList(eq(RIDER_ID), any());
     }
 
@@ -212,22 +211,20 @@ class RiderOrderServiceTest {
     void getFinishDeliveryList_배달완료된_주문이_존재하지_않아서_빈리스트_반환() {
         // given
         givenStandByRiderFrom(true);
-        given(orderMapper.findFinishDeliveryPageIds(eq(RIDER_ID), any())).willReturn(new ArrayList<>());
+        given(orderMapper.findFinishDeliveryList(eq(RIDER_ID), any())).willReturn(new ArrayList<>());
 
         // when
         List<OrderDeliveryDto> finishDeliveryList = riderOrderService.getFinishDeliveryList(RIDER_ID, ADDRESS_ID, null);
 
         // then
         assertThat(finishDeliveryList).isEmpty();
-        verify(orderMapper, never()).findFinishDeliveryList(eq(RIDER_ID), any());
     }
 
     @Test
     void getFinishDeliveryList_성공() {
         // given
         givenStandByRiderFrom(true);
-        given(orderMapper.findFinishDeliveryPageIds(eq(RIDER_ID), any())).willReturn(Arrays.asList(1L));
-        given(orderMapper.findFinishDeliveryList(eq(RIDER_ID), anyList())).willReturn(Arrays.asList(TestDto.getOrderDeliveryDto(ORDER_ID)));
+        given(orderMapper.findFinishDeliveryList(eq(RIDER_ID), any())).willReturn(Arrays.asList(TestDto.getOrderDeliveryDto(ORDER_ID)));
 
         // when
         List<OrderDeliveryDto> finishDeliveryList = riderOrderService.getFinishDeliveryList(RIDER_ID, ADDRESS_ID, null);

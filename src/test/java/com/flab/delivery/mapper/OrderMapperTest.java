@@ -11,6 +11,8 @@ import com.flab.delivery.enums.PayStatus;
 import com.flab.delivery.enums.PayType;
 import com.flab.delivery.fixture.TestDto;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 
@@ -202,23 +204,45 @@ class OrderMapperTest {
     }
 
     @Test
-    void findFinishDeliveryPageIds_확인() {
+    void findFinishDeliveryList_확인() {
         // given
-        List<Long> orderIds = new ArrayList<>();
 
         for (int i = 0; i < 15; i++) {
             OrderDto dto = saveOrderDto(USER_ID);
-            orderIds.add(dto.getId());
             orderMapper.updateOrderForDelivery(dto.getId(), RIDER_ID);
             orderMapper.updateOrderForFinish(dto.getId(), RIDER_ID);
         }
 
         // when
-        List<Long> ids = orderMapper.findFinishDeliveryPageIds(RIDER_ID, null);
+        List<OrderDeliveryDto> finishDeliveryList = orderMapper.findFinishDeliveryList(RIDER_ID, null);
 
         // then
-        assertThat(ids).containsAnyElementsOf(orderIds);
-        assertThat(ids.size()).isEqualTo(10);
+        assertThat(finishDeliveryList).usingFieldByFieldElementComparator().isNotNull();
+        assertThat(finishDeliveryList.size()).isEqualTo(10);
+
+    }
+
+    @ParameterizedTest
+    @ValueSource(longs = {10, 30, 50})
+    void findFinishDeliveryList_n번째_이후_배달_완료_목록_확인(long page) {
+        // given
+        long startId = 0;
+        for (int i = 0; i < 100; i++) {
+            OrderDto dto = saveOrderDto(USER_ID);
+            orderMapper.updateOrderForDelivery(dto.getId(), RIDER_ID);
+            orderMapper.updateOrderForFinish(dto.getId(), RIDER_ID);
+
+            if (i == 99) {
+                startId = dto.getId();
+            }
+        }
+
+        // when
+        List<OrderDeliveryDto> finishDeliveryList = orderMapper.findFinishDeliveryList(RIDER_ID, startId - page);
+
+        // then
+        assertThat(finishDeliveryList).usingFieldByFieldElementComparator().isNotNull();
+        assertThat(finishDeliveryList.size()).isEqualTo(10);
 
     }
 
@@ -226,28 +250,6 @@ class OrderMapperTest {
         OrderDto dto = TestDto.getOrderDto();
         orderMapper.save(userId, dto);
         return dto;
-    }
-
-    @Test
-    void findFinishDeliveryList_확인() {
-        // given
-        List<Long> orderIds = new ArrayList<>();
-
-        for (int i = 0; i < 15; i++) {
-            OrderDto dto = saveOrderDto(USER_ID);
-            orderIds.add(dto.getId());
-            orderMapper.updateOrderForDelivery(dto.getId(), RIDER_ID);
-            orderMapper.updateOrderForFinish(dto.getId(), RIDER_ID);
-        }
-
-        // when
-        List<Long> ids = orderMapper.findFinishDeliveryPageIds(RIDER_ID, null);
-        List<OrderDeliveryDto> finishDeliveryList = orderMapper.findFinishDeliveryList(RIDER_ID, ids);
-
-        // then
-        assertThat(finishDeliveryList).usingFieldByFieldElementComparator().isNotNull();
-        assertThat(finishDeliveryList.size()).isEqualTo(10);
-
     }
 
 
