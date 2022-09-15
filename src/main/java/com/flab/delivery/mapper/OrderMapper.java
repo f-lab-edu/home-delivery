@@ -18,9 +18,7 @@ public interface OrderMapper {
 
     Long changeStatus(@Param("orderId") Long orderId, @Param("orderStatus") OrderStatus orderRequest);
 
-    List<Long> findPageIds(@Param("userId") String userId, @Param("startId") Long startId);
-
-    List<OrderSimpleResponseDto> findAllByPageIds(List<Long> ids);
+    List<OrderSimpleResponseDto> findAllByPageIds(@Param("userId") String userId, @Param("startId") Long startId);
 
     OrderDto findByOrderId(Long orderId);
 

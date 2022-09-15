@@ -71,17 +71,12 @@ class OrderMapperTest {
     @Test
     void findAllByPageIds_확인() {
         // given
-        List<Long> orderIds = new ArrayList<>();
-
         for (int i = 0; i < 15; i++) {
-            OrderDto dto = saveOrderDto(USER_ID);
-            orderIds.add(dto.getId());
+            saveOrderDto(USER_ID);
         }
 
-        List<Long> pageIds = orderMapper.findPageIds(USER_ID, null);
-
         // when
-        List<OrderSimpleResponseDto> allByPageIds = orderMapper.findAllByPageIds(pageIds);
+        List<OrderSimpleResponseDto> allByPageIds = orderMapper.findAllByPageIds(USER_ID, null);
 
         // then
         assertThat(allByPageIds.size()).isEqualTo(10);

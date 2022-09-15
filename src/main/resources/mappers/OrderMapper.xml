@@ -16,17 +16,6 @@
         WHERE id = #{orderId};
     </update>
 
-    <select id="findPageIds" resultType="Long">
-        SELECT id
-        FROM ORDERS
-        WHERE user_id = #{userId}
-        <if test="startId != null">
-            AND id &lt; #{startId}
-        </if>
-        ORDER BY created_at DESC
-        LIMIT 10
-    </select>
-
     <select id="findAllByPageIds" resultType="OrderSimpleResponseDto">
         SELECT status,
         order_price,
@@ -35,11 +24,12 @@
         json_extract(history, '$.menuCount') AS menu_count,
         json_extract(history, '$.menuList[0].menuName') AS menu_name
         FROM ORDERS
-        WHERE id IN
-        <foreach collection="list" item="id" separator="," open="(" close=")">
-            #{id}
-        </foreach>
-        ORDER BY created_at DESC;
+        WHERE user_id = #{userId}
+        <if test="startId != null">
+            AND id &lt; #{startId}
+        </if>
+        ORDER BY created_at DESC
+        LIMIT 10
     </select>
 
     <resultMap id="orderDetail" type="OrderDto">

@@ -48,14 +48,7 @@ public class UserOrderService {
     }
 
     public List<OrderSimpleResponseDto> getUserOrderList(String userId, Long startId) {
-
-        List<Long> pageIds = orderMapper.findPageIds(userId, startId);
-
-        if (pageIds.isEmpty()) {
-            return new ArrayList<>();
-        }
-
-        return orderMapper.findAllByPageIds(pageIds);
+        return orderMapper.findAllByPageIds(userId,startId);
     }
 
     public OrderDto getUserDetailOrder(Long orderId) {
