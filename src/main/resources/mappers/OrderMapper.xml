@@ -16,17 +16,6 @@
         WHERE id = #{orderId};
     </update>
 
-    <select id="findPageIds" resultType="Long">
-        SELECT id
-        FROM ORDERS
-        WHERE user_id = #{userId}
-        <if test="startId != null">
-            AND id &lt; #{startId}
-        </if>
-        ORDER BY created_at DESC
-        LIMIT 10
-    </select>
-
     <select id="findAllByPageIds" resultType="OrderSimpleResponseDto">
         SELECT status,
         order_price,
@@ -35,11 +24,12 @@
         json_extract(history, '$.menuCount') AS menu_count,
         json_extract(history, '$.menuList[0].menuName') AS menu_name
         FROM ORDERS
-        WHERE id IN
-        <foreach collection="list" item="id" separator="," open="(" close=")">
-            #{id}
-        </foreach>
-        ORDER BY created_at DESC;
+        WHERE user_id = #{userId}
+        <if test="startId != null">
+            AND id &lt; #{startId}
+        </if>
+        ORDER BY created_at DESC
+        LIMIT 10
     </select>
 
     <resultMap id="orderDetail" type="OrderDto">
@@ -152,17 +142,6 @@
         ORDER BY o.start_time DESC
     </select>
 
-    <select id="findFinishDeliveryPageIds" resultType="Long">
-        SELECT id
-        FROM ORDERS
-        WHERE rider_id = #{riderId}
-        <if test="startId != null">
-            AND id &lt; #{startId}
-        </if>
-        ORDER BY end_time DESC
-        LIMIT 10
-    </select>
-
 
     <select id="findFinishDeliveryList" resultMap="orderDelivery">
         SELECT o.id,
@@ -176,13 +155,14 @@
         o.end_time
         FROM ORDERS o
         JOIN STORE s
-        ON o.id IN
-        <foreach collection="ids" item="id" separator="," open="(" close=")">
-            #{id}
-        </foreach>
-        AND o.rider_id = #{riderId} AND s.id = o.store_id
+        ON o.rider_id = #{riderId}
+            <if test="startId != null">
+                AND o.id &lt; #{startId}
+            </if>
+                AND s.id = o.store_id
         JOIN USER u ON u.id = o.user_id
         ORDER BY o.end_time DESC
+        LIMIT 10
     </select>
 
 </mapper>
