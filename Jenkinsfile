@@ -1,8 +1,26 @@
+def ssh_publisher(SERVER_CONFIG) {
+    sshPublisher(
+        continueOnError: false,
+        failOnError: true,
+        publishers:[
+            sshPublisherDesc(
+                configName: "${SERVER_CONFIG}",
+                verbose: true,
+                transfers: [
+                    sshTransfer(
+                        execCommand: "sh ~/script/deploy.sh"
+                    )
+                ]
+            )
+        ]
+    )
+}
+
 pipeline {
     agent any
 
     environment {
-        app = ''
+        SERVER_LIST = 'server1,server2'
     }
 
     stages {
@@ -47,28 +65,18 @@ pipeline {
 
         stage('Deploy') {
 
+/*
             when {
                 branch 'develop'
             }
+ */
 
-            steps([$class: 'BapSshPromotionPublisherPlugin']) {
-                sshPublisher(
-                    continueOnError: false, failOnError: true,
-                    publishers: [
-                        sshPublisherDesc(
-                            configName: "home-delivery-deploy",
-                            verbose: true,
-                            transfers: [
-                                sshTransfer(
-                                    sourceFiles: "",
-                                    removePrefix: "",
-                                    remoteDirectory: "",
-                                    execCommand: "sh ~/script/deploy.sh"
-                                )
-                            ]
-                        )
-                    ]
-                )
+            steps {
+              script {
+                SERVER_LIST.tokenize(',').each {
+                  echo "SERVER: ${it}"
+                  ssh_publisher("${it}")
+                }
             }
         }
     }
