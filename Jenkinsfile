@@ -77,6 +77,7 @@ pipeline {
                   echo "SERVER: ${it}"
                   ssh_publisher("${it}")
                 }
+              }
             }
         }
     }
